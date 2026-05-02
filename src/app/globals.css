@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --background: #05020A;
+  --foreground: #FFFFFF;
+  --distill-core: #E4DDF4;
+  --distill-violet: #4826B9;
+  --distill-muted: #8A859C;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-distill-core: var(--distill-core);
+  --color-distill-violet: var(--distill-violet);
+  --color-distill-muted: var(--distill-muted);
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: var(--font-pixel), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-anta: var(--font-anta), sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Force the variable font Doto to use 100% round dots and max weight to interlock them */
+.font-pixel {
+  font-family: var(--font-pixel);
+  font-variation-settings: 'ROND' 100, 'wght' 600 !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.05em; /* Minor kerning reduction */
+  
+  /* Use minimal stroke to bleed the dots together into a solid line without bloating circle radii */
+  -webkit-text-stroke: 0.06em currentColor !important;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--distill-violet);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--distill-core);
+}
