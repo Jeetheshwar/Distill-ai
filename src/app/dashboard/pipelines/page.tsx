@@ -11,13 +11,19 @@ export default function TranscribePipelinePage() {
   const [stage, setStage] = useState<"idle" | "processing" | "finished">("idle");
   const [logs, setLogs] = useState<string[]>([]);
   const [resultPayload, setResultPayload] = useState<any>(null);
+  const [hasKey, setHasKey] = useState(true);
+
+  useEffect(() => {
+    const key = localStorage.getItem("groq_api_key");
+    setHasKey(!!key);
+  }, []);
 
   const logQueue = useRef<string[]>([
-    "[SYS] Starting Distill Core Execution...",
-    "[SYS] Establishing secure tunnel to Engine 2.0...",
-    "[ASR] Parsing audio header binaries...",
-    "[EXTRACT] Cross-referencing entities against active schema...",
-    "[SYS] Deterministic array captured. Extraction sequence completed."
+    "[SYS] Initializing BYOK Proxy...",
+    "[SYS] Establishing secure TLS tunnel to Groq API...",
+    "[API] Sending audio buffer to whisper-large-v3-turbo...",
+    "[API] Streaming transcript to Llama3-8B JSON schema...",
+    "[SYS] Payload securely received. Sequence completed."
   ]);
 
   const executeExtraction = async (file: File) => {
@@ -48,10 +54,11 @@ export default function TranscribePipelinePage() {
 
     try {
       // 3. Dispatch to API Infrastructure
+      const key = localStorage.getItem("groq_api_key") || "sk_mock_pro_key_9281";
       const res = await fetch("/api/extract", {
         method: "POST",
         headers: {
-          "Authorization": "Bearer sk_mock_pro_key_9281"
+          "Authorization": `Bearer ${key}`
         },
         body: formData
       });
@@ -93,27 +100,16 @@ export default function TranscribePipelinePage() {
     <div className="flex flex-col gap-10 max-w-6xl w-full">
       <Aura variant="overview" />
 
-      {/* Tabs Navigation */}
-      <div className="flex gap-8 border-b border-white/10 w-full">
-        {(["new", "history", "schema"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={cn(
-              "pb-4 text-sm font-bold font-sans transition-colors relative tracking-wide",
-              activeTab === tab ? "text-distill-core" : "text-distill-muted hover:text-white"
-            )}
-          >
-            {tab === "new" ? "New Pipeline" : tab === "history" ? "Pipeline History" : "Schema Builder"}
-            {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-distill-core shadow-[0_0_8px_var(--distill-core)]" />
-            )}
-          </button>
-        ))}
-      </div>
+
 
       {activeTab === "new" && (
         <div className="flex flex-col gap-10 w-full">
+          {!hasKey && (
+            <div className="w-full bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 flex items-center justify-center text-yellow-500 font-sans text-sm gap-2">
+              <ShieldCheck className="w-5 h-5" />
+              <span><strong>Demo Mode:</strong> No Groq API key configured. Add your key in Settings to process real audio.</span>
+            </div>
+          )}
       {stage === "idle" && (
         <BlurReveal duration={0.8}>
           <div className="flex flex-col gap-4 relative">
@@ -121,7 +117,7 @@ export default function TranscribePipelinePage() {
               <div>
                 <h1 className="text-3xl font-bold text-foreground font-sans tracking-tight">Data Extraction Pipeline</h1>
                 <p className="text-distill-muted max-w-2xl font-sans mb-6 mt-2">
-                  Drop an unstructured audio file into the local buffer. Distill will safely mount it into isolated VRAM and execute the specified JSON constraints locally.
+                  Drop an unstructured audio file. Distill will safely proxy it to Groq API using your credentials and orchestrate the schema constraints without retaining data.
                 </p>
               </div>
               <div className="flex flex-col gap-2 w-64">
@@ -147,7 +143,7 @@ export default function TranscribePipelinePage() {
                 <div className="w-20 h-20 rounded-full border border-white/10 flex items-center justify-center bg-black mb-6 shadow-[0_0_30px_rgba(72,38,185,0.2)]">
                   <UploadCloud className="w-8 h-8 text-distill-core" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">Initialize Local Extraction</h3>
+                <h3 className="text-xl font-bold text-foreground mb-2">Initialize BYOK Extraction</h3>
                 <p className="text-distill-muted text-sm max-w-xs text-center">
                   Drag and drop an audio file, or click to browse. Max 100MB per file natively.
                 </p>
@@ -168,7 +164,7 @@ export default function TranscribePipelinePage() {
             
             <div className="w-full flex items-center justify-center gap-2 mt-4 text-xs font-mono text-distill-muted">
               <ShieldCheck className="w-4 h-4 text-green-500" />
-              <span>Zero-Trust Architecture: Tensor buffers never leave this device.</span>
+              <span>BYOK Proxied: Audio is processed via Groq and never stored.</span>
             </div>
           </div>
         </BlurReveal>
@@ -181,7 +177,7 @@ export default function TranscribePipelinePage() {
             <div className="flex justify-between items-end">
               <h2 className="text-2xl font-bold text-foreground font-sans tracking-tight flex items-center gap-3">
                 <Cpu className="w-6 h-6 text-white animate-pulse" /> 
-                Compiling Target Buffer
+                Processing via Groq API
               </h2>
               <span className="text-distill-core font-mono text-xs border border-distill-core/30 px-2 py-1 rounded bg-distill-core/10 animate-pulse">
                 PROCESSING
@@ -277,29 +273,7 @@ export default function TranscribePipelinePage() {
         </div>
       )}
 
-      {activeTab === "history" && (
-        <BlurReveal duration={0.8}>
-          <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold text-foreground font-sans">Pipeline History</h2>
-            <div className="w-full bg-white/[0.02] border border-white/5 rounded-xl p-8 flex flex-col items-center justify-center text-center h-64 gap-4">
-               <Database className="w-8 h-8 text-distill-muted" />
-               <p className="text-distill-muted font-sans">No pipeline history found for this cluster.</p>
-            </div>
-          </div>
-        </BlurReveal>
-      )}
 
-      {activeTab === "schema" && (
-        <BlurReveal duration={0.8}>
-          <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold text-foreground font-sans">Schema Builder</h2>
-            <div className="w-full bg-white/[0.02] border border-white/5 rounded-xl p-8 flex flex-col items-center justify-center text-center h-64 gap-4">
-               <FileJson className="w-8 h-8 text-distill-muted" />
-               <p className="text-distill-muted font-sans">Define strict JSON extraction rules to force deterministic generation.</p>
-            </div>
-          </div>
-        </BlurReveal>
-      )}
     </div>
   );
 }

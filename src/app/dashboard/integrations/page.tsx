@@ -86,24 +86,7 @@ export default function WebhookPlaygroundPage() {
         </div>
       </BlurReveal>
 
-      {/* Tabs Navigation */}
-      <div className="flex gap-8 border-b border-white/10 w-full mb-4">
-        {(["endpoints", "templates", "logs"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={cn(
-              "pb-4 text-sm font-bold font-sans transition-colors relative tracking-wide",
-              activeTab === tab ? "text-distill-core" : "text-distill-muted hover:text-white"
-            )}
-          >
-            {tab === "endpoints" ? "Webhook Endpoints" : tab === "templates" ? "Jira/Linear Templates" : "Logs & Retries"}
-            {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-distill-core shadow-[0_0_8px_var(--distill-core)]" />
-            )}
-          </button>
-        ))}
-      </div>
+
 
       {activeTab === "endpoints" && (
         <div className="flex flex-col gap-10">
@@ -205,29 +188,7 @@ export default function WebhookPlaygroundPage() {
         </div>
       )}
 
-      {activeTab === "templates" && (
-        <BlurReveal duration={0.8}>
-          <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold text-foreground font-sans">Integration Templates</h2>
-            <div className="w-full bg-white/[0.02] border border-white/5 rounded-xl p-8 flex flex-col items-center justify-center text-center h-64 gap-4">
-               <Webhook className="w-8 h-8 text-distill-muted" />
-               <p className="text-distill-muted font-sans">One-click configs for Jira, Linear, and GitHub Issues.</p>
-            </div>
-          </div>
-        </BlurReveal>
-      )}
 
-      {activeTab === "logs" && (
-        <BlurReveal duration={0.8}>
-          <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold text-foreground font-sans">Logs & Retries</h2>
-            <div className="w-full bg-white/[0.02] border border-white/5 rounded-xl p-8 flex flex-col items-center justify-center text-center h-64 gap-4">
-               <History className="w-8 h-8 text-distill-muted" />
-               <p className="text-distill-muted font-sans">View delivery audit trails, payload diffs, and exponential backoff retry attempts over 72 hours.</p>
-            </div>
-          </div>
-        </BlurReveal>
-      )}
     </div>
   );
 }

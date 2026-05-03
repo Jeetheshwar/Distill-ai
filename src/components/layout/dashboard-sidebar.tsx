@@ -50,11 +50,11 @@ export function DashboardSidebar({ userEmail }: { userEmail: string | undefined 
           <div className="mx-2 bg-black/40 border border-white/5 rounded-lg p-4 flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
-              <span className="text-xs font-bold text-foreground font-sans">Local Engine Connected</span>
+              <span className="text-xs font-bold text-foreground font-sans">BYOK Proxy Ready</span>
             </div>
-            <span className="text-[10px] font-mono text-distill-muted">v2.1.0 • 0 pipelines queued</span>
+            <span className="text-[10px] font-mono text-distill-muted">v2.1.0 • Groq Inference Layer</span>
             <span className="text-[10px] font-mono text-distill-muted mt-1 flex items-center gap-1">
-              <div className="w-1 h-1 border border-distill-muted rounded-full" /> Cloud Fallback Disabled
+              <div className="w-1 h-1 border border-distill-muted rounded-full" /> Stateless Session
             </span>
           </div>
         </div>

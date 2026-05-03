@@ -63,28 +63,11 @@ export default function SecurityBYOKPage() {
       <BlurReveal duration={0.8}>
         <div className="flex flex-col gap-2 relative">
           <h1 className="text-3xl font-bold text-foreground font-sans tracking-tight">Infrastructure Management</h1>
-          <p className="text-distill-muted font-sans text-sm">Manage your Pro/Team API keys and local Docker engines.</p>
+          <p className="text-distill-muted font-sans text-sm">Manage your API keys and webhook endpoints.</p>
         </div>
       </BlurReveal>
 
-      {/* Tabs Navigation */}
-      <div className="flex gap-8 border-b border-white/10 w-full mb-4">
-        {(["api_keys", "local"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={cn(
-              "pb-4 text-sm font-bold font-sans transition-colors relative tracking-wide",
-              activeTab === tab ? "text-distill-core" : "text-distill-muted hover:text-white"
-            )}
-          >
-            {tab === "api_keys" ? "API Keys" : "Local Engines"}
-            {activeTab === tab && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-distill-core shadow-[0_0_8px_var(--distill-core)]" />
-            )}
-          </button>
-        ))}
-      </div>
+
 
       {activeTab === "api_keys" && (
       <BlurReveal duration={1} delay={0.1}>
@@ -129,17 +112,7 @@ export default function SecurityBYOKPage() {
 
 
 
-      {activeTab === "local" && (
-        <BlurReveal duration={0.8}>
-          <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold text-foreground font-sans">Local Engines</h2>
-            <div className="w-full bg-white/[0.02] border border-white/5 rounded-xl p-8 flex flex-col items-center justify-center text-center h-64 gap-4">
-               <Cpu className="w-8 h-8 text-green-500" />
-               <p className="text-distill-muted font-sans">Register and manage local Docker containers.</p>
-            </div>
-          </div>
-        </BlurReveal>
-      )}
+
     </div>
   );
 }

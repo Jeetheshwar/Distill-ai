@@ -25,7 +25,7 @@ const antaFont = Anta({
 
 export const metadata: Metadata = {
   title: "Distill.ai | Effortless Extraction for Developers",
-  description: "The first audio intelligence platform that allows you to transcribe, process, and extract actionable JSON from sensitive conversations — entirely locally.",
+  description: "The first audio intelligence platform that allows you to transcribe, process, and extract actionable JSON from sensitive conversations securely using BYOK APIs.",
 };
 
 import { NavigationWrapper } from "@/components/layout/navigation-wrapper";

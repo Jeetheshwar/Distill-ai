@@ -26,7 +26,7 @@ def extract_ticket(audio_path: str):
         
     response = httpx.post(
         "https://api.distill.ai/v1/extract",
-        headers={"Authorization": "Bearer YOUR_SK_KEY"},
+        headers={"Authorization": "Bearer YOUR_GROQ_API_KEY"},
         files={"file": ("interview.wav", audio_bytes, "audio/wav")},
         data={"schema": "linear_feature_request"}
     )
@@ -35,7 +35,7 @@ def extract_ticket(audio_path: str):
 
 print(extract_ticket("ux-sync.wav"))`,
     curl: `curl -X POST https://api.distill.ai/v1/extract \\
-  -H "Authorization: Bearer YOUR_SK_KEY" \\
+  -H "Authorization: Bearer YOUR_GROQ_API_KEY" \\
   -F "file=@interview.wav" \\
   -F "schema=linear_feature_request"`,
     js: `const fs = require('fs');
@@ -49,7 +49,7 @@ async function extractTicket(audioPath) {
 
   const response = await fetch('https://api.distill.ai/v1/extract', {
     method: 'POST',
-    headers: { 'Authorization': 'Bearer YOUR_SK_KEY' },
+    headers: { 'Authorization': 'Bearer YOUR_GROQ_API_KEY' },
     body: form,
   });
 
@@ -102,41 +102,14 @@ extractTicket('ux-sync.wav').then(console.log);`
               <p className="text-distill-muted text-lg font-sans max-w-2xl mt-2 leading-relaxed">
                 Connect directly to our high-performance FastAPI ingestion endpoints or spin up a local CLI container. Everything goes in unstructured, and comes out as deterministic JSON.
               </p>
-              <div className="mt-4 inline-flex w-max items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 text-yellow-500 px-4 py-2 rounded-lg font-mono text-sm">
+              <div className="mt-4 inline-flex w-max items-center gap-2 bg-distill-core/10 border border-distill-core/20 text-distill-core px-4 py-2 rounded-lg font-mono text-sm">
                 <ShieldCheck className="w-4 h-4" />
-                Local Engine Docker Image — Coming Soon
+                BYOK Proxy Architecture
               </div>
             </div>
           </BlurReveal>
 
-          {/* Self Hosting Section */}
-          <BlurReveal duration={1} delay={0.1}>
-            <div className="flex flex-col gap-6" id="self-hosting">
-              <h2 className="text-2xl font-bold font-sans text-foreground flex items-center gap-3">
-                <ShieldCheck className="w-6 h-6 text-distill-violet" />
-                Self-Hosting (Docker)
-              </h2>
-              <p className="text-distill-muted font-sans text-base">
-                You can run the entire Distill extraction pipeline locally using our official Docker image. This guarantees 100% data sovereignty. Ensure you have Docker installed and at least 8GB of allocated RAM.
-              </p>
 
-              <div className="w-full bg-[#0a0710] border border-white/10 rounded-2xl overflow-hidden mt-4 relative group">
-                <button
-                  onClick={() => handleCopy(`docker run -p 3000:3000 distill-ai/local-engine`, "docker")}
-                  className="absolute top-4 right-4 p-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 opacity-0 group-hover:opacity-100 transition-all text-distill-muted hover:text-white"
-                >
-                  {copiedBlock === "docker" ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                </button>
-                <div className="p-6 overflow-x-auto">
-                  <pre className="text-sm font-mono text-[#dcdcaa] leading-relaxed">
-                    <code className="block whitespace-pre">
-                      {`docker run -p 3000:3000 distill-ai/local-engine`}
-                    </code>
-                  </pre>
-                </div>
-              </div>
-            </div>
-          </BlurReveal>
 
           {/* Quickstart Endpoints */}
           <BlurReveal duration={1} delay={0.1}>
@@ -227,7 +200,7 @@ extractTicket('ux-sync.wav').then(console.log);`
                 Authentication
               </h2>
               <p className="text-distill-muted font-sans text-base leading-relaxed">
-                If you are using the <strong>Pro</strong> or <strong>Team</strong> Managed Cloud endpoints, all requests require a valid Secret Key generated via the Dashboard infrastructure page. Ensure your requests contain the <code className="text-white px-1">Authorization: Bearer YOUR_SK_KEY</code> header. If you are running the <strong>Hacker</strong> tier strictly locally via Docker, no authentication header is required.
+                All requests require a valid Groq API Key since we act as a secure BYOK proxy. Ensure your requests contain the <code className="text-white px-1">Authorization: Bearer YOUR_GROQ_API_KEY</code> header.
               </p>
             </div>
           </BlurReveal>
@@ -240,7 +213,7 @@ extractTicket('ux-sync.wav').then(console.log);`
                 Webhook Integrations
               </h2>
               <p className="text-distill-muted font-sans text-base leading-relaxed">
-                Instead of polling the API, you can register Webhook Endpoints. Once an extraction finishes processing on our local LPUs, Distill will automatically fire a deterministic <code className="text-white px-1">POST</code> payload directly to your infrastructure (e.g., Linear, Jira, or a custom internal ingestion node).
+                Instead of polling the API, you can register Webhook Endpoints. Once an extraction finishes processing via the Groq API, Distill will automatically fire a deterministic <code className="text-white px-1">POST</code> payload directly to your infrastructure (e.g., Linear, Jira, or a custom internal ingestion node).
               </p>
             </div>
           </BlurReveal>

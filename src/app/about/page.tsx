@@ -17,7 +17,7 @@ export default function AboutPage() {
             Distill was born out of a frustration with modern AI APIs. Every tool required sending highly sensitive audio data over the network to a third-party server, creating massive compliance bottlenecks for enterprise teams.
           </p>
           <p className="text-lg text-distill-muted font-sans leading-relaxed mt-4">
-            We built Distill to invert the paradigm: bringing the intelligence directly to the data, entirely locally.
+            We built Distill to securely bridge the gap: providing a stateless BYOK proxy directly to ultra-fast inference APIs like Groq.
           </p>
         </BlurReveal>
       </div>

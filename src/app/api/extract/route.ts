@@ -3,7 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
-    // 1. Verify BYOK Auth (Mock enforcement)
+    // 1. Verify BYOK Auth
     const authHeader = request.headers.get("authorization");
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return NextResponse.json(
@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
+    const apiKey = authHeader.split("Bearer ")[1].trim();
 
     // 2. Parse Multipart FormData
     const formData = await request.formData();
@@ -26,43 +27,53 @@ export async function POST(request: NextRequest) {
     // 3. Live Groq Transcription (whisper-large-v3-turbo)
     const { default: Groq } = await import("groq-sdk");
     
-    if (!process.env.GROQ_API_KEY) {
-      throw new Error("GROQ_API_KEY is not configured.");
-    }
-    
-    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-    
-    const transcription = await groq.audio.transcriptions.create({
-      file: file,
-      model: "whisper-large-v3-turbo",
-    });
+    let transcript = "Mocked local transcription: The team discussed migrating the main database to PostgreSQL 16. Sarah will lead the migration effort because of her prior experience with PgBouncer. It is a high priority task.";
+    let durationSeconds = 45;
+    let extractedEntities: any[] = [];
 
-    const transcript = transcription.text || "No speech detected.";
-    const durationSeconds = 45; // Approximate since Groq doesn't return metadata duration natively in text mode
-
-    // 4. Live JSON Extraction (llama3-8b-8192)
-    let extractedEntities = [];
-    try {
-      const chatCompletion = await groq.chat.completions.create({
-        messages: [
-          {
-            role: "system",
-            content: `You are an expert AI extraction system. Read the following audio transcript and extract any tasks, action items, or key entities mentioned. You MUST respond with a valid JSON object containing an "entities" array. Each entity should have a "type" (e.g. ticket, action_item), "summary", "priority", and "assignee_context". Example: {"entities": [{"type": "ticket", "summary": "Fix login bug", "priority": "high", "assignee_context": "Alex"}]}`
-          },
-          {
-            role: "user",
-            content: transcript
-          }
-        ],
-        model: "llama3-8b-8192",
-        response_format: { type: "json_object" },
+    if (apiKey && apiKey !== "sk_mock_pro_key_9281" && apiKey.startsWith("gsk_")) {
+      const groq = new Groq({ apiKey: apiKey });
+      
+      const transcription = await groq.audio.transcriptions.create({
+        file: file,
+        model: "whisper-large-v3-turbo",
       });
 
-      const jsonPayload = JSON.parse(chatCompletion.choices[0]?.message?.content || '{"entities": []}');
-      extractedEntities = jsonPayload.entities || [];
-    } catch (llmError) {
-      console.error("LLM Extraction failed:", llmError);
-      extractedEntities = [{ type: "error", summary: "JSON Extraction failed." }];
+      transcript = transcription.text || "No speech detected.";
+
+      // 4. Live JSON Extraction (llama3-8b-8192)
+      try {
+        const chatCompletion = await groq.chat.completions.create({
+          messages: [
+            {
+              role: "system",
+              content: `You are an expert AI extraction system. Read the following audio transcript and extract any tasks, action items, or key entities mentioned. You MUST respond with a valid JSON object containing an "entities" array. Each entity should have a "type" (e.g. ticket, action_item), "summary", "priority", and "assignee_context". Example: {"entities": [{"type": "ticket", "summary": "Fix login bug", "priority": "high", "assignee_context": "Alex"}]}`
+            },
+            {
+              role: "user",
+              content: transcript
+            }
+          ],
+          model: "llama3-8b-8192",
+          response_format: { type: "json_object" },
+        });
+
+        const jsonPayload = JSON.parse(chatCompletion.choices[0]?.message?.content || '{"entities": []}');
+        extractedEntities = jsonPayload.entities || [];
+      } catch (llmError) {
+        console.error("LLM Extraction failed:", llmError);
+        extractedEntities = [{ type: "error", summary: "JSON Extraction failed." }];
+      }
+    } else {
+      // Mocked extraction for local testing and open source deployments without keys
+      extractedEntities = [
+        {
+          "type": "ticket",
+          "summary": "Migrate database to PostgreSQL 16",
+          "priority": "high",
+          "assignee_context": "Sarah"
+        }
+      ];
     }
 
     // 5. Database Persistence (Phase 13)

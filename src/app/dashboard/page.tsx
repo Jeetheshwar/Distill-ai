@@ -37,7 +37,7 @@ export default async function DashboardOverview() {
       <BlurReveal duration={0.8}>
         <div className="flex flex-col gap-2 relative">
           <h1 className="text-3xl font-bold text-foreground font-sans tracking-tight">Overview</h1>
-          <p className="text-distill-muted font-sans text-sm">Real-time metrics for your local pipeline and managed routing infrastructure.</p>
+          <p className="text-distill-muted font-sans text-sm">Real-time metrics for your BYOK pipeline and webhook routing.</p>
         </div>
       </BlurReveal>
 
@@ -74,8 +74,8 @@ export default async function DashboardOverview() {
                <div className="flex items-center gap-4">
                  <div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.6)] animate-pulse" />
                  <div className="flex flex-col">
-                   <span className="text-sm font-bold text-foreground font-sans">Local Docker Engine</span>
-                   <span className="text-xs text-distill-muted font-mono">localhost:8080 (v2.1.0)</span>
+                   <span className="text-sm font-bold text-foreground font-sans">Groq API Status</span>
+                   <span className="text-xs text-distill-muted font-mono">api.groq.com</span>
                  </div>
                </div>
                <span className="text-xs font-bold text-green-500 bg-green-500/10 px-3 py-1 rounded-full uppercase">Connected</span>

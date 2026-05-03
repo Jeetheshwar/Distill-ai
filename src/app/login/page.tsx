@@ -172,7 +172,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="w-full py-3 rounded-lg bg-distill-core text-background font-bold tracking-wide hover:bg-white transition-colors flex items-center justify-center shadow-[0_0_15px_rgba(228,221,244,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isSignUp ? "Create Account" : "Sign In")}
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isSignUp ? "Create Free Account" : "Sign In")}
                 </button>
 
                 <button 
@@ -181,7 +181,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="w-full py-3 rounded-lg bg-transparent border border-white/10 text-distill-muted font-bold tracking-wide hover:bg-white/5 hover:text-white transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
-                  {isSignUp ? "Already have an account? Sign In" : "New here? Create account"}
+                  {isSignUp ? "Already have an account? Sign In" : "New here? Create Free Account"}
                 </button>
               </div>
             </form>

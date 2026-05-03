@@ -32,26 +32,26 @@ export default function Home() {
 
   const differentiators = [
     {
-      title: "No Cloud",
-      description: "Everything runs locally on your machine. You don't pay us for compute, and you don't send us your data.",
-      icon: <Server className="w-6 h-6 text-distill-core" />,
-    },
-    {
-      title: "No API Keys",
-      description: "Stop juggling rate limits and secret keys. Pull the container and run it indefinitely.",
+      title: "Bring Your Own Key",
+      description: "You provide the Groq API key, we handle schema extraction and webhook routing.",
       icon: <Lock className="w-6 h-6 text-distill-violet" />,
     },
     {
-      title: "No Compliance Liability",
-      description: "Since the data never leaves your laptop or VPC, you own the data gravity. Audits are trivially easy.",
+      title: "Zero Data Retention",
+      description: "Your audio is processed via your own API credentials and never stored on our servers.",
       icon: <ShieldCheck className="w-6 h-6 text-distill-muted" />,
+    },
+    {
+      title: "Ultra-Fast Inference",
+      description: "Leverage Groq's LPU architecture to process meetings and extract JSON in seconds.",
+      icon: <Server className="w-6 h-6 text-distill-core" />,
     },
   ];
 
   const features = [
     {
-      title: "The Engine 2.0 Pipeline",
-      description: "Powered by meticulously optimized audio tensor models (whisper-large-v3-turbo), achieving 5x real-time factor with zero hardware acceleration reliance.",
+      title: "Powered by Groq",
+      description: "Utilizing whisper-large-v3-turbo via the Groq API to achieve unprecedented audio transcription speeds.",
       icon: <Cpu className="w-6 h-6 text-distill-core" />,
     },
     {
@@ -73,20 +73,20 @@ export default function Home() {
 
   const faqs = [
     {
-      question: "Is this actually running locally?",
-      answer: "Yes. The core Distill engine runs locally via Docker. We don't have a backend to process your audio even if we wanted to."
+      question: "How does Bring Your Own Key (BYOK) work?",
+      answer: "You plug in your Groq API key in the settings. We securely proxy your audio to Groq's inference endpoints and orchestrate the schema extraction without storing your data."
     },
     {
       question: "Which models are you using under the hood?",
-      answer: "We utilize optimized versions of whisper-large-v3-turbo for ASR, paired with constrained-generation algorithms to guarantee pure, structural JSON output."
+      answer: "We utilize whisper-large-v3-turbo for ASR via the Groq API, paired with Llama 3 8B to guarantee pure, structural JSON output."
     },
     {
       question: "What is the Team dashboard?",
       answer: "The Team tier gives you a hosted UI to manage your webhooks, view retry queues, and share a schema library across your organization."
     },
     {
-      question: "Can I run this on Apple Silicon?",
-      answer: "Yes. The container is natively compiled for M-series chips and leverages Metal Performance Shaders (MPS) to process 1-hour meetings in under 4 minutes locally."
+      question: "Are my audio files stored securely?",
+      answer: "We do not store your audio files at all. They are streamed directly to the Groq API using your credentials and immediately discarded after transcription."
     }
   ];
 
@@ -111,21 +111,21 @@ export default function Home() {
             </BlurReveal>
             <BlurReveal duration={1.2} delay={0.15}>
               <h1 className="font-pixel text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1] text-distill-muted">
-                on your laptop.
+                via your API key.
               </h1>
             </BlurReveal>
           </div>
 
           <BlurReveal duration={1.2} delay={0.2}>
             <p className="text-lg md:text-xl text-distill-muted leading-relaxed font-sans max-w-2xl text-white">
-              Open-source audio extraction. No API keys. No cloud. Just a Docker container and a schema file.
+              Bring Your Own Key (BYOK) audio extraction. You provide the Groq API key; we handle schema extraction and webhook routing.
             </p>
           </BlurReveal>
 
           <BlurReveal duration={1.2} delay={0.4}>
             <div className="flex items-center gap-4 mt-4 justify-center md:justify-start">
               <Link href="/docs" className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-distill-core text-background font-bold tracking-wide hover:bg-white transition-colors shadow-[0_0_20px_rgba(228,221,244,0.4)]">
-                Docker Pull
+                View Documentation
               </Link>
               <Link href="#pricing" className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-distill-violet/50 text-distill-core font-medium tracking-wide hover:bg-distill-violet/10 transition-colors">
                 View Pricing
@@ -153,8 +153,8 @@ export default function Home() {
             <div className="w-full overflow-x-auto bg-[#0a0710] border border-white/10 rounded-2xl p-8 md:p-12 shadow-[inset_0_0_40px_rgba(72,38,185,0.05)]">
               <pre className="font-mono text-sm md:text-base text-distill-muted leading-[1.2] tracking-widest whitespace-pre mx-auto w-max">
 {`┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Audio Input   │────▶│  Local Engine    │────▶│  Structured     │
-│  (.wav/.mp3)    │     │  (Docker/Metal)  │     │  JSON Output    │
+│   Audio Input   │────▶│     Groq API     │────▶│  Structured     │
+│  (.wav/.mp3)    │     │  (BYOK Routing)  │     │  JSON Output    │
 └─────────────────┘     └──────────────────┘     └─────────────────┘
                                │
                                ▼
@@ -182,9 +182,9 @@ export default function Home() {
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-16">
           <BlurReveal duration={1} delay={0.2}>
             <div className="flex flex-col items-center text-center gap-4">
-              <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Absolute Data Sovereignty</h2>
+              <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Secure BYOK Architecture</h2>
               <p className="text-distill-muted max-w-2xl text-lg">
-                Stop shipping sensitive audio out of your ecosystem. Distill runs where your data lives.
+                Your audio is processed via your own API credentials. We act as a stateless proxy to Groq.
               </p>
             </div>
           </BlurReveal>
@@ -233,10 +233,10 @@ export default function Home() {
                 <Code2 className="w-10 h-10 text-distill-core" />
                 <h3 className="text-2xl font-bold text-foreground font-sans">For Solo Developers</h3>
                 <p className="text-distill-muted leading-relaxed text-lg font-sans">
-                  Execute on total zero-trust. Transcribe 1-hour meetings locally in minutes using Whisper on Apple Silicon. Extract action items directly to your terminal. 
+                  Bring your Groq API key and instantly process 1-hour meetings in seconds. Extract action items securely via our proxy dashboard.
                 </p>
                 <div className="mt-4 p-4 rounded-xl bg-black/40 border border-white/5 font-mono text-xs text-distill-core">
-                  $ docker run distill-ai/engine:latest
+                  export GROQ_API_KEY="gsk_..."
                 </div>
               </div>
             </BlurReveal>
@@ -249,7 +249,7 @@ export default function Home() {
                   Transform unstructured assets into strict schemas. Connect webhooks to instantly process UX interviews directly into labeled, categorized feature requests.
                 </p>
                 <div className="mt-4 p-4 rounded-xl bg-black/40 border border-white/5 font-mono text-xs text-distill-violet">
-                  POST http://localhost:8080/v1/extract
+                  POST https://api.distill.ai/v1/extract
                 </div>
               </div>
             </BlurReveal>
@@ -303,28 +303,28 @@ export default function Home() {
           <BlurReveal duration={1} delay={0.1}>
             <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground mb-4">How It Works.</h2>
             <p className="text-distill-muted max-w-2xl text-lg font-sans">
-              A purely stateless, local extraction pipeline. No proprietary cloud required.
+              A purely stateless API extraction pipeline utilizing your own Groq credentials.
             </p>
           </BlurReveal>
 
           <BlurReveal duration={1} delay={0.2} className="w-full">
             <div className="p-8 md:p-12 rounded-3xl bg-black/40 border border-white/10 font-mono text-sm text-distill-muted flex flex-col items-center justify-center overflow-x-auto">
               <pre className="text-left leading-relaxed">
-{`[ Audio File ]
-      │
-      ▼
+{`[ Audio File ] + [ GROQ_API_KEY ]
+       │
+       ▼
 ┌─────────────────────────────────┐
-│        LOCAL DOCKER ENGINE      │
+│        DISTILL BYOK PROXY       │
 │                                 │
-│  1. Whisper v3 Turbo (ONNX)     │
-│  2. VAD Activity Detection      │
-│  3. LLM JSON Extraction         │
+│  1. Groq Whisper v3 Turbo       │
+│  2. Transcription Stream        │
+│  3. Groq Llama3 JSON Schema     │
 └─────────────────────────────────┘
-      │
-      ▼
+       │
+       ▼
 [ Structured JSON Artifact ]
-      │
-      ▼
+       │
+       ▼
 [ Webhook -> GitHub / Jira / Linear ]`}
               </pre>
             </div>
@@ -343,7 +343,7 @@ export default function Home() {
             <div className="flex flex-col items-center text-center gap-4">
               <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Honest Pricing.</h2>
               <p className="text-distill-muted max-w-2xl text-lg font-sans">
-                No enterprise bloat. Run the open-source engine for free, forever.
+                No enterprise bloat. Use your own API keys for free, forever.
               </p>
             </div>
           </BlurReveal>
@@ -357,16 +357,16 @@ export default function Home() {
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">Free</span>
                   </div>
-                  <span className="text-xs text-distill-muted font-mono mt-1 uppercase">Local Core Engine</span>
+                  <span className="text-xs text-distill-muted font-mono mt-1 uppercase">BYOK Access</span>
                 </div>
                 <div className="flex-1 flex flex-col gap-4">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">CLI / Docker Container</span>
+                    <span className="text-distill-muted font-sans text-sm">Bring your own Groq key</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Run indefinitely on your hardware</span>
+                    <span className="text-distill-muted font-sans text-sm">Pay only for what you use via Groq</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
@@ -460,7 +460,7 @@ export default function Home() {
           <BlurReveal duration={1}>
             <h2 className="font-pixel text-5xl md:text-7xl tracking-tighter text-foreground">Extract the Signal.</h2>
             <p className="text-xl text-distill-muted mt-6 font-sans">
-              Join elite frontend teams processing thousands of hours of audio purely locally.
+              Join elite frontend teams processing thousands of hours of audio with pure JSON fidelity.
             </p>
           </BlurReveal>
           <BlurReveal duration={1} delay={0.2}>
@@ -481,7 +481,7 @@ export default function Home() {
             <div className="flex flex-col gap-6 md:col-span-1">
               <span className="font-anta text-2xl tracking-widest text-foreground">DISTILL.<span className="text-distill-violet">AI</span></span>
               <p className="text-sm text-distill-muted leading-relaxed font-sans pr-4">
-                Open-source audio intelligence. No cloud. No API keys. Just raw, deterministic extraction running on your own silicon.
+                Open-source audio intelligence. Bring Your Own Key (BYOK) architecture for lightning-fast, deterministic extraction.
               </p>
             </div>
             
@@ -504,7 +504,7 @@ export default function Home() {
               <span className="text-foreground font-bold tracking-wide text-sm uppercase">Legal & Security</span>
               <Link href="/privacy" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Privacy Policy</Link>
               <Link href="/terms" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Terms of Service</Link>
-              <Link href="/soc2" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">SOC2 Compliance</Link>
+              <Link href="/soc2" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">SOC2 Roadmap</Link>
             </div>
           </div>
 
