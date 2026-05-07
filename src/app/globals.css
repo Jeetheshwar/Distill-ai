@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #05020A;
+  --background: #000000;
   --foreground: #FFFFFF;
   --distill-core: #E4DDF4;
   --distill-violet: #4826B9;
@@ -54,4 +54,24 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--distill-core);
+}
+
+/* Ultimate Premium Animations */
+@keyframes premium-pulse {
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(1.05); }
+}
+
+@keyframes wave-glow {
+  0% { mask-position: 200% center; -webkit-mask-position: 200% center; }
+  100% { mask-position: -200% center; -webkit-mask-position: -200% center; }
+}
+
+.animate-premium-pulse {
+  animation: premium-pulse 10s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-wave-glow {
+  animation: wave-glow 15s linear infinite;
 }

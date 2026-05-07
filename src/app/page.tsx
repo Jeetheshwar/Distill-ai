@@ -97,7 +97,7 @@ export default function Home() {
         HERO SECTION
         ---------------------------------------------
       */}
-      <section className="relative min-h-screen w-full flex flex-col items-center justify-center pt-20 pb-32 px-8 overflow-hidden">
+      <section className="relative min-h-[90vh] w-full flex flex-col items-center justify-center pt-24 md:pt-30 pb-16 px-8 overflow-hidden">
         
         {/* Triple-Node Massive Vibrant U-Shape Glow managed by Component */}
         <Aura variant="hero" />
@@ -136,80 +136,124 @@ export default function Home() {
       </section>
 
       {/* 
-        ---------------------------------------------
-        HOW IT WORKS (Technical Diagram)
-        ---------------------------------------------
+        ========================================================================
+        CORE PLATFORM WRAPPER
+        Curved container with glowing pixel mist background
+        ========================================================================
       */}
-      <section className="relative w-full py-24 px-8 border-t border-white/5 bg-black/20">
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-12">
-          <BlurReveal duration={1}>
-            <div className="flex flex-col items-center text-center gap-4">
-              <span className="text-distill-core font-mono text-sm tracking-widest uppercase">The Pipeline</span>
-              <h2 className="font-pixel text-3xl md:text-5xl tracking-tighter text-foreground">How it Works</h2>
-            </div>
-          </BlurReveal>
-
-          <BlurReveal duration={1} delay={0.2}>
-            <div className="w-full overflow-x-auto bg-[#0a0710] border border-white/10 rounded-2xl p-8 md:p-12 shadow-[inset_0_0_40px_rgba(72,38,185,0.05)]">
-              <pre className="font-mono text-sm md:text-base text-distill-muted leading-[1.2] tracking-widest whitespace-pre mx-auto w-max">
-{`┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│   Audio Input   │────▶│     Groq API     │────▶│  Structured     │
-│  (.wav/.mp3)    │     │  (BYOK Routing)  │     │  JSON Output    │
-└─────────────────┘     └──────────────────┘     └─────────────────┘
-                               │
-                               ▼
-                        ┌──────────────────┐
-                        │ Schema Validator │
-                        │   (Your Rules)   │
-                        └──────────────────┘
-                               │
-                               ▼
-                        ┌──────────────────┐
-                        │  Webhook Router  │────▶ Jira/Linear/GitHub
-                        └──────────────────┘`}
-              </pre>
-            </div>
-          </BlurReveal>
-        </div>
-      </section>
+      <div className="relative w-full rounded-[40px] md:rounded-[60px] bg-black overflow-hidden border border-white/5 shadow-[0_-20px_100px_rgba(72,38,185,0.05)]">
+        
+        {/* Glowing Mist Wave Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.15)_1px,transparent_1px)] bg-[size:16px_16px] [mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [-webkit-mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [mask-size:300%_100%] [-webkit-mask-size:300%_100%] animate-wave-glow pointer-events-none z-0" />
 
       {/* 
         ---------------------------------------------
-        DIFFERENTIATOR SECTION
+        STATELESS PIPELINE ARCHITECTURE (Consolidated & Premium)
         ---------------------------------------------
       */}
-      <section id="differentiators" className="relative w-full py-24 px-8 border-t border-white/5">
-        <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-16">
-          <BlurReveal duration={1} delay={0.2}>
-            <div className="flex flex-col items-center text-center gap-4">
-              <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Secure BYOK Architecture</h2>
-              <p className="text-distill-muted max-w-2xl text-lg">
-                Your audio is processed via your own API credentials. We act as a stateless proxy to Groq.
+      <section id="architecture" className="relative w-full py-32 px-8 bg-transparent">
+        {/* Grid Background Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-24">
+          
+          <div className="flex flex-col md:flex-row items-end justify-between gap-8 border-b border-white/10 pb-12">
+            <div className="flex flex-col gap-4 max-w-3xl">
+              <BlurReveal duration={1}>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-distill-core animate-pulse" />
+                  <span className="text-distill-core font-mono text-xs tracking-[0.3em] uppercase">System Architecture</span>
+                </div>
+              </BlurReveal>
+              <BlurReveal duration={1} delay={0.2}>
+                <h2 className="font-pixel text-4xl md:text-6xl tracking-tighter text-white">Secure BYOK Protocol.</h2>
+              </BlurReveal>
+            </div>
+            <BlurReveal duration={1} delay={0.3}>
+              <p className="text-white/50 text-sm font-mono max-w-md leading-relaxed text-left md:text-right">
+                A purely stateless API extraction pipeline utilizing your own Groq credentials. Zero data retention. Zero enterprise bloat.
               </p>
+            </BlurReveal>
+          </div>
+
+          <BlurReveal duration={1} delay={0.4}>
+            <div className="w-full flex justify-center">
+              <div className="w-full max-w-5xl relative group">
+                {/* Terminal Window */}
+                <div className="relative w-full rounded-2xl border border-white/10 bg-black/40 backdrop-blur-3xl shadow-[0_0_80px_rgba(72,38,185,0.05)] overflow-hidden flex flex-col transition-shadow duration-700 hover:shadow-[0_0_100px_rgba(72,38,185,0.15)]">
+                  {/* Terminal Header */}
+                  <div className="h-10 w-full bg-white/[0.02] border-b border-white/5 flex items-center justify-between px-6">
+                    <div className="flex gap-2.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-red-500/80 transition-colors" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-yellow-500/80 transition-colors" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-green-500/80 transition-colors" />
+                    </div>
+                    <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">distill_stateless_proxy.sh</span>
+                  </div>
+                  {/* Terminal Body */}
+                  <div className="relative p-8 md:p-16 overflow-x-auto">
+                    {/* Scanlines & Glow */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] opacity-30 pointer-events-none" />
+                    <div className="absolute -top-32 -left-32 w-64 h-64 bg-distill-violet/20 blur-[100px] pointer-events-none group-hover:bg-distill-core/20 transition-colors duration-1000" />
+                    
+                    <pre className="relative z-10 font-mono text-xs md:text-sm lg:text-base leading-[1.8] tracking-[0.15em] whitespace-pre mx-auto w-max text-left">
+<span className="text-white/80">{'[ AUDIO STREAM ]'}</span><span className="text-white/30">{` ──────────┐\n`}</span>
+<span className="text-white/30">{`                         │\n`}</span>
+<span className="text-white/30">{`                         ▼\n`}</span>
+<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               ┌───────────────────┐\n`}</span>
+<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               │ DISTILL.AI PROXY  │`}</span><span className="text-white/40">{` ──( ZERO RETENTION )──┐\n`}</span>
+<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               │ (Stateless Core)  │`}</span><span className="text-white/40">{`                       │\n`}</span>
+<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               └───────────────────┘`}</span><span className="text-white/40">{`                       │\n`}</span>
+<span className="text-white/40">{`                         │                                 │\n`}</span>
+<span className="text-distill-core">{' [ GROQ_API_KEY ] '}</span><span className="text-white/40">{`──────┤                                 │\n`}</span>
+<span className="text-white/40">{`                         ▼                                 │\n`}</span>
+<span className="text-white/40">{`               ┌───────────────────┐                       │\n`}</span>
+<span className="text-white/40">{`               │ GROQ INFERENCE    │                       │\n`}</span>
+<span className="text-white/40">{`               │ whisper-large-v3  │                       │\n`}</span>
+<span className="text-white/40">{`               └───────────────────┘                       │\n`}</span>
+<span className="text-white/40">{`                         │                                 │\n`}</span>
+<span className="text-white/40">{`                         ▼                                 │\n`}</span>
+<span className="text-white/40">{`               ┌───────────────────┐                       │\n`}</span>
+<span className="text-white/40">{`               │ SCHEMA VALIDATOR  │ ◀─────────────────────┘\n`}</span>
+<span className="text-white/40">{`               │ (Strict JSON)     │\n`}</span>
+<span className="text-white/40">{`               └───────────────────┘\n`}</span>
+<span className="text-white/40">{`                         │\n`}</span>
+<span className="text-white/40">{`                         ▼\n`}</span>
+<span className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">{'             [ STRUCTURED JSON ARTIFACT ]'}</span>{`\n`}
+<span className="text-white/40">{`                         │\n`}</span>
+<span className="text-white/40">{`                         ▼\n`}</span>
+<span className="text-white/80">{'           [ WEBHOOK -> JIRA / GITHUB / LINEAR ]'}</span>
+                    </pre>
+                  </div>
+                </div>
+              </div>
             </div>
           </BlurReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 p-px">
             {differentiators.map((diff, i) => (
-              <BlurReveal key={i} duration={1} delay={0.4 + i * 0.15}>
-                <div className="group h-full p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-distill-violet/40 hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden text-left flex flex-col">
-                  <div className="absolute inset-0 bg-gradient-to-b from-distill-violet/0 via-transparent to-distill-core/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <BlurReveal key={i} duration={1} delay={0.5 + i * 0.1}>
+                <div className="group relative h-full bg-black p-10 flex flex-col gap-12 overflow-hidden transition-colors hover:bg-white/[0.02]">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-distill-violet/10 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
                   
-                  <div className="relative z-10 flex flex-col gap-6 flex-1">
-                    <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shadow-[0_0_15px_rgba(72,38,185,0.2)]">
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div className="text-white/30 group-hover:text-distill-core transition-colors duration-500">
                       {diff.icon}
                     </div>
-                    <div className="flex flex-col gap-3">
-                      <h3 className="text-xl font-bold tracking-tight text-foreground font-sans">{diff.title}</h3>
-                      <p className="text-distill-muted leading-relaxed text-sm lg:text-base font-sans">
-                        {diff.description}
-                      </p>
-                    </div>
+                    <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest group-hover:text-white/60 transition-colors">SEC_0{i+1}</span>
+                  </div>
+
+                  <div className="relative z-10 flex flex-col gap-4">
+                    <h3 className="text-lg font-mono tracking-tighter text-white uppercase">{diff.title}</h3>
+                    <p className="text-white/50 leading-relaxed text-sm font-mono">
+                      {diff.description}
+                    </p>
                   </div>
                 </div>
               </BlurReveal>
             ))}
           </div>
+
         </div>
       </section>
 
@@ -218,7 +262,8 @@ export default function Home() {
         USE CASES SECTION (New)
         ---------------------------------------------
       */}
-      <section id="use-cases" className="relative w-full py-32 px-8 overflow-hidden bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.01)_50%,transparent)]">
+      <section id="use-cases" className="relative w-full py-32 px-8 overflow-hidden bg-transparent">
+        <Aura variant="conic" />
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-16">
           <BlurReveal duration={1} delay={0.1}>
             <div className="flex flex-col items-center text-center gap-4">
@@ -262,28 +307,39 @@ export default function Home() {
         PLATFORM FEATURES (Engine 2.0)
         ---------------------------------------------
       */}
-      <section id="features" className="relative w-full py-32 px-8 overflow-hidden bg-white/[0.01]">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[800px] bg-[radial-gradient(circle,_var(--distill-violet)_0%,_transparent_50%)] opacity-10 blur-[100px] pointer-events-none z-0" />
+      <section id="features" className="relative w-full py-32 px-8 overflow-hidden bg-transparent border-y border-white/5">
+        <Aura variant="aurora" />
         
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-16">
-          <BlurReveal duration={1} delay={0.2}>
-            <div className="flex flex-col gap-4 text-left max-w-3xl">
-              <span className="text-distill-core font-mono text-sm tracking-widest uppercase shadow-distill-core/20">Engine 2.0 Specs</span>
-              <h2 className="font-pixel text-4xl md:text-6xl tracking-tighter text-foreground">The Intelligence Layer</h2>
+          <BlurReveal duration={1} delay={0.1}>
+            <div className="flex flex-col md:flex-row justify-between items-end gap-8 pb-12 border-b border-white/5">
+              <div className="flex flex-col gap-4 max-w-2xl">
+                <span className="text-distill-core font-mono text-xs tracking-[0.3em] uppercase">Specs // 2.0</span>
+                <h2 className="font-pixel text-4xl md:text-6xl tracking-tighter text-white">The Intelligence Layer.</h2>
+              </div>
+              <p className="text-white/50 text-sm font-mono max-w-md leading-relaxed text-left md:text-right">
+                Deterministic data parsing mechanisms built on top of Groq's LPU architecture. Engineered for pure JSON fidelity.
+              </p>
             </div>
           </BlurReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 p-px shadow-[0_0_50px_rgba(0,0,0,0.5)]">
             {features.map((feature, i) => (
-              <BlurReveal key={i} duration={1} delay={0.4 + i * 0.1}>
-                <div className="flex flex-col gap-5 p-8 lg:p-10 rounded-2xl bg-gradient-to-tr from-white/[0.01] to-white/[0.03] border border-white/5 hover:border-distill-violet/30 transition-colors duration-300">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-distill-violet/10 ring-1 ring-distill-violet/20 flex-shrink-0">
+              <BlurReveal key={i} duration={1} delay={0.2 + i * 0.1}>
+                <div className="group bg-black p-10 md:p-14 flex flex-col gap-10 h-full relative overflow-hidden transition-all hover:bg-white/[0.02]">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-distill-violet/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                  
+                  <div className="flex items-center gap-6 relative z-10">
+                    <div className="p-4 border border-white/5 bg-white/[0.02] text-white/30 group-hover:text-distill-violet group-hover:border-distill-violet/30 transition-colors">
                       {feature.icon}
                     </div>
-                    <h3 className="text-2xl font-bold tracking-tight text-foreground font-sans">{feature.title}</h3>
+                    <div className="flex flex-col gap-1">
+                      <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest">MOD_0{i+1}</span>
+                      <h3 className="text-xl md:text-2xl font-mono tracking-tighter text-white uppercase">{feature.title}</h3>
+                    </div>
                   </div>
-                  <p className="text-distill-muted max-w-xl leading-relaxed text-base lg:text-lg font-sans">
+                  
+                  <p className="text-white/50 leading-relaxed text-sm md:text-base font-mono relative z-10">
                     {feature.description}
                   </p>
                 </div>
@@ -293,44 +349,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 
-        ---------------------------------------------
-        HOW IT WORKS SECTION
-        ---------------------------------------------
-      */}
-      <section className="relative w-full py-32 px-8 flex flex-col items-center justify-center border-t border-white/5">
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-16 w-full items-center text-center">
-          <BlurReveal duration={1} delay={0.1}>
-            <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground mb-4">How It Works.</h2>
-            <p className="text-distill-muted max-w-2xl text-lg font-sans">
-              A purely stateless API extraction pipeline utilizing your own Groq credentials.
-            </p>
-          </BlurReveal>
 
-          <BlurReveal duration={1} delay={0.2} className="w-full">
-            <div className="p-8 md:p-12 rounded-3xl bg-black/40 border border-white/10 font-mono text-sm text-distill-muted flex flex-col items-center justify-center overflow-x-auto">
-              <pre className="text-left leading-relaxed">
-{`[ Audio File ] + [ GROQ_API_KEY ]
-       │
-       ▼
-┌─────────────────────────────────┐
-│        DISTILL BYOK PROXY       │
-│                                 │
-│  1. Groq Whisper v3 Turbo       │
-│  2. Transcription Stream        │
-│  3. Groq Llama3 JSON Schema     │
-└─────────────────────────────────┘
-       │
-       ▼
-[ Structured JSON Artifact ]
-       │
-       ▼
-[ Webhook -> GitHub / Jira / Linear ]`}
-              </pre>
-            </div>
-          </BlurReveal>
-        </div>
-      </section>
 
       {/* 
         ---------------------------------------------
@@ -338,6 +357,7 @@ export default function Home() {
         ---------------------------------------------
       */}
       <section id="pricing" className="relative w-full py-32 px-8 flex flex-col items-center justify-center border-t border-white/5">
+        <Aura variant="tactical-noise" />
         <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-16 w-full items-center">
           <BlurReveal duration={1} delay={0.1}>
             <div className="flex flex-col items-center text-center gap-4">
@@ -424,7 +444,7 @@ export default function Home() {
         FAQ SECTION
         ---------------------------------------------
       */}
-      <section className="relative w-full py-24 px-8 bg-black/40 border-t border-white/5">
+      <section className="relative w-full py-24 px-8 bg-transparent border-t border-white/5">
         <div className="max-w-4xl mx-auto flex flex-col gap-12">
           <BlurReveal duration={1}>
              <h2 className="font-pixel text-3xl md:text-5xl tracking-tighter text-foreground text-center">Developer FAQ</h2>
@@ -452,6 +472,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      </div>
 
       {/* CTA SECTION */}
       <section className="w-full relative min-h-[80vh] flex flex-col items-center justify-center px-8 bg-gradient-to-b from-transparent to-distill-violet/5 border-t border-white/5 overflow-hidden">

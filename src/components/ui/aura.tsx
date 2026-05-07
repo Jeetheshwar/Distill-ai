@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type AuraVariant = "hero" | "docs" | "overview" | "webhooks" | "security" | "footer";
+type AuraVariant = "hero" | "docs" | "overview" | "webhooks" | "security" | "footer" | "aurora" | "conic" | "tactical-noise";
 
 export function Aura({ variant }: { variant: AuraVariant }) {
   if (variant === "hero") {
@@ -34,6 +34,31 @@ export function Aura({ variant }: { variant: AuraVariant }) {
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Soft, wide top-left glow for the docs page */}
         <div className="absolute top-[-10vh] left-[-10vw] w-[60vw] h-[50vh] bg-[radial-gradient(ellipse_at_top_left,_var(--distill-violet)_0%,_transparent_70%)] opacity-[0.55] blur-[120px] mix-blend-screen" />
+      </div>
+    );
+  }
+
+  if (variant === "aurora") {
+    return (
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+        <div className="absolute w-[80vw] h-[80vh] bg-distill-violet rounded-[100%] blur-[200px] animate-premium-pulse mix-blend-screen opacity-10" />
+        <div className="absolute w-[60vw] h-[60vh] bg-distill-core rounded-[100%] blur-[200px] animate-premium-pulse mix-blend-screen opacity-10" style={{ animationDelay: "-5s" }} />
+      </div>
+    );
+  }
+
+  if (variant === "conic") {
+    return (
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+        <div className="absolute w-[100vw] h-[70vh] bg-[radial-gradient(ellipse_at_center,_var(--distill-violet)_0%,_transparent_70%)] blur-[150px] animate-premium-pulse mix-blend-screen opacity-15" />
+      </div>
+    );
+  }
+
+  if (variant === "tactical-noise") {
+    return (
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-[radial-gradient(circle_at_center,_var(--distill-core)_0%,_transparent_60%)] blur-[200px] animate-premium-pulse mix-blend-screen opacity-10" />
       </div>
     );
   }
