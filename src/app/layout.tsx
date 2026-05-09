@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Sulphur_Point, Doto, Anta } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { BottomBar } from "@/components/layout/bottom-bar";
@@ -23,6 +24,11 @@ const antaFont = Anta({
   subsets: ["latin"],
 });
 
+const sergenaFont = localFont({
+  src: "../../surgena-bold.otf",
+  variable: "--font-sergena",
+});
+
 export const metadata: Metadata = {
   title: "Distill.ai | Effortless Extraction for Developers",
   description: "The first audio intelligence platform that allows you to transcribe, process, and extract actionable JSON from sensitive conversations securely using BYOK APIs.",
@@ -38,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sulphurPoint.variable} ${pixelFont.variable} ${antaFont.variable} h-full antialiased`}
+      className={`${sulphurPoint.variable} ${pixelFont.variable} ${antaFont.variable} ${sergenaFont.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body 

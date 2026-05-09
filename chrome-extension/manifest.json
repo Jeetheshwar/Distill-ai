@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Distill AI - Standup to Jira",
+  "version": "1.0.0",
+  "description": "One-click audio recording from Meet, Zoom, and Teams to generate Jira tickets instantly.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab", "storage", "scripting"],
+  "host_permissions": [
+    "https://meet.google.com/*",
+    "https://*.zoom.us/*",
+    "https://*.teams.microsoft.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*",
+        "https://*.zoom.us/*",
+        "https://*.teams.microsoft.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

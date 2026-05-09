@@ -1,28 +1,82 @@
-import { BlurReveal } from "@/components/ui/blur-reveal";
+import { Aura } from "@/components/ui/aura";
 
 export default function ChangelogPage() {
-  return (
-    <div className="min-h-screen bg-background pt-32 pb-24 px-8 flex flex-col items-center">
-      <div className="max-w-3xl w-full flex flex-col gap-12">
-        <BlurReveal duration={1}>
-          <h1 className="text-4xl md:text-5xl font-bold font-pixel text-foreground tracking-tighter mb-4">Changelog</h1>
-          <p className="text-lg text-distill-muted font-sans">New updates and improvements to the Distill Engine and Dashboard.</p>
-        </BlurReveal>
+  const releases = [
+    {
+      version: "v2.0.0",
+      date: "May 2026",
+      title: "The Standup-to-Jira Upgrade",
+      changes: [
+        "Added Standup Mode schema to auto-extract tasks, bugs, and blockers.",
+        "Added Sprint Retro Mode schema for team retrospectives.",
+        "Introduced the Chrome Extension MVP for one-click recording from Google Meet, Zoom, and Teams.",
+        "Added interactive Jira Preview Modal before webhook fires.",
+        "Completely rewritten landing page and live demo."
+      ]
+    },
+    {
+      version: "v1.5.0",
+      date: "April 2026",
+      title: "Team Workspaces & Custom Schemas",
+      changes: [
+        "Introduced Team Workspaces for shared webhook management.",
+        "Added support for completely custom JSON extraction schemas.",
+        "Improved Groq Llama-3 parsing reliability to 99.7%."
+      ]
+    },
+    {
+      version: "v1.0.0",
+      date: "February 2026",
+      title: "Initial Release",
+      changes: [
+        "Launched Distill AI as a stateless audio-to-JSON engine.",
+        "Bring Your Own Key (BYOK) architecture established.",
+        "Whisper-large-v3-turbo integration."
+      ]
+    }
+  ];
 
-        <BlurReveal duration={1} delay={0.1}>
-          <div className="relative border-l border-white/10 pl-8 pb-12 flex flex-col gap-4">
-            <div className="absolute w-3 h-3 rounded-full bg-distill-core -left-[6.5px] top-2 shadow-[0_0_10px_rgba(228,221,244,0.8)]" />
-            <span className="text-sm font-mono text-distill-core tracking-widest uppercase">v2.1.0 • April 24, 2026</span>
-            <h2 className="text-2xl font-bold text-foreground font-sans">The Local Docker Engine Release</h2>
-            <ul className="text-distill-muted leading-relaxed font-sans list-disc pl-4 space-y-2 mt-2">
-               <li>Released the stateless Docker inference container for local execution.</li>
-               <li>Implemented BYOK (Bring Your Own Key) architecture for zero-trust routing.</li>
-               <li>Shipped the highly optimized Webhooks engine to forward JSON artifacts instantly.</li>
-               <li>Added native Stripe integration for Team and Scale tier upgrades.</li>
-               <li>Complete aesthetic overhaul to the new Light Corporate Brutalist/Dark Premium hybrid style.</li>
-            </ul>
-          </div>
-        </BlurReveal>
+  return (
+    <div className="min-h-screen w-full bg-background flex flex-col font-sans relative overflow-hidden">
+      <Aura variant="hero" />
+      
+      <div className="relative z-10 max-w-3xl mx-auto flex flex-col gap-16 pt-32 pb-24 px-8 w-full">
+        <div className="flex flex-col gap-4">
+          <h1 className="font-pixel text-4xl md:text-6xl tracking-tighter text-foreground">Changelog.</h1>
+          <p className="text-xl text-distill-muted leading-relaxed">
+            A history of updates, feature releases, and architectural improvements to the Distill engine.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-12">
+          {releases.map((release, i) => (
+            <div key={i} className="flex flex-col md:flex-row gap-6 md:gap-12 relative">
+              {/* Timeline dot */}
+              <div className="hidden md:block absolute top-2 -left-[25px] w-3 h-3 rounded-full bg-distill-violet border-2 border-black z-10" />
+              {/* Timeline line */}
+              {i !== releases.length - 1 && (
+                <div className="hidden md:block absolute top-4 -left-[20px] bottom-[-48px] w-px bg-white/10" />
+              )}
+              
+              <div className="flex flex-col gap-1 min-w-[120px] pt-1">
+                <span className="text-lg font-mono font-bold text-white">{release.version}</span>
+                <span className="text-sm text-distill-muted">{release.date}</span>
+              </div>
+              
+              <div className="flex flex-col gap-4 p-6 rounded-2xl bg-white/[0.02] border border-white/5 w-full">
+                <h3 className="text-xl font-bold text-white">{release.title}</h3>
+                <ul className="flex flex-col gap-3">
+                  {release.changes.map((change, j) => (
+                    <li key={j} className="text-white/70 text-sm flex gap-3">
+                      <span className="text-distill-violet mt-1">•</span>
+                      <span className="leading-relaxed">{change}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

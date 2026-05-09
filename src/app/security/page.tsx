@@ -1,76 +1,75 @@
-"use client";
-
 import { Aura } from "@/components/ui/aura";
-import { BlurReveal } from "@/components/ui/blur-reveal";
-import { ShieldCheck, Lock, Server, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Server, Lock, Database } from "lucide-react";
 import Link from "next/link";
 
 export default function SecurityPage() {
   return (
-    <div className="w-full bg-background min-h-screen pt-24 px-8 pb-32 relative">
-      <Aura variant="docs" />
-      <div className="max-w-4xl mx-auto flex flex-col gap-16 relative z-10">
-        
-        <BlurReveal duration={1}>
-          <div className="flex flex-col gap-4 text-center items-center">
-            <span className="text-distill-core font-mono text-sm tracking-widest uppercase flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4" /> Security & Trust
-            </span>
-            <h1 className="font-pixel text-5xl md:text-6xl text-foreground">Security Whitepaper</h1>
-            <p className="text-distill-muted text-lg font-sans max-w-2xl mt-2 leading-relaxed">
-              Distill is engineered with a local-first, zero-trust architecture. We believe sensitive audio data should never leave your VPC unless explicitly routed by your team.
-            </p>
+    <div className="min-h-screen w-full bg-background flex flex-col font-sans relative overflow-hidden">
+      <Aura variant="hero" />
+      
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col gap-12 pt-32 pb-24 px-8 w-full">
+        <div className="flex flex-col gap-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/10 w-fit mb-2">
+            <ShieldCheck className="w-4 h-4 text-green-500" />
+            <span className="text-xs font-medium text-green-500 uppercase tracking-wider">Zero Data Retention</span>
           </div>
-        </BlurReveal>
-
-        <div className="flex flex-col gap-12 mt-8">
-          <BlurReveal duration={1} delay={0.1}>
-            <div className="flex flex-col gap-6 p-8 rounded-2xl bg-white/[0.02] border border-white/10">
-              <h2 className="text-2xl font-bold font-sans text-foreground flex items-center gap-3">
-                <Lock className="w-6 h-6 text-distill-violet" />
-                Encryption & Memory Isolation
-              </h2>
-              <p className="text-distill-muted font-sans text-base leading-relaxed">
-                When running the Distill Core locally, audio payloads are never written to disk. All processing occurs entirely in isolated VRAM (Video RAM) and system memory. Once the JSON extraction is completed, the memory buffer is immediately wiped.
-              </p>
-              <ul className="flex flex-col gap-3 mt-2">
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                  <span className="text-white font-sans text-sm">TLS 1.3 encryption in transit for Webhook delivery.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                  <span className="text-white font-sans text-sm">Zero disk-persistence of audio arrays.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                  <span className="text-white font-sans text-sm">No third-party observability or logging of your payload data.</span>
-                </li>
-              </ul>
-            </div>
-          </BlurReveal>
-
-          <BlurReveal duration={1} delay={0.2}>
-            <div className="flex flex-col gap-6 p-8 rounded-2xl bg-white/[0.02] border border-white/10">
-              <h2 className="text-2xl font-bold font-sans text-foreground flex items-center gap-3">
-                <Server className="w-6 h-6 text-distill-core" />
-                Compliance & Data Gravity
-              </h2>
-              <p className="text-distill-muted font-sans text-base leading-relaxed">
-                By utilizing a local execution model, you bypass the majority of compliance hurdles associated with third-party data sub-processors. Because Distill does not host or store your audio, your data gravity remains 100% within your internal network.
-              </p>
-            </div>
-          </BlurReveal>
+          <h1 className="font-pixel text-4xl md:text-6xl tracking-tighter text-foreground">Security & Architecture.</h1>
+          <p className="text-xl text-distill-muted leading-relaxed">
+            Your Audio Never Touches Our Servers. We built Distill AI specifically for teams who cannot upload proprietary meeting audio to third-party SaaS.
+          </p>
         </div>
 
-        <BlurReveal duration={1} delay={0.3}>
-          <div className="flex justify-center mt-8">
-             <Link href="/docs" className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-distill-violet/50 text-distill-core font-medium tracking-wide hover:bg-distill-violet/10 transition-colors">
-              Read the Docs
-            </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+          <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col gap-4">
+            <Lock className="w-8 h-8 text-distill-violet" />
+            <h3 className="text-xl font-bold text-white">Bring Your Own Key (BYOK)</h3>
+            <p className="text-white/50 text-sm leading-relaxed">
+              Distill operates as a stateless proxy. You provide your own Groq API key, and we use it exclusively for the duration of the transcription process. We do not store your key or use it for any other purpose.
+            </p>
           </div>
-        </BlurReveal>
+          
+          <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/10 flex flex-col gap-4">
+            <Database className="w-8 h-8 text-distill-core" />
+            <h3 className="text-xl font-bold text-white">We are Stateless</h3>
+            <p className="text-white/50 text-sm leading-relaxed">
+              No database storage of audio files. The audio stream is piped directly to the Groq inference endpoints, parsed into JSON, sent to your webhooks, and then destroyed. 
+            </p>
+          </div>
+        </div>
 
+        <div className="w-full rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl p-8 mt-4 overflow-hidden flex flex-col">
+          <h3 className="text-lg font-bold text-white mb-6 uppercase tracking-wider font-mono">Data Flow Architecture</h3>
+          <div className="relative font-mono text-sm leading-loose whitespace-pre text-distill-muted overflow-x-auto w-full">
+<span className="text-white">User Browser</span> (Audio File / Chrome Ext)
+      │
+      ▼
+<span className="text-distill-violet">Distill Next.js Proxy Route</span> (Stateless)
+      │
+      ├─► Uses user's Groq API Key
+      │
+      ▼
+<span className="text-distill-core">Groq Inference API</span> (Whisper-v3 & Llama-3)
+      │
+      ▼
+<span className="text-white">JSON Payload</span> (Tasks, Bugs, Blockers)
+      │
+      ▼
+<span className="text-green-400">Webhook Trigger</span> (Jira / Linear / GitHub)
+          </div>
+        </div>
+
+        <div className="p-8 rounded-2xl border border-white/10 bg-white/[0.02] mt-8 flex flex-col items-center text-center gap-6">
+          <svg className="w-12 h-12 text-white/50" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-xl font-bold text-white">Open source. Audit the code yourself.</h3>
+            <p className="text-white/50 text-sm max-w-md mx-auto">
+              Don't trust us? Don't have to. You can review the entire codebase, the proxy logic, and the exact LLM prompts used for schema extraction.
+            </p>
+          </div>
+          <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors">
+            View Source Code
+          </a>
+        </div>
       </div>
     </div>
   );

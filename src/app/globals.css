@@ -17,6 +17,7 @@
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-pixel: var(--font-pixel), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-anta: var(--font-anta), sans-serif;
+  --font-sergena: var(--font-sergena), sans-serif;
 }
 
 body {
@@ -74,4 +75,16 @@ body {
 
 .animate-wave-glow {
   animation: wave-glow 15s linear infinite;
+}
+
+@keyframes waveform {
+  0%, 100% { transform: scaleY(0.2); opacity: 0.5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.animate-waveform {
+  animation-name: waveform;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  transform-origin: center;
 }

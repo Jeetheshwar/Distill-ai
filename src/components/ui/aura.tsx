@@ -5,7 +5,7 @@ type AuraVariant = "hero" | "docs" | "overview" | "webhooks" | "security" | "foo
 export function Aura({ variant }: { variant: AuraVariant }) {
   if (variant === "hero") {
     return (
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-visible">
         {/* Solid Bottom Horizon bridging the gap and filling corners */}
         <div className="absolute bottom-0 left-0 right-0 h-[40vh] bg-gradient-to-t from-distill-core via-distill-violet to-transparent opacity-70 blur-[80px] mix-blend-screen" />
         {/* Left Vertical Curve of the U */}

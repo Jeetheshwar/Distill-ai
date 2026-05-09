@@ -1,41 +1,38 @@
-# Distill.ai
+# Distill AI — Turn Standups into Jira Tickets
 
-A BYOK (Bring Your Own Key) interface for structured audio extraction. Upload audio, define a JSON schema, and get deterministic structured output — routed via webhooks to Jira, Linear, or GitHub.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Jeetheshwar/Distill-ai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## What It Does
+> Upload standup audio. Get Jira tickets. Automate the worst part of agile.
 
-Distill turns unstructured audio (user interviews, standups, board meetings) into structured JSON artifacts using your own Groq API key. You provide the key, we handle the schema extraction and webhook routing. Your audio and your key never touch our infrastructure.
+## ⚡ Live Demo
+**Try it without signing up:** [distill-ai-zeta.vercel.app](https://distill-ai-zeta.vercel.app/)
 
-## Quick Start
+## 🎥 2-Minute Setup
+*(Loom video walkthrough coming soon)*
 
-1. Get a free Groq API key: https://console.groq.com
-2. Visit the live app: [your-vercel-url.vercel.app]
-3. Add your Groq key in Settings
-4. Upload an audio file and select a target schema
-5. Receive structured JSON or have it auto-routed to your webhook endpoint
+## ✨ Features
+- **Standup Mode**: Auto-extracts tasks, bugs, blockers with timestamps
+- **Sprint Retro Mode**: Turns retros into actionable improvement tickets  
+- **BYOK**: Your Groq API key, your data. We never see either.
+- **Chrome Extension**: One-click recording from Google Meet/Zoom
+- **Webhook Routing**: Auto-send to Jira, Linear, GitHub Issues
+- **JSON Schema Validation**: Zero hallucination, strict typed output
 
-## Tech Stack
+## 🚀 Quick Start
+1. Clone the repository
+2. `npm install`
+3. Rename `.env.example` to `.env` and configure your Supabase variables.
+4. `npm run dev`
 
-- **Frontend:** Next.js 16, React, TypeScript, Tailwind CSS
-- **Auth:** Supabase Auth
-- **Transcription:** Groq API (whisper-large-v3-turbo) via BYOK proxy
-- **Schema Extraction:** Structured LLM output with deterministic JSON constraints
-- **Webhooks:** Configurable POST endpoints with retry logic
+## 🏗️ Architecture
+User Audio -> Distill BYOK Proxy -> Groq Inference (Whisper-v3) -> LLM Schema Validation -> Valid JSON -> Webhook (Jira/Linear)
 
-## Screenshots
+## 📸 Screenshots
+*(Add 4-5 real screenshots: Dashboard, Upload, Preview, Team View)*
 
-(Add these after deployment — dashboard overview, extraction pipeline, webhook playground)
+## 🛠️ Self-Hosting
+Distill is purely stateless when processing audio. You can self-host the entire dashboard and webhook management layer easily via Vercel. Connect your own Supabase project for auth and history.
 
-## Self-Hosting
-
-```bash
-git clone https://github.com/YOUR_USERNAME/distill.git
-cd distill
-npm install
-
-# Create .env.local with:
-# NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-# NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-npm run dev
-```
+## 🤝 Contributing
+We welcome PRs! See [CONTRIBUTING.md](./CONTRIBUTING.md)

@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     
     let transcript = "Mocked local transcription: The team discussed migrating the main database to PostgreSQL 16. Sarah will lead the migration effort because of her prior experience with PgBouncer. It is a high priority task.";
     let durationSeconds = 45;
-    let extractedEntities: any[] = [];
+    let extractedEntities: any = [];
 
     if (apiKey && apiKey !== "sk_mock_pro_key_9281" && apiKey.startsWith("gsk_")) {
       const groq = new Groq({ apiKey: apiKey });
@@ -43,26 +43,72 @@ export async function POST(request: NextRequest) {
 
       // 4. Live JSON Extraction (llama3-8b-8192)
       try {
+        let systemPrompt = "";
+        if (schema === "standup") {
+          systemPrompt = `You are an expert AI extraction system. Read the audio transcript of a daily standup and extract tasks, bugs, and blockers. 
+You MUST respond with a valid JSON object matching this schema:
+{
+  "sprint_id": "string (optional)",
+  "date": "ISO date",
+  "participants": ["array of names"],
+  "updates": [
+    {
+      "speaker": "string",
+      "yesterday": "string",
+      "today": "string", 
+      "blockers": ["array of strings"],
+      "confidence_score": 0.0-1.0
+    }
+  ],
+  "extracted_tickets": [
+    {
+      "title": "string",
+      "description": "string",
+      "type": "Task | Bug | Story | Blocker",
+      "priority": "Low | Medium | High | Critical",
+      "assignee": "string",
+      "timestamp_start": "milliseconds",
+      "timestamp_end": "milliseconds",
+      "labels": ["standup", "auto-generated"]
+    }
+  ]
+}`;
+        } else {
+          // Retro mode
+          systemPrompt = `You are an expert AI extraction system. Read the audio transcript of a sprint retrospective.
+You MUST respond with a valid JSON object matching this schema:
+{
+  "sprint_id": "string",
+  "date": "ISO date",
+  "retro_categories": {
+    "went_well": ["array of strings"],
+    "needs_improvement": ["array of strings"],
+    "action_items": [
+      {
+        "title": "string",
+        "owner": "string",
+        "due_date": "ISO date",
+        "ticket_type": "Improvement | Task"
+      }
+    ]
+  }
+}`;
+        }
+
         const chatCompletion = await groq.chat.completions.create({
           messages: [
-            {
-              role: "system",
-              content: `You are an expert AI extraction system. Read the following audio transcript and extract any tasks, action items, or key entities mentioned. You MUST respond with a valid JSON object containing an "entities" array. Each entity should have a "type" (e.g. ticket, action_item), "summary", "priority", and "assignee_context". Example: {"entities": [{"type": "ticket", "summary": "Fix login bug", "priority": "high", "assignee_context": "Alex"}]}`
-            },
-            {
-              role: "user",
-              content: transcript
-            }
+            { role: "system", content: systemPrompt },
+            { role: "user", content: transcript }
           ],
           model: "llama3-8b-8192",
           response_format: { type: "json_object" },
         });
 
-        const jsonPayload = JSON.parse(chatCompletion.choices[0]?.message?.content || '{"entities": []}');
-        extractedEntities = jsonPayload.entities || [];
+        const jsonPayload = JSON.parse(chatCompletion.choices[0]?.message?.content || '{}');
+        extractedEntities = jsonPayload;
       } catch (llmError) {
         console.error("LLM Extraction failed:", llmError);
-        extractedEntities = [{ type: "error", summary: "JSON Extraction failed." }];
+        extractedEntities = { error: "JSON Extraction failed." };
       }
     } else {
       // Mocked extraction for local testing and open source deployments without keys
@@ -106,20 +152,8 @@ export async function POST(request: NextRequest) {
       entities: extractedEntities
     };
 
-    // 7. Fire Live Webhook Routing
-    const webhookUrl = formData.get("webhook_url") as string | null;
-    if (webhookUrl) {
-      try {
-        await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(responsePayload),
-        });
-        console.log(`[SYS] Webhook successfully fired to: ${webhookUrl}`);
-      } catch (err) {
-        console.error(`[SYS] Failed to fire webhook to ${webhookUrl}:`, err);
-      }
-    }
+    // 7. Webhook routing moved to the client side for preview modal.
+    // We just return the extracted data here.
 
     // 8. Return Live Artifacts
     return NextResponse.json(responsePayload);

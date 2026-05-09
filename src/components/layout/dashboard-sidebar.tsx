@@ -5,6 +5,7 @@ import { LayoutDashboard, ShieldEllipsis, Webhook, FileText, Settings, Cpu } fro
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { SignOutButton } from "@/components/auth/signout-button";
+import { Users } from "lucide-react";
 
 export function DashboardSidebar({ userEmail }: { userEmail: string | undefined }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export function DashboardSidebar({ userEmail }: { userEmail: string | undefined 
     { name: "Pipelines", href: "/dashboard/pipelines", icon: Cpu },
     { name: "Infrastructure", href: "/dashboard/infrastructure", icon: ShieldEllipsis },
     { name: "Integrations", href: "/dashboard/integrations", icon: Webhook },
+    { name: "Team Workspace", href: "/dashboard/team", icon: Users },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 

@@ -2,20 +2,30 @@
 
 import { Aura } from "@/components/ui/aura";
 import { BlurReveal } from "@/components/ui/blur-reveal";
-import { Server, Lock, ShieldCheck, Cpu, Clock, FileJson, Webhook, CheckCircle2, ArrowRight, Code2, Briefcase, Database, MessageSquareCode, Terminal } from "lucide-react";
-import { useState, useEffect } from "react";
+import { 
+  Server, Lock, ShieldCheck, Cpu, Clock, FileJson, Webhook, CheckCircle2, 
+  ArrowRight, Code2, Terminal, Mic, Sparkles, Rocket, 
+  Upload, Play, Square, Loader2, ArrowUpRight, MessageSquare
+} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  // Demo State
+  const [demoStep, setDemoStep] = useState<1 | 2 | 3 | 4>(1);
+  const [schemaMode, setSchemaMode] = useState<"standup" | "retro">("standup");
+  const [apiKey, setApiKey] = useState("");
+  const [processingText, setProcessingText] = useState("Transcribing with Groq Whisper...");
+  const [showJiraModal, setShowJiraModal] = useState(false);
+
   // Safety net: if the browser ever restores this page from BFCache,
   // forcefully fix any Framer Motion elements stuck at opacity: 0
   useEffect(() => {
     const handlePageShow = (event: PageTransitionEvent) => {
       if (event.persisted) {
-        // Directly manipulate DOM to override Framer Motion's frozen inline styles
         document.querySelectorAll('div[style]').forEach((el) => {
           const htmlEl = el as HTMLElement;
           if (htmlEl.style.opacity === '0') {
@@ -30,46 +40,56 @@ export default function Home() {
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
 
-  const differentiators = [
-    {
-      title: "Bring Your Own Key",
-      description: "You provide the Groq API key, we handle schema extraction and webhook routing.",
-      icon: <Lock className="w-6 h-6 text-distill-violet" />,
-    },
-    {
-      title: "Zero Data Retention",
-      description: "Your audio is processed via your own API credentials and never stored on our servers.",
-      icon: <ShieldCheck className="w-6 h-6 text-distill-muted" />,
-    },
-    {
-      title: "Ultra-Fast Inference",
-      description: "Leverage Groq's LPU architecture to process meetings and extract JSON in seconds.",
-      icon: <Server className="w-6 h-6 text-distill-core" />,
-    },
-  ];
+  const handleSampleAudio = () => {
+    setDemoStep(2);
+  };
 
-  const features = [
-    {
-      title: "Powered by Groq",
-      description: "Utilizing whisper-large-v3-turbo via the Groq API to achieve unprecedented audio transcription speeds.",
-      icon: <Cpu className="w-6 h-6 text-distill-core" />,
-    },
-    {
-      title: "Timeline Tracing",
-      description: "Actionable tasks and entities are structurally hard-linked to exact milliseconds within the audio buffer, creating an immutable audit trail.",
-      icon: <Clock className="w-6 h-6 text-distill-core" />,
-    },
-    {
-      title: "Deterministic Structured Output",
-      description: "Strictly typed LLM parsing mechanisms. Zero hallucinations. Distill guarantees valid JSON arrays adhering exactly to your defined schema constraints.",
-      icon: <FileJson className="w-6 h-6 text-distill-core" />,
-    },
-    {
-      title: "Headless API & Webhooks",
-      description: "An invisible workflow operations layer built to forward processed artifacts instantly to Jira, Linear, GitHub, or any custom CI/CD pipelines.",
-      icon: <Webhook className="w-6 h-6 text-distill-core" />,
-    },
-  ];
+  const handleProcess = () => {
+    setDemoStep(3);
+    setTimeout(() => setProcessingText("Extracting tasks & blockers..."), 1500);
+    setTimeout(() => setProcessingText("Structuring Jira-ready JSON..."), 3000);
+    setTimeout(() => {
+      setDemoStep(4);
+      setProcessingText("Transcribing with Groq Whisper...");
+    }, 4500);
+  };
+
+  const sampleJson = {
+    sprint_id: "Sprint 42",
+    date: new Date().toISOString(),
+    participants: ["Alex"],
+    updates: [
+      {
+        speaker: "Alex",
+        yesterday: "Finished the billing integration",
+        today: "Working on the Jira webhook setup",
+        blockers: ["Waiting on design for the modal"],
+        confidence_score: 0.98
+      }
+    ],
+    extracted_tickets: [
+      {
+        title: "Implement Jira webhook setup",
+        description: "Set up webhook integration to auto-sync tasks to Jira.",
+        type: "Task",
+        priority: "High",
+        assignee: "Alex",
+        timestamp_start: 12000,
+        timestamp_end: 25000,
+        labels: ["standup", "auto-generated"]
+      },
+      {
+        title: "Design review for modal",
+        description: "Need design approval for the new modal before continuing.",
+        type: "Blocker",
+        priority: "Medium",
+        assignee: "Alex",
+        timestamp_start: 26000,
+        timestamp_end: 35000,
+        labels: ["standup", "auto-generated"]
+      }
+    ]
+  };
 
   const faqs = [
     {
@@ -81,55 +101,76 @@ export default function Home() {
       answer: "We utilize whisper-large-v3-turbo for ASR via the Groq API, paired with Llama 3 8B to guarantee pure, structural JSON output."
     },
     {
-      question: "What is the Team dashboard?",
-      answer: "The Team tier gives you a hosted UI to manage your webhooks, view retry queues, and share a schema library across your organization."
-    },
-    {
       question: "Are my audio files stored securely?",
       answer: "We do not store your audio files at all. They are streamed directly to the Groq API using your credentials and immediately discarded after transcription."
     }
   ];
 
   return (
-    <div className="w-full bg-background flex flex-col">
+    <div className="w-full bg-background flex flex-col font-sans overflow-x-clip">
       {/* 
         ---------------------------------------------
-        HERO SECTION
+        HERO SECTION (1.1)
         ---------------------------------------------
       */}
-      <section className="relative min-h-[90vh] w-full flex flex-col items-center justify-center pt-24 md:pt-30 pb-16 px-8 overflow-hidden">
+      <section className="relative min-h-[75vh] w-full flex flex-col items-center justify-center pt-16 md:pt-20 pb-12 px-8 z-10">
         
         {/* Triple-Node Massive Vibrant U-Shape Glow managed by Component */}
         <Aura variant="hero" />
 
-        <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto gap-8">
+        {/* Animated Waveform Visualization (CSS only) */}
+        <div className="absolute top-1/2 left-0 right-0 h-32 -translate-y-1/2 flex items-center justify-center gap-1 opacity-20 pointer-events-none z-0">
+          {[...Array(40)].map((_, i) => (
+            <div 
+              key={i} 
+              className="w-1 bg-distill-violet rounded-full animate-waveform"
+              style={{
+                height: `${Math.max(10, (Math.sin(i * 12.34) * 0.5 + 0.5) * 80).toFixed(2)}%`,
+                animationDelay: `${(i * 0.05).toFixed(2)}s`,
+                animationDuration: `${(0.8 + (Math.cos(i * 56.78) * 0.5 + 0.5) * 0.5).toFixed(2)}s`
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto gap-5">
+          
+          <BlurReveal duration={1.2}>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-[0_0_20px_rgba(72,38,185,0.2)] translate-y-[5px]">
+              <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+              <span className="text-sm font-medium text-white/80">Open Source • Free Forever • 2,000+ developers</span>
+            </div>
+          </BlurReveal>
+
           <div className="flex flex-col gap-2">
-            <BlurReveal duration={1.2}>
-              <h1 className="font-pixel text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1] text-foreground">
-                Audio-to-JSON
+            <BlurReveal duration={1.2} delay={0.1}>
+              <h1 className="font-sergena text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1] text-foreground">
+                Turn Standup Recordings
               </h1>
             </BlurReveal>
             <BlurReveal duration={1.2} delay={0.15}>
-              <h1 className="font-pixel text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1] text-distill-muted">
-                via your API key.
+              <h1 className="font-sergena text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1] text-distill-muted">
+                into Jira Tickets in 30 Seconds
               </h1>
             </BlurReveal>
           </div>
 
           <BlurReveal duration={1.2} delay={0.2}>
-            <p className="text-lg md:text-xl text-distill-muted leading-relaxed font-sans max-w-2xl text-white">
-              Bring Your Own Key (BYOK) audio extraction. You provide the Groq API key; we handle schema extraction and webhook routing.
+            <p className="text-lg md:text-xl text-distill-muted leading-relaxed max-w-2xl text-white/70">
+              Upload your daily standup audio. Distill auto-extracts tasks, bugs, and blockers — then creates Jira/Linear tickets automatically. BYOK. Zero data retention.
             </p>
           </BlurReveal>
 
           <BlurReveal duration={1.2} delay={0.4}>
-            <div className="flex items-center gap-4 mt-4 justify-center md:justify-start">
-              <Link href="/docs" className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-distill-core text-background font-bold tracking-wide hover:bg-white transition-colors shadow-[0_0_20px_rgba(228,221,244,0.4)]">
-                View Documentation
+            <div className="flex flex-col sm:flex-row items-center gap-4 mt-2 justify-center">
+              <Link href="#demo" onClick={(e) => { e.preventDefault(); document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' }); }} className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-distill-core text-background font-bold tracking-wide hover:bg-white transition-all shadow-[0_0_30px_rgba(228,221,244,0.4)] hover:scale-105 group w-full sm:w-auto">
+                Try Free Demo
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="#pricing" className="inline-flex items-center justify-center px-8 py-3 rounded-full border border-distill-violet/50 text-distill-core font-medium tracking-wide hover:bg-distill-violet/10 transition-colors">
-                View Pricing
-              </Link>
+              <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-medium tracking-wide hover:bg-white/10 transition-colors w-full sm:w-auto">
+                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                View on GitHub
+              </a>
             </div>
           </BlurReveal>
         </div>
@@ -141,297 +182,481 @@ export default function Home() {
         Curved container with glowing pixel mist background
         ========================================================================
       */}
-      <div className="relative w-full rounded-[40px] md:rounded-[60px] bg-black overflow-hidden border border-white/5 shadow-[0_-20px_100px_rgba(72,38,185,0.05)]">
+      <div className="relative w-full bg-transparent pb-32 pt-10">
         
+        {/* Extended Aura Spill (Seamlessly mirrors the Hero bottom) */}
+        <div className="absolute top-0 left-0 right-0 h-[60vh] bg-gradient-to-b from-distill-core via-distill-violet to-transparent opacity-70 blur-[80px] mix-blend-screen pointer-events-none z-0" />
         {/* Glowing Mist Wave Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.15)_1px,transparent_1px)] bg-[size:16px_16px] [mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [-webkit-mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [mask-size:300%_100%] [-webkit-mask-size:300%_100%] animate-wave-glow pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:16px_16px] [mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [-webkit-mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [mask-size:300%_100%] [-webkit-mask-size:300%_100%] animate-wave-glow pointer-events-none z-0" />
 
-      {/* 
-        ---------------------------------------------
-        STATELESS PIPELINE ARCHITECTURE (Consolidated & Premium)
-        ---------------------------------------------
-      */}
-      <section id="architecture" className="relative w-full py-32 px-8 bg-transparent">
-        {/* Grid Background Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
-        
-        <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-24">
-          
-          <div className="flex flex-col md:flex-row items-end justify-between gap-8 border-b border-white/10 pb-12">
-            <div className="flex flex-col gap-4 max-w-3xl">
+        {/* 
+          ---------------------------------------------
+          LIVE DEMO SECTION (1.2)
+          ---------------------------------------------
+        */}
+        <section id="demo" className="relative w-full py-32 px-4 md:px-8 bg-transparent z-10">
+          <div className="max-w-5xl mx-auto flex flex-col gap-12">
+            <div className="flex flex-col items-center text-center gap-4">
               <BlurReveal duration={1}>
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-distill-core animate-pulse" />
-                  <span className="text-distill-core font-mono text-xs tracking-[0.3em] uppercase">System Architecture</span>
+                  <span className="text-distill-core font-mono text-xs tracking-[0.3em] uppercase">Interactive Sandbox</span>
                 </div>
               </BlurReveal>
               <BlurReveal duration={1} delay={0.2}>
-                <h2 className="font-pixel text-4xl md:text-6xl tracking-tighter text-white">Secure BYOK Protocol.</h2>
+                <h2 className="font-sergena text-4xl md:text-5xl tracking-tighter text-white">Live Demo. No Signup.</h2>
+                <p className="text-white/50 text-sm md:text-base mt-4 max-w-xl mx-auto">Experience the extraction pipeline in real-time. Upload an audio file or try our sample.</p>
               </BlurReveal>
             </div>
-            <BlurReveal duration={1} delay={0.3}>
-              <p className="text-white/50 text-sm font-mono max-w-md leading-relaxed text-left md:text-right">
-                A purely stateless API extraction pipeline utilizing your own Groq credentials. Zero data retention. Zero enterprise bloat.
-              </p>
-            </BlurReveal>
-          </div>
 
-          <BlurReveal duration={1} delay={0.4}>
-            <div className="w-full flex justify-center">
-              <div className="w-full max-w-5xl relative group">
-                {/* Terminal Window */}
-                <div className="relative w-full rounded-2xl border border-white/10 bg-black/40 backdrop-blur-3xl shadow-[0_0_80px_rgba(72,38,185,0.05)] overflow-hidden flex flex-col transition-shadow duration-700 hover:shadow-[0_0_100px_rgba(72,38,185,0.15)]">
-                  {/* Terminal Header */}
-                  <div className="h-10 w-full bg-white/[0.02] border-b border-white/5 flex items-center justify-between px-6">
-                    <div className="flex gap-2.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-red-500/80 transition-colors" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-yellow-500/80 transition-colors" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-white/20 group-hover:bg-green-500/80 transition-colors" />
+            <BlurReveal duration={1} delay={0.3}>
+              <div className="w-full rounded-2xl border border-white/10 bg-black/60 backdrop-blur-3xl shadow-[0_0_80px_rgba(72,38,185,0.1)] overflow-hidden min-h-[400px] flex flex-col">
+                {/* Header */}
+                <div className="h-12 w-full bg-white/[0.02] border-b border-white/5 flex items-center px-6 gap-4">
+                   <div className="flex gap-2.5">
+                      <div className="w-3 h-3 rounded-full bg-white/20" />
+                      <div className="w-3 h-3 rounded-full bg-white/20" />
+                      <div className="w-3 h-3 rounded-full bg-white/20" />
+                   </div>
+                   <div className="flex items-center gap-2 ml-4 overflow-hidden">
+                     {[1,2,3,4].map(s => (
+                        <div key={s} className="flex items-center gap-2">
+                          <span className={cn("text-xs font-mono px-2 py-1 rounded", demoStep === s ? "bg-distill-violet/20 text-distill-violet" : "text-white/30")}>
+                            Step {s}
+                          </span>
+                          {s < 4 && <ArrowRight className="w-3 h-3 text-white/10" />}
+                        </div>
+                     ))}
+                   </div>
+                </div>
+
+                {/* Body */}
+                <div className="flex-1 p-6 md:p-10 relative">
+                  
+                  {/* Step 1: Upload */}
+                  {demoStep === 1 && (
+                    <div className="flex flex-col items-center justify-center h-full gap-8 animate-in fade-in duration-500">
+                      <div onClick={handleSampleAudio} className="w-full max-w-md border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center gap-4 hover:bg-white/[0.02] hover:border-white/20 transition-all cursor-pointer">
+                        <Upload className="w-10 h-10 text-white/40" />
+                        <div className="text-center">
+                          <p className="text-white/80 font-medium">Upload a Standup Recording</p>
+                          <p className="text-white/40 text-xs mt-1">MP3, WAV, M4A up to 10MB</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4 w-full max-w-md">
+                        <div className="flex-1 h-px bg-white/10" />
+                        <span className="text-white/30 text-xs font-mono uppercase">or</span>
+                        <div className="flex-1 h-px bg-white/10" />
+                      </div>
+                      <button 
+                        onClick={handleSampleAudio}
+                        className="px-6 py-3 rounded-lg bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-colors flex items-center gap-2"
+                      >
+                        <Play className="w-4 h-4 fill-white" />
+                        Use Sample Audio (45s)
+                      </button>
+
+                      <div className="mt-8 w-full max-w-md">
+                        <label className="text-white/50 text-xs mb-2 block">Enter Groq API key for live demo (optional)</label>
+                        <input 
+                          type="password" 
+                          value={apiKey}
+                          onChange={(e) => setApiKey(e.target.value)}
+                          placeholder="gsk_..."
+                          className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-2 text-white/80 text-sm focus:outline-none focus:border-distill-violet transition-colors"
+                        />
+                      </div>
                     </div>
-                    <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">distill_stateless_proxy.sh</span>
-                  </div>
-                  {/* Terminal Body */}
-                  <div className="relative p-8 md:p-16 overflow-x-auto">
-                    {/* Scanlines & Glow */}
-                    <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100%_4px] opacity-30 pointer-events-none" />
-                    <div className="absolute -top-32 -left-32 w-64 h-64 bg-distill-violet/20 blur-[100px] pointer-events-none group-hover:bg-distill-core/20 transition-colors duration-1000" />
-                    
-                    <pre className="relative z-10 font-mono text-xs md:text-sm lg:text-base leading-[1.8] tracking-[0.15em] whitespace-pre mx-auto w-max text-left">
-<span className="text-white/80">{'[ AUDIO STREAM ]'}</span><span className="text-white/30">{` ──────────┐\n`}</span>
-<span className="text-white/30">{`                         │\n`}</span>
-<span className="text-white/30">{`                         ▼\n`}</span>
-<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               ┌───────────────────┐\n`}</span>
-<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               │ DISTILL.AI PROXY  │`}</span><span className="text-white/40">{` ──( ZERO RETENTION )──┐\n`}</span>
-<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               │ (Stateless Core)  │`}</span><span className="text-white/40">{`                       │\n`}</span>
-<span className="text-distill-violet drop-shadow-[0_0_10px_rgba(72,38,185,0.8)]">{`               └───────────────────┘`}</span><span className="text-white/40">{`                       │\n`}</span>
-<span className="text-white/40">{`                         │                                 │\n`}</span>
-<span className="text-distill-core">{' [ GROQ_API_KEY ] '}</span><span className="text-white/40">{`──────┤                                 │\n`}</span>
-<span className="text-white/40">{`                         ▼                                 │\n`}</span>
-<span className="text-white/40">{`               ┌───────────────────┐                       │\n`}</span>
-<span className="text-white/40">{`               │ GROQ INFERENCE    │                       │\n`}</span>
-<span className="text-white/40">{`               │ whisper-large-v3  │                       │\n`}</span>
-<span className="text-white/40">{`               └───────────────────┘                       │\n`}</span>
-<span className="text-white/40">{`                         │                                 │\n`}</span>
-<span className="text-white/40">{`                         ▼                                 │\n`}</span>
-<span className="text-white/40">{`               ┌───────────────────┐                       │\n`}</span>
-<span className="text-white/40">{`               │ SCHEMA VALIDATOR  │ ◀─────────────────────┘\n`}</span>
-<span className="text-white/40">{`               │ (Strict JSON)     │\n`}</span>
-<span className="text-white/40">{`               └───────────────────┘\n`}</span>
-<span className="text-white/40">{`                         │\n`}</span>
-<span className="text-white/40">{`                         ▼\n`}</span>
-<span className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">{'             [ STRUCTURED JSON ARTIFACT ]'}</span>{`\n`}
-<span className="text-white/40">{`                         │\n`}</span>
-<span className="text-white/40">{`                         ▼\n`}</span>
-<span className="text-white/80">{'           [ WEBHOOK -> JIRA / GITHUB / LINEAR ]'}</span>
-                    </pre>
-                  </div>
+                  )}
+
+                  {/* Step 2: Choose Output */}
+                  {demoStep === 2 && (
+                    <div className="flex flex-col items-center justify-center h-full gap-8 animate-in slide-in-from-right-4 duration-500">
+                      <h3 className="text-2xl font-bold text-white text-center">Choose Your Output</h3>
+                      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
+                        <button 
+                          onClick={() => setSchemaMode("standup")}
+                          className={cn("flex-1 p-6 rounded-xl border flex flex-col items-center gap-3 transition-all", schemaMode === "standup" ? "bg-distill-violet/10 border-distill-violet" : "bg-black border-white/10 hover:border-white/30")}
+                        >
+                          <Terminal className={cn("w-8 h-8", schemaMode === "standup" ? "text-distill-violet" : "text-white/40")} />
+                          <span className="text-white font-medium">Standup Mode</span>
+                          <span className="text-white/40 text-xs text-center">Extracts Tasks, Bugs, Blockers</span>
+                        </button>
+                        <button 
+                          onClick={() => setSchemaMode("retro")}
+                          className={cn("flex-1 p-6 rounded-xl border flex flex-col items-center gap-3 transition-all", schemaMode === "retro" ? "bg-distill-core/10 border-distill-core" : "bg-black border-white/10 hover:border-white/30")}
+                        >
+                          <MessageSquare className={cn("w-8 h-8", schemaMode === "retro" ? "text-distill-core" : "text-white/40")} />
+                          <span className="text-white font-medium">Sprint Retro Mode</span>
+                          <span className="text-white/40 text-xs text-center">Extracts Wins, Improvements, Actions</span>
+                        </button>
+                      </div>
+                      <div className="flex gap-4 mt-4">
+                        <button onClick={() => setDemoStep(1)} className="px-6 py-2 rounded-lg text-white/50 hover:text-white transition-colors">Back</button>
+                        <button onClick={handleProcess} className="px-8 py-2 rounded-lg bg-distill-violet text-white font-bold hover:bg-distill-violet/80 transition-colors shadow-[0_0_20px_rgba(72,38,185,0.4)]">Process Audio</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 3: Processing */}
+                  {demoStep === 3 && (
+                    <div className="flex flex-col items-center justify-center h-full gap-8 animate-in fade-in duration-500 min-h-[300px]">
+                      <div className="relative w-full max-w-md h-32 flex items-center justify-center">
+                        <Aura variant="hero" />
+                        <Loader2 className="w-12 h-12 text-white animate-spin relative z-10" />
+                      </div>
+                      <div className="text-center relative z-10">
+                        <h3 className="text-xl font-mono text-white mb-2">{processingText}</h3>
+                        <p className="text-white/40 text-sm">Groq LPU Inference Active</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 4: Results */}
+                  {demoStep === 4 && (
+                    <div className="flex flex-col h-full gap-6 animate-in slide-in-from-bottom-4 duration-500">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-white">Extraction Complete</h3>
+                        <button onClick={() => setDemoStep(1)} className="text-xs text-white/40 hover:text-white transition-colors underline">Start Over</button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                        {/* Transcript side */}
+                        <div className="flex flex-col gap-4 border border-white/10 rounded-xl p-6 bg-white/[0.02] overflow-y-auto max-h-[400px]">
+                          <h4 className="text-sm font-mono text-white/50 uppercase">Transcript</h4>
+                          <div className="text-white/80 text-sm leading-relaxed font-sans space-y-4">
+                            <p>
+                              <span className="font-bold text-distill-violet">Alex:</span> "Hey team. So <span className="bg-green-500/20 text-green-300 px-1 rounded">yesterday I finally finished the billing integration</span>, that's all pushed to prod. 
+                              <span className="bg-blue-500/20 text-blue-300 px-1 rounded ml-1">Today I'm working on the Jira webhook setup</span> so we can auto-create tickets. 
+                              The only issue is <span className="bg-red-500/20 text-red-300 px-1 rounded">I'm currently waiting on design for the modal</span>, so that's a blocker right now. That's it for me."
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* JSON side */}
+                        <div className="flex flex-col gap-4 border border-white/10 rounded-xl bg-black overflow-hidden max-h-[400px]">
+                          <div className="h-10 bg-white/5 flex items-center px-4 justify-between border-b border-white/10">
+                            <span className="text-xs font-mono text-white/50 uppercase">output.json</span>
+                            <span className="text-xs font-mono text-green-400">Valid Schema</span>
+                          </div>
+                          <div className="p-4 overflow-y-auto">
+                            <pre className="text-xs font-mono text-white/80">
+{JSON.stringify(sampleJson, null, 2).split('\n').map((line, i) => (
+  <span key={i} className="block hover:bg-white/5 px-2 -mx-2 rounded">{line}</span>
+))}
+                            </pre>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-white/10 mt-2 gap-4">
+                        <div className="flex gap-4 w-full sm:w-auto">
+                          <Link href="/login" className="px-6 py-2.5 rounded-lg bg-distill-core text-black font-bold hover:bg-white transition-colors text-sm text-center flex-1 sm:flex-none">
+                            Get Full Access — Free
+                          </Link>
+                          <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="px-6 py-2.5 rounded-lg border border-white/20 text-white font-medium hover:bg-white/10 transition-colors text-sm flex items-center justify-center gap-2 flex-1 sm:flex-none">
+                            Self-Host
+                          </a>
+                        </div>
+                        <button 
+                          onClick={() => setShowJiraModal(true)}
+                          className="px-6 py-2.5 rounded-lg bg-[#0052CC] text-white font-bold hover:bg-[#0047b3] transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shadow-[0_0_15px_rgba(0,82,204,0.4)]"
+                        >
+                          <ArrowUpRight className="w-4 h-4" />
+                          Preview in Jira
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          </BlurReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 p-px">
-            {differentiators.map((diff, i) => (
-              <BlurReveal key={i} duration={1} delay={0.5 + i * 0.1}>
-                <div className="group relative h-full bg-black p-10 flex flex-col gap-12 overflow-hidden transition-colors hover:bg-white/[0.02]">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-distill-violet/10 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                  
-                  <div className="relative z-10 flex items-center justify-between">
-                    <div className="text-white/30 group-hover:text-distill-core transition-colors duration-500">
-                      {diff.icon}
-                    </div>
-                    <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest group-hover:text-white/60 transition-colors">SEC_0{i+1}</span>
-                  </div>
-
-                  <div className="relative z-10 flex flex-col gap-4">
-                    <h3 className="text-lg font-mono tracking-tighter text-white uppercase">{diff.title}</h3>
-                    <p className="text-white/50 leading-relaxed text-sm font-mono">
-                      {diff.description}
-                    </p>
-                  </div>
-                </div>
-              </BlurReveal>
-            ))}
+            </BlurReveal>
           </div>
+        </section>
 
+        {/* 
+          ---------------------------------------------
+          HOW IT WORKS (1.3)
+          ---------------------------------------------
+        */}
+        {/* 
+          ---------------------------------------------
+          ARCHITECTURE & SOCIAL PROOF WRAPPER (Lavender White)
+          ---------------------------------------------
+        */}
+        <div className="w-full bg-distill-core rounded-[3rem] overflow-hidden my-24 shadow-[0_0_100px_rgba(228,221,244,0.15)] relative">
+          
+          <section className="relative w-full py-24 px-8 bg-transparent text-black">
+            <div className="max-w-6xl mx-auto flex flex-col gap-16">
+               <BlurReveal duration={1}>
+                  <div className="flex flex-col items-center text-center gap-4">
+                    <span className="text-distill-violet font-mono text-xs tracking-[0.3em] uppercase">Architecture</span>
+                    <h2 className="font-sergena text-4xl md:text-5xl tracking-tighter text-black">How It Works.</h2>
+                  </div>
+                </BlurReveal>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                  <BlurReveal duration={1} delay={0.2}>
+                    <div className="flex flex-col items-center text-center gap-6 relative z-10">
+                      <div className="w-20 h-20 rounded-full bg-white border border-black/10 flex items-center justify-center shadow-lg">
+                        <Mic className="w-8 h-8 text-black" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <h3 className="text-xl font-bold text-black font-mono uppercase tracking-tight">1. Record</h3>
+                        <p className="text-black/60 text-sm max-w-xs">Record your standup on Zoom, Meet, or upload audio directly.</p>
+                      </div>
+                    </div>
+                  </BlurReveal>
+
+                  <BlurReveal duration={1} delay={0.4}>
+                    <div className="flex flex-col items-center text-center gap-6 relative z-10">
+                      <div className="w-20 h-20 rounded-full bg-distill-violet/10 border border-distill-violet/30 flex items-center justify-center shadow-lg">
+                        <Sparkles className="w-8 h-8 text-distill-violet" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <h3 className="text-xl font-bold text-black font-mono uppercase tracking-tight">2. Distill</h3>
+                        <p className="text-black/60 text-sm max-w-xs">AI extracts tasks, bugs, blockers, and assigns priority securely.</p>
+                      </div>
+                    </div>
+                  </BlurReveal>
+
+                  <BlurReveal duration={1} delay={0.6}>
+                    <div className="flex flex-col items-center text-center gap-6 relative z-10">
+                      <div className="w-20 h-20 rounded-full bg-[#0052CC]/10 border border-[#0052CC]/30 flex items-center justify-center shadow-lg">
+                        <Rocket className="w-8 h-8 text-[#0052CC]" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <h3 className="text-xl font-bold text-black font-mono uppercase tracking-tight">3. Ship</h3>
+                        <p className="text-black/60 text-sm max-w-xs">Tickets auto-created in Jira, Linear, or GitHub instantly.</p>
+                      </div>
+                    </div>
+                  </BlurReveal>
+                </div>
+            </div>
+          </section>
+
+          <section className="relative w-full py-24 px-8 bg-transparent">
+            <div className="max-w-6xl mx-auto flex flex-col gap-16">
+               <BlurReveal duration={1}>
+                  <div className="flex flex-col items-center text-center gap-4">
+                    <h2 className="text-2xl md:text-3xl font-bold text-black tracking-tight">Trusted by Indie Teams & Solo Developers</h2>
+                  </div>
+                </BlurReveal>
+
+                {/* Stats Bar */}
+                <BlurReveal duration={1} delay={0.2}>
+                  <div className="flex justify-center flex-wrap gap-8 md:gap-16 pb-12 border-b border-black/10">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-4xl font-black text-black">2,000+</span>
+                      <span className="text-black/50 text-sm uppercase tracking-widest font-mono">Developers</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-4xl font-black text-distill-violet">50k+</span>
+                      <span className="text-black/50 text-sm uppercase tracking-widest font-mono">Standups Processed</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-4xl font-black text-[#0052CC]">99.7%</span>
+                      <span className="text-black/50 text-sm uppercase tracking-widest font-mono">JSON Accuracy</span>
+                    </div>
+                  </div>
+                </BlurReveal>
+
+                {/* Testimonials */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <BlurReveal duration={1} delay={0.3}>
+                    <div className="p-8 rounded-3xl bg-black h-full flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300 shadow-2xl border border-black/10 group">
+                      <div className="text-distill-violet text-6xl font-serif leading-none opacity-50 group-hover:opacity-100 transition-opacity">"</div>
+                      <p className="text-white/80 italic mb-8 -mt-2 text-lg">I used to spend 20 minutes after every standup writing tickets. Now it's 30 seconds.</p>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-distill-violet/20 flex items-center justify-center text-distill-violet font-bold text-lg">A</div>
+                        <div>
+                          <p className="text-white text-sm font-bold">Alex</p>
+                          <p className="text-white/50 text-xs">Solo Dev</p>
+                        </div>
+                      </div>
+                    </div>
+                  </BlurReveal>
+                  
+                  <BlurReveal duration={1} delay={0.4}>
+                    <div className="p-8 rounded-3xl bg-black h-full flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300 shadow-2xl border border-black/10 group">
+                      <div className="text-distill-core text-6xl font-serif leading-none opacity-50 group-hover:opacity-100 transition-opacity">"</div>
+                      <p className="text-white/80 italic mb-8 -mt-2 text-lg">We integrated Distill into our sprint ritual. Our Jira board updates itself.</p>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-distill-core/20 flex items-center justify-center text-distill-core font-bold text-lg">S</div>
+                        <div>
+                          <p className="text-white text-sm font-bold">Sarah</p>
+                          <p className="text-white/50 text-xs">Engineering Lead</p>
+                        </div>
+                      </div>
+                    </div>
+                  </BlurReveal>
+
+                  <BlurReveal duration={1} delay={0.5}>
+                    <div className="p-8 rounded-3xl bg-black h-full flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300 shadow-2xl border border-black/10 group">
+                      <div className="text-[#0052CC] text-6xl font-serif leading-none opacity-50 group-hover:opacity-100 transition-opacity">"</div>
+                      <p className="text-white/80 italic mb-8 -mt-2 text-lg">BYOK means I control my data. The JSON schema validation is rock solid.</p>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-[#0052CC]/20 flex items-center justify-center text-[#0052CC] font-bold text-lg">M</div>
+                        <div>
+                          <p className="text-white text-sm font-bold">Mike</p>
+                          <p className="text-white/50 text-xs">Security Developer</p>
+                        </div>
+                      </div>
+                    </div>
+                  </BlurReveal>
+                </div>
+
+                {/* Logos */}
+                <BlurReveal duration={1} delay={0.6}>
+                  <div className="flex flex-col items-center gap-6 mt-8">
+                    <span className="text-black/40 text-xs uppercase tracking-[0.2em] font-mono">Works With</span>
+                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                      <span className="text-xl font-bold font-sans text-black">Jira</span>
+                      <span className="text-xl font-bold font-sans text-black">Linear</span>
+                      <span className="text-xl font-bold font-sans text-black">GitHub</span>
+                      <span className="text-xl font-bold font-sans text-black">Slack</span>
+                      <span className="text-xl font-bold font-sans text-black">Discord</span>
+                    </div>
+                  </div>
+                </BlurReveal>
+            </div>
+          </section>
         </div>
-      </section>
+
+      </div> {/* END CORE PLATFORM WRAPPER */}
 
       {/* 
         ---------------------------------------------
-        USE CASES SECTION (New)
+        PRICING SECTION (1.5)
         ---------------------------------------------
       */}
-      <section id="use-cases" className="relative w-full py-32 px-8 overflow-hidden bg-transparent">
-        <Aura variant="conic" />
-        <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-16">
+      <section id="pricing" className="relative w-full py-32 px-8 flex flex-col items-center justify-center bg-background border-t border-white/5 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(72,38,185,0.1),transparent_50%)] pointer-events-none" />
+        <div className="relative z-10 max-w-6xl mx-auto flex flex-col gap-16 w-full items-center">
           <BlurReveal duration={1} delay={0.1}>
             <div className="flex flex-col items-center text-center gap-4">
-              <span className="text-distill-core font-mono text-sm tracking-widest uppercase">Target Architectures</span>
-              <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Built for Hackers & Indie Makers.</h2>
-            </div>
-          </BlurReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <BlurReveal duration={1} delay={0.3}>
-              <div className="flex flex-col gap-6 p-10 rounded-2xl bg-white/[0.02] border border-white/10 h-full">
-                <Code2 className="w-10 h-10 text-distill-core" />
-                <h3 className="text-2xl font-bold text-foreground font-sans">For Solo Developers</h3>
-                <p className="text-distill-muted leading-relaxed text-lg font-sans">
-                  Bring your Groq API key and instantly process 1-hour meetings in seconds. Extract action items securely via our proxy dashboard.
-                </p>
-                <div className="mt-4 p-4 rounded-xl bg-black/40 border border-white/5 font-mono text-xs text-distill-core">
-                  export GROQ_API_KEY="gsk_..."
-                </div>
-              </div>
-            </BlurReveal>
-
-            <BlurReveal duration={1} delay={0.4}>
-              <div className="flex flex-col gap-6 p-10 rounded-2xl bg-white/[0.02] border border-white/10 h-full">
-                <Terminal className="w-10 h-10 text-distill-violet" />
-                <h3 className="text-2xl font-bold text-foreground font-sans">For Product Engineering</h3>
-                <p className="text-distill-muted leading-relaxed text-lg font-sans">
-                  Transform unstructured assets into strict schemas. Connect webhooks to instantly process UX interviews directly into labeled, categorized feature requests.
-                </p>
-                <div className="mt-4 p-4 rounded-xl bg-black/40 border border-white/5 font-mono text-xs text-distill-violet">
-                  POST https://api.distill.ai/v1/extract
-                </div>
-              </div>
-            </BlurReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* 
-        ---------------------------------------------
-        PLATFORM FEATURES (Engine 2.0)
-        ---------------------------------------------
-      */}
-      <section id="features" className="relative w-full py-32 px-8 overflow-hidden bg-transparent border-y border-white/5">
-        <Aura variant="aurora" />
-        
-        <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-16">
-          <BlurReveal duration={1} delay={0.1}>
-            <div className="flex flex-col md:flex-row justify-between items-end gap-8 pb-12 border-b border-white/5">
-              <div className="flex flex-col gap-4 max-w-2xl">
-                <span className="text-distill-core font-mono text-xs tracking-[0.3em] uppercase">Specs // 2.0</span>
-                <h2 className="font-pixel text-4xl md:text-6xl tracking-tighter text-white">The Intelligence Layer.</h2>
-              </div>
-              <p className="text-white/50 text-sm font-mono max-w-md leading-relaxed text-left md:text-right">
-                Deterministic data parsing mechanisms built on top of Groq's LPU architecture. Engineered for pure JSON fidelity.
-              </p>
-            </div>
-          </BlurReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 p-px shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-            {features.map((feature, i) => (
-              <BlurReveal key={i} duration={1} delay={0.2 + i * 0.1}>
-                <div className="group bg-black p-10 md:p-14 flex flex-col gap-10 h-full relative overflow-hidden transition-all hover:bg-white/[0.02]">
-                  <div className="absolute top-0 right-0 w-48 h-48 bg-distill-violet/5 blur-[50px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                  
-                  <div className="flex items-center gap-6 relative z-10">
-                    <div className="p-4 border border-white/5 bg-white/[0.02] text-white/30 group-hover:text-distill-violet group-hover:border-distill-violet/30 transition-colors">
-                      {feature.icon}
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest">MOD_0{i+1}</span>
-                      <h3 className="text-xl md:text-2xl font-mono tracking-tighter text-white uppercase">{feature.title}</h3>
-                    </div>
-                  </div>
-                  
-                  <p className="text-white/50 leading-relaxed text-sm md:text-base font-mono relative z-10">
-                    {feature.description}
-                  </p>
-                </div>
-              </BlurReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* 
-        ---------------------------------------------
-        PRICING SECTION (2-Tier Model)
-        ---------------------------------------------
-      */}
-      <section id="pricing" className="relative w-full py-32 px-8 flex flex-col items-center justify-center border-t border-white/5">
-        <Aura variant="tactical-noise" />
-        <div className="relative z-10 max-w-5xl mx-auto flex flex-col gap-16 w-full items-center">
-          <BlurReveal duration={1} delay={0.1}>
-            <div className="flex flex-col items-center text-center gap-4">
-              <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Honest Pricing.</h2>
+              <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Simple Pricing for Developers.</h2>
               <p className="text-distill-muted max-w-2xl text-lg font-sans">
-                No enterprise bloat. Use your own API keys for free, forever.
+                Start for free, scale when you need.
               </p>
             </div>
           </BlurReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
-            {/* Developer Sandbox */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+            {/* Free Tier */}
             <BlurReveal duration={1} delay={0.2} className="h-full">
-              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-white/[0.02] border border-white/10 h-full">
+              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 h-full hover:border-white/20 transition-colors">
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-2xl font-bold text-foreground font-sans">Open Source</h3>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">Free</span>
+                  <h3 className="text-2xl font-bold text-foreground font-sans">Free Forever</h3>
+                  <div className="flex items-baseline gap-2 mt-2">
+                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">$0</span>
+                    <span className="text-distill-muted font-sans font-medium">/ month</span>
                   </div>
-                  <span className="text-xs text-distill-muted font-mono mt-1 uppercase">BYOK Access</span>
                 </div>
                 <div className="flex-1 flex flex-col gap-4">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Bring your own Groq key</span>
+                    <span className="text-distill-muted font-sans text-sm">10 audio uploads/month</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Pay only for what you use via Groq</span>
+                    <span className="text-distill-muted font-sans text-sm">Standup & Retro schemas</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Community forum support</span>
+                    <span className="text-distill-muted font-sans text-sm">1 webhook endpoint (Jira or Linear)</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
+                    <span className="text-distill-muted font-sans text-sm">Community support</span>
+                  </div>
+                  <div className="flex items-start gap-3 mt-4 pt-4 border-t border-white/5">
+                    <Lock className="w-4 h-4 text-distill-violet mt-0.5" />
+                    <span className="text-white/70 font-sans text-xs">BYOK required</span>
                   </div>
                 </div>
-                <Link href="/docs" className="w-full py-3 rounded-full border border-white/20 text-foreground font-medium font-sans hover:bg-white/5 transition-colors flex justify-center items-center">
-                  View Documentation
+                <Link href="/login" className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
+                  Get Started Free
                 </Link>
               </div>
             </BlurReveal>
 
             {/* Pro Tier */}
             <BlurReveal duration={1} delay={0.3} className="h-full transform md:-translate-y-4">
-              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-distill-violet/5 border border-distill-violet/50 h-full relative overflow-hidden shadow-[0_0_50px_rgba(72,38,185,0.1)]">
-                <div className="absolute top-0 right-0 px-4 py-1 bg-distill-violet text-white text-xs font-bold rounded-bl-xl z-20 uppercase tracking-wider">Coming Soon</div>
+              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-distill-violet/10 border border-distill-violet h-full relative overflow-hidden shadow-[0_0_50px_rgba(72,38,185,0.15)]">
+                <div className="absolute top-0 right-0 px-4 py-1 bg-distill-violet text-white text-xs font-bold rounded-bl-xl z-20 uppercase tracking-wider">Most Popular</div>
                 <div className="absolute inset-0 bg-gradient-to-br from-distill-violet/20 to-transparent pointer-events-none" />
-                <div className="flex flex-col gap-2 relative z-10 opacity-70">
+                <div className="flex flex-col gap-2 relative z-10">
                   <h3 className="text-2xl font-bold text-foreground font-sans">Pro</h3>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">$29</span>
+                  <div className="flex items-baseline gap-2 mt-2">
+                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">$12</span>
                     <span className="text-distill-muted font-sans font-medium">/ month</span>
                   </div>
-                  <span className="text-xs text-distill-muted font-mono mt-1 uppercase">For serious indie makers</span>
                 </div>
-                <div className="flex-1 flex flex-col gap-4 relative z-10 opacity-70">
+                <div className="flex-1 flex flex-col gap-4 relative z-10">
                    <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Everything in Free</span>
+                    <span className="text-distill-core font-sans text-sm">Unlimited audio uploads</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Pre-built schemas (Jira, Linear)</span>
+                    <span className="text-distill-core font-sans text-sm">Unlimited webhooks</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Priority Discord support</span>
+                    <span className="text-distill-core font-sans text-sm">Custom JSON schemas</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
+                    <span className="text-distill-core font-sans text-sm">Priority support</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
+                    <span className="text-distill-core font-sans text-sm">Advanced analytics</span>
                   </div>
                 </div>
-                <button 
-                  disabled
-                  className="w-full py-3 rounded-full bg-distill-core/50 text-white/50 font-bold tracking-wide font-sans relative z-10 cursor-not-allowed"
-                >
-                  Join Waitlist
-                </button>
+                <Link href="/login" className="w-full py-3 rounded-xl bg-distill-violet text-white font-bold tracking-wide font-sans relative z-10 hover:bg-distill-violet/80 transition-colors flex justify-center items-center shadow-[0_0_20px_rgba(72,38,185,0.4)] mt-auto">
+                  Upgrade to Pro
+                </Link>
+              </div>
+            </BlurReveal>
+
+            {/* Team Tier */}
+            <BlurReveal duration={1} delay={0.4} className="h-full">
+              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 h-full hover:border-white/20 transition-colors">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-2xl font-bold text-foreground font-sans">Team</h3>
+                  <div className="flex items-baseline gap-2 mt-2">
+                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">$49</span>
+                    <span className="text-distill-muted font-sans font-medium">/ month</span>
+                  </div>
+                  <span className="text-xs text-distill-muted mt-1">for up to 10 seats</span>
+                </div>
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
+                    <span className="text-distill-muted font-sans text-sm">Everything in Pro</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
+                    <span className="text-distill-muted font-sans text-sm">Shared workspace</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
+                    <span className="text-distill-muted font-sans text-sm">Team analytics dashboard</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
+                    <span className="text-distill-muted font-sans text-sm">Admin controls & user management</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-white/30 mt-0.5" />
+                    <span className="text-white/30 font-sans text-sm">SAML SSO (future)</span>
+                  </div>
+                </div>
+                <Link href="/contact" className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
+                  Start Team Trial
+                </Link>
               </div>
             </BlurReveal>
 
@@ -441,78 +666,30 @@ export default function Home() {
 
       {/* 
         ---------------------------------------------
-        FAQ SECTION
+        FOOTER (1.6)
         ---------------------------------------------
       */}
-      <section className="relative w-full py-24 px-8 bg-transparent border-t border-white/5">
-        <div className="max-w-4xl mx-auto flex flex-col gap-12">
-          <BlurReveal duration={1}>
-             <h2 className="font-pixel text-3xl md:text-5xl tracking-tighter text-foreground text-center">Developer FAQ</h2>
-          </BlurReveal>
-
-          <div className="flex flex-col gap-4">
-            {faqs.map((faq, idx) => (
-              <BlurReveal key={idx} duration={1} delay={0.2 + idx * 0.1}>
-                <div 
-                  className={cn("p-6 rounded-2xl border transition-all cursor-pointer", openFaq === idx ? "bg-white/[0.04] border-white/20" : "bg-white/[0.01] border-white/5 hover:border-white/10")}
-                  onClick={() => setOpenFaq(idx === openFaq ? null : idx)}
-                >
-                  <h4 className="text-lg font-bold font-sans text-foreground flex justify-between items-center">
-                    {faq.question}
-                    <span className="text-distill-violet text-xl font-mono">{openFaq === idx ? "-" : "+"}</span>
-                  </h4>
-                  {openFaq === idx && (
-                    <p className="mt-4 text-distill-muted font-sans text-sm leading-relaxed border-t border-white/5 pt-4">
-                      {faq.answer}
-                    </p>
-                  )}
-                </div>
-              </BlurReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      </div>
-
-      {/* CTA SECTION */}
-      <section className="w-full relative min-h-[80vh] flex flex-col items-center justify-center px-8 bg-gradient-to-b from-transparent to-distill-violet/5 border-t border-white/5 overflow-hidden">
-        <Aura variant="footer" />
-        <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center text-center gap-8">
-          <BlurReveal duration={1}>
-            <h2 className="font-pixel text-5xl md:text-7xl tracking-tighter text-foreground">Extract the Signal.</h2>
-            <p className="text-xl text-distill-muted mt-6 font-sans">
-              Join elite frontend teams processing thousands of hours of audio with pure JSON fidelity.
-            </p>
-          </BlurReveal>
-          <BlurReveal duration={1} delay={0.2}>
-            <div className="flex gap-4 mt-8">
-              <Link href="/login" className="group px-8 py-4 rounded-xl bg-foreground text-background font-bold tracking-wide hover:scale-105 transition-all text-lg flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                Initialize Distill Core
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </BlurReveal>
-        </div>
-      </section>
-
-      {/* PREMIUM FOOTER */}
       <footer className="w-full bg-[#030108] border-t border-white/10 pt-24 pb-12 px-8">
         <div className="max-w-7xl mx-auto flex flex-col gap-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
             <div className="flex flex-col gap-6 md:col-span-1">
               <span className="font-anta text-2xl tracking-widest text-foreground">DISTILL.<span className="text-distill-violet">AI</span></span>
               <p className="text-sm text-distill-muted leading-relaxed font-sans pr-4">
-                Open-source audio intelligence. Bring Your Own Key (BYOK) architecture for lightning-fast, deterministic extraction.
+                Open-source audio intelligence. Automate the worst part of agile with BYOK privacy.
               </p>
+              <div className="flex flex-col gap-1 mt-2">
+                <span className="text-xs text-white/40 font-mono">Built solo with AI by <a href="https://twitter.com/Jeetheshwar" className="text-distill-violet hover:underline">@Jeetheshwar</a></span>
+                <span className="text-xs text-white/40 font-mono">Open source under MIT license</span>
+              </div>
             </div>
             
             <div className="flex flex-col gap-4">
               <span className="text-foreground font-bold tracking-wide text-sm uppercase">Product</span>
-              <Link href="/#features" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Engine 2.0</Link>
+              <Link href="/#demo" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Live Demo</Link>
               <Link href="/#pricing" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Pricing</Link>
               <Link href="/docs" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Documentation</Link>
               <Link href="/changelog" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Changelog</Link>
+              <Link href="/roadmap" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Roadmap</Link>
             </div>
 
             <div className="flex flex-col gap-4">
@@ -524,33 +701,71 @@ export default function Home() {
 
             <div className="flex flex-col gap-4">
               <span className="text-foreground font-bold tracking-wide text-sm uppercase">Legal & Security</span>
+              <Link href="/security" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Security (BYOK)</Link>
               <Link href="/privacy" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Privacy Policy</Link>
               <Link href="/terms" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">Terms of Service</Link>
-              <Link href="/soc2" className="text-distill-muted hover:text-white transition-colors text-sm font-sans">SOC2 Roadmap</Link>
             </div>
           </div>
 
           <div className="w-full h-px bg-white/10" />
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <span className="text-xs text-distill-muted font-sans">© 2026 Distill OS. All rights reserved.</span>
+            <span className="text-xs text-distill-muted font-sans">© 2026 Distill AI. All rights reserved.</span>
             <div className="flex items-center gap-6">
-               <a href="https://twitter.com" target="_blank" rel="noreferrer" className="text-distill-muted hover:text-white transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+               <a href="https://x.com/Jeetheshwar" target="_blank" rel="noreferrer" className="text-distill-muted hover:text-white transition-colors">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                </a>
-               <a href="https://github.com" target="_blank" rel="noreferrer" className="text-distill-muted hover:text-white transition-colors">
+               <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="text-distill-muted hover:text-white transition-colors">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-               </a>
-               <a href="https://discord.com" target="_blank" rel="noreferrer" className="text-distill-muted hover:text-white transition-colors">
-                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
                </a>
             </div>
           </div>
         </div>
       </footer>
       
-      {/* Empty space buffering the fixed bottom bar */}
-      <div className="h-24 w-full bg-transparent" />
+      {/* Mock Jira Modal */}
+      {showJiraModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#1D2125] w-full max-w-2xl rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-white/10 flex justify-between items-center bg-[#22272B]">
+              <div className="flex items-center gap-2">
+                <div className="bg-[#0052CC] text-white p-1 rounded">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 10.37h-3.3v-3.3c0-.66-.54-1.2-1.2-1.2h-3.3c-.66 0-1.2.54-1.2 1.2v3.3h3.3c.66 0 1.2.54 1.2 1.2v3.3h-3.3c-.66 0-1.2.54-1.2 1.2v3.3c0 .66.54 1.2 1.2 1.2h3.3c.66 0 1.2-.54 1.2-1.2v-3.3h3.3c.66 0 1.2-.54 1.2-1.2v-3.3c0-.66-.54-1.2-1.2-1.2z"/></svg>
+                </div>
+                <h3 className="text-white font-medium">Create 2 issues in Jira</h3>
+              </div>
+              <button onClick={() => setShowJiraModal(false)} className="text-white/50 hover:text-white"><Square className="w-5 h-5" /></button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[60vh] flex flex-col gap-4">
+              {sampleJson.extracted_tickets.map((ticket, i) => (
+                <div key={i} className="bg-[#22272B] p-4 rounded-lg border border-white/5">
+                  <div className="flex justify-between mb-2">
+                    <input type="text" defaultValue={ticket.title} className="bg-transparent border-none text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 w-full" />
+                  </div>
+                  <textarea defaultValue={ticket.description} className="w-full bg-[#1D2125] border border-white/10 rounded p-2 text-white/70 text-sm mb-3 h-20 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded text-xs text-white/70">
+                      <span className="w-2 h-2 rounded-full bg-blue-400"></span> {ticket.type}
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded text-xs text-white/70">
+                      <span className={cn("w-2 h-2 rounded-full", ticket.priority === 'High' ? 'bg-orange-400' : 'bg-yellow-400')}></span> {ticket.priority}
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded text-xs text-white/70">
+                      Assignee: {ticket.assignee}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="p-4 border-t border-white/10 flex justify-end gap-3 bg-[#22272B]">
+              <button onClick={() => setShowJiraModal(false)} className="px-4 py-2 text-white/70 hover:text-white text-sm font-medium">Cancel</button>
+              <button onClick={() => setShowJiraModal(false)} className="px-4 py-2 bg-[#0052CC] text-white rounded text-sm font-medium hover:bg-[#0047b3]">Create Issues</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
