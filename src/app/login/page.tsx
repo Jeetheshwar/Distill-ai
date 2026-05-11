@@ -137,7 +137,7 @@ export default function LoginPage() {
                 <div className="flex justify-between items-center pr-1">
                   <label className="text-xs font-mono text-distill-muted uppercase tracking-wider pl-1">Password</label>
                   {!isSignUp && (
-                    <button type="button" onClick={() => alert("Password reset is locked in this demo instance.")} className="text-xs font-mono text-distill-muted hover:text-white transition-colors">Forgot password?</button>
+                    <Link href="/forgot-password" className="text-xs font-mono text-distill-muted hover:text-white transition-colors">Forgot password?</Link>
                   )}
                 </div>
                 <div className="relative">

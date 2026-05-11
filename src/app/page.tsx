@@ -10,6 +10,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { WaitlistModal } from "@/components/waitlist-modal";
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -20,6 +21,15 @@ export default function Home() {
   const [apiKey, setApiKey] = useState("");
   const [processingText, setProcessingText] = useState("Transcribing with Groq Whisper...");
   const [showJiraModal, setShowJiraModal] = useState(false);
+  
+  // Waitlist State
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
+  const [waitlistPlan, setWaitlistPlan] = useState<"pro" | "team">("pro");
+
+  const openWaitlist = (plan: "pro" | "team") => {
+    setWaitlistPlan(plan);
+    setWaitlistOpen(true);
+  };
 
   // Safety net: if the browser ever restores this page from BFCache,
   // forcefully fix any Framer Motion elements stuck at opacity: 0
@@ -549,9 +559,10 @@ export default function Home() {
                 <div className="flex flex-col gap-2">
                   <h3 className="text-2xl font-bold text-foreground font-sans">Free Forever</h3>
                   <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">$0</span>
+                    <span className="text-4xl lg:text-5xl font-black text-white font-sans">$0</span>
                     <span className="text-distill-muted font-sans font-medium">/ month</span>
                   </div>
+                  <span className="text-xs text-distill-muted mt-1">Everything you need. No credit card required.</span>
                 </div>
                 <div className="flex-1 flex flex-col gap-4">
                   <div className="flex items-start gap-3">
@@ -575,7 +586,7 @@ export default function Home() {
                     <span className="text-white/70 font-sans text-xs">BYOK required</span>
                   </div>
                 </div>
-                <Link href="/login" className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
+                <Link href="/login" className="w-full py-3 rounded-xl bg-distill-violet text-white font-bold tracking-wide font-sans relative z-10 hover:bg-distill-violet/80 transition-colors flex justify-center items-center shadow-[0_0_20px_rgba(72,38,185,0.4)] mt-auto">
                   Get Started Free
                 </Link>
               </div>
@@ -583,17 +594,17 @@ export default function Home() {
 
             {/* Pro Tier */}
             <BlurReveal duration={1} delay={0.3} className="h-full transform md:-translate-y-4">
-              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-distill-violet/10 border border-distill-violet h-full relative overflow-hidden shadow-[0_0_50px_rgba(72,38,185,0.15)]">
-                <div className="absolute top-0 right-0 px-4 py-1 bg-distill-violet text-white text-xs font-bold rounded-bl-xl z-20 uppercase tracking-wider">Most Popular</div>
-                <div className="absolute inset-0 bg-gradient-to-br from-distill-violet/20 to-transparent pointer-events-none" />
+              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 border-dashed h-full relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-4 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-bold rounded-bl-xl z-20 uppercase tracking-wider border-b border-l border-yellow-500/20">Coming Soon</div>
                 <div className="flex flex-col gap-2 relative z-10">
                   <h3 className="text-2xl font-bold text-foreground font-sans">Pro</h3>
                   <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">$12</span>
-                    <span className="text-distill-muted font-sans font-medium">/ month</span>
+                    <span className="text-4xl lg:text-5xl font-black text-white/40 font-sans">$12</span>
+                    <span className="text-white/40 font-sans font-medium">/ month</span>
                   </div>
+                  <span className="text-xs text-distill-muted mt-1">Launching Q3 2026. Join the waitlist.</span>
                 </div>
-                <div className="flex-1 flex flex-col gap-4 relative z-10">
+                <div className="flex-1 flex flex-col gap-4 relative z-10 opacity-70">
                    <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
                     <span className="text-distill-core font-sans text-sm">Unlimited audio uploads</span>
@@ -615,24 +626,25 @@ export default function Home() {
                     <span className="text-distill-core font-sans text-sm">Advanced analytics</span>
                   </div>
                 </div>
-                <Link href="/login" className="w-full py-3 rounded-xl bg-distill-violet text-white font-bold tracking-wide font-sans relative z-10 hover:bg-distill-violet/80 transition-colors flex justify-center items-center shadow-[0_0_20px_rgba(72,38,185,0.4)] mt-auto">
-                  Upgrade to Pro
-                </Link>
+                <button onClick={() => openWaitlist("pro")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
+                  Notify Me &rarr;
+                </button>
               </div>
             </BlurReveal>
 
             {/* Team Tier */}
             <BlurReveal duration={1} delay={0.4} className="h-full">
-              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 h-full hover:border-white/20 transition-colors">
+              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 border-dashed h-full relative overflow-hidden">
+                <div className="absolute top-0 right-0 px-4 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-bold rounded-bl-xl z-20 uppercase tracking-wider border-b border-l border-yellow-500/20">Coming Soon</div>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-2xl font-bold text-foreground font-sans">Team</h3>
                   <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-4xl lg:text-5xl font-black text-foreground font-sans">$49</span>
-                    <span className="text-distill-muted font-sans font-medium">/ month</span>
+                    <span className="text-4xl lg:text-5xl font-black text-white/40 font-sans">$49</span>
+                    <span className="text-white/40 font-sans font-medium">/ month</span>
                   </div>
-                  <span className="text-xs text-distill-muted mt-1">for up to 10 seats</span>
+                  <span className="text-xs text-distill-muted mt-1">for up to 10 seats &bull; Launching Q3 2026</span>
                 </div>
-                <div className="flex-1 flex flex-col gap-4">
+                <div className="flex-1 flex flex-col gap-4 opacity-70">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
                     <span className="text-distill-muted font-sans text-sm">Everything in Pro</span>
@@ -654,16 +666,42 @@ export default function Home() {
                     <span className="text-white/30 font-sans text-sm">SAML SSO (future)</span>
                   </div>
                 </div>
-                <Link href="/contact" className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
-                  Start Team Trial
-                </Link>
+                <button onClick={() => openWaitlist("team")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
+                  Join Waitlist &rarr;
+                </button>
               </div>
             </BlurReveal>
 
           </div>
+
+          {/* Why Free Section */}
+          <BlurReveal duration={1} delay={0.5}>
+            <div className="max-w-2xl mx-auto flex flex-col items-center text-center gap-6 mt-8">
+              <h3 className="font-pixel text-2xl text-foreground">Why is Distill free?</h3>
+              <p className="text-distill-muted font-sans leading-relaxed">
+                I'm a solo developer building in public. Right now, every user helps me learn what actually matters. When Pro launches, early waitlist members get 50% off for life.
+              </p>
+              <div className="flex items-center gap-4 mt-2">
+                <Link href="/roadmap" className="px-6 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-colors border border-white/10">
+                  View Roadmap
+                </Link>
+                <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="px-6 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-colors border border-white/10 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                  Star on GitHub
+                </a>
+              </div>
+            </div>
+          </BlurReveal>
+
         </div>
       </section>
 
+      {/* Waitlist Modal */}
+      <WaitlistModal 
+        isOpen={waitlistOpen} 
+        onClose={() => setWaitlistOpen(false)} 
+        planType={waitlistPlan} 
+      />
       {/* 
         ---------------------------------------------
         FOOTER (1.6)
