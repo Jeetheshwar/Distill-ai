@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://distill-ai-zeta.vercel.app/sitemap.xml

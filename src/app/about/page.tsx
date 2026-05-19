@@ -9,7 +9,7 @@ export default function AboutPage() {
           <div className="p-4 bg-white/5 rounded-2xl border border-white/10 mb-4 inline-flex">
              <Terminal className="w-8 h-8 text-distill-core" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold font-pixel text-foreground tracking-tighter">About Distill</h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-sergena text-foreground tracking-tighter">About Distill</h1>
         </BlurReveal>
 
         <BlurReveal duration={1} delay={0.1}>

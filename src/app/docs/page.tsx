@@ -82,7 +82,7 @@ extractTicket('ux-sync.wav').then(console.log);`
         {/* Left Sidebar Menu */}
         <aside className="w-full lg:w-64 flex-shrink-0 flex flex-col gap-8 hidden lg:flex relative">
           <div className="sticky top-32 flex flex-col gap-6">
-            <h3 className="font-pixel text-xl text-foreground">Docs</h3>
+            <h3 className="font-sergena text-xl text-foreground">Docs</h3>
             <div className="flex flex-col gap-3 text-sm font-medium text-distill-muted font-sans">
               <a href="#quickstart" className="hover:text-white transition-colors">Quickstart</a>
               <a href="#self-hosting" className="hover:text-white transition-colors">Self-Hosting</a>
@@ -98,7 +98,7 @@ extractTicket('ux-sync.wav').then(console.log);`
           <BlurReveal duration={1}>
             <div className="flex flex-col gap-4">
               <span className="text-distill-core font-mono text-sm tracking-widest uppercase">API Reference</span>
-              <h1 className="font-pixel text-5xl md:text-6xl text-foreground">Developer Hub</h1>
+              <h1 className="font-sergena text-5xl md:text-6xl text-foreground">Developer Hub</h1>
               <p className="text-distill-muted text-lg font-sans max-w-2xl mt-2 leading-relaxed">
                 Connect directly to our high-performance FastAPI ingestion endpoints or spin up a local CLI container. Everything goes in unstructured, and comes out as deterministic JSON.
               </p>

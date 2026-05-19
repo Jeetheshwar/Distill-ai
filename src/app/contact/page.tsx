@@ -5,7 +5,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-background pt-32 pb-24 px-8 flex flex-col items-center text-center">
       <div className="max-w-2xl w-full flex flex-col items-center gap-8">
         <BlurReveal duration={1}>
-          <h1 className="text-4xl md:text-5xl font-bold font-pixel text-foreground tracking-tighter">Contact Us</h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-sergena text-foreground tracking-tighter">Contact Us</h1>
         </BlurReveal>
 
         <BlurReveal duration={1} delay={0.1}>

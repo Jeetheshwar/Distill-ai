@@ -59,11 +59,10 @@ export default function RoadmapPage() {
 
   return (
     <div className="min-h-screen w-full bg-background flex flex-col font-sans relative overflow-hidden">
-      <Aura variant="hero" />
       
       <div className="relative z-10 max-w-3xl mx-auto flex flex-col gap-16 pt-32 pb-24 px-8 w-full">
         <div className="flex flex-col gap-4">
-          <h1 className="font-pixel text-4xl md:text-6xl tracking-tighter text-foreground">Roadmap.</h1>
+          <h1 className="font-sergena text-4xl md:text-6xl tracking-tighter text-foreground">Roadmap.</h1>
           <p className="text-xl text-distill-muted leading-relaxed">
             What we're building next. Distill is built in public—features are prioritized based on waitlist and community feedback.
           </p>

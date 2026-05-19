@@ -5,7 +5,7 @@ export default function BlogPage() {
     <div className="min-h-screen bg-background pt-32 pb-24 px-8 flex flex-col items-center">
       <div className="max-w-3xl w-full flex flex-col gap-12">
         <BlurReveal duration={1}>
-          <h1 className="text-4xl md:text-5xl font-bold font-pixel text-foreground tracking-tighter mb-4">Engineering Blog</h1>
+          <h1 className="text-4xl md:text-5xl font-bold font-sergena text-foreground tracking-tighter mb-4">Engineering Blog</h1>
           <p className="text-lg text-distill-muted font-sans">Deep dives into local audio extraction, ONNX optimization, and building stateless architectures.</p>
         </BlurReveal>
 

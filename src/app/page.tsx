@@ -154,13 +154,9 @@ export default function Home() {
 
           <div className="flex flex-col gap-2">
             <BlurReveal duration={1.2} delay={0.1}>
-              <h1 className="font-sergena text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1] text-foreground">
-                Turn Standup Recordings
-              </h1>
-            </BlurReveal>
-            <BlurReveal duration={1.2} delay={0.15}>
-              <h1 className="font-sergena text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1] text-distill-muted">
-                into Jira Tickets in 30 Seconds
+              <h1 className="font-sergena text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1]">
+                <span className="block text-foreground">Turn Standup Recordings</span>
+                <span className="block text-distill-muted mt-2">into Jira Tickets in 30 Seconds</span>
               </h1>
             </BlurReveal>
           </div>
@@ -360,11 +356,11 @@ export default function Home() {
                       </div>
 
                       <div className="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-white/10 mt-2 gap-4">
-                        <div className="flex gap-4 w-full sm:w-auto">
-                          <Link href="/login" className="px-6 py-2.5 rounded-lg bg-distill-core text-black font-bold hover:bg-white transition-colors text-sm text-center flex-1 sm:flex-none">
+                        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                          <Link href="/login" className="px-6 py-3 sm:py-2.5 rounded-lg bg-distill-core text-black font-bold hover:bg-white transition-colors text-sm text-center w-full sm:w-auto">
                             Get Full Access — Free
                           </Link>
-                          <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="px-6 py-2.5 rounded-lg border border-white/20 text-white font-medium hover:bg-white/10 transition-colors text-sm flex items-center justify-center gap-2 flex-1 sm:flex-none">
+                          <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="px-6 py-3 sm:py-2.5 rounded-lg border border-white/20 text-white font-medium hover:bg-white/10 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto">
                             Self-Host
                           </a>
                         </div>
@@ -401,7 +397,7 @@ export default function Home() {
                <BlurReveal duration={1}>
                   <div className="flex flex-col items-center text-center gap-4">
                     <span className="text-distill-violet font-mono text-xs tracking-[0.3em] uppercase">Architecture</span>
-                    <h2 className="font-sergena text-4xl md:text-5xl tracking-tighter text-black">How It Works.</h2>
+                    <h2 className="font-sergena text-3xl sm:text-4xl md:text-5xl tracking-tighter text-black">How Standup Recordings Become Jira Tickets Automatically</h2>
                   </div>
                 </BlurReveal>
 
@@ -412,7 +408,7 @@ export default function Home() {
                         <Mic className="w-8 h-8 text-black" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-bold text-black font-mono uppercase tracking-tight">1. Record</h3>
+                        <h3 className="text-xl font-bold text-black font-mono tracking-tight">BYOK: Your Audio Never Touches Our Servers</h3>
                         <p className="text-black/60 text-sm max-w-xs">Record your standup on Zoom, Meet, or upload audio directly.</p>
                       </div>
                     </div>
@@ -424,7 +420,7 @@ export default function Home() {
                         <Sparkles className="w-8 h-8 text-distill-violet" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-bold text-black font-mono uppercase tracking-tight">2. Distill</h3>
+                        <h3 className="text-xl font-bold text-black font-mono tracking-tight">Extract Tasks, Bugs, and Blockers in Seconds</h3>
                         <p className="text-black/60 text-sm max-w-xs">AI extracts tasks, bugs, blockers, and assigns priority securely.</p>
                       </div>
                     </div>
@@ -436,7 +432,7 @@ export default function Home() {
                         <Rocket className="w-8 h-8 text-[#0052CC]" />
                       </div>
                       <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-bold text-black font-mono uppercase tracking-tight">3. Ship</h3>
+                        <h3 className="text-xl font-bold text-black font-mono tracking-tight">Route to Jira, Linear, or GitHub Issues Instantly</h3>
                         <p className="text-black/60 text-sm max-w-xs">Tickets auto-created in Jira, Linear, or GitHub instantly.</p>
                       </div>
                     </div>
@@ -449,7 +445,7 @@ export default function Home() {
             <div className="max-w-6xl mx-auto flex flex-col gap-16">
                <BlurReveal duration={1}>
                   <div className="flex flex-col items-center text-center gap-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-black tracking-tight">Trusted by Indie Teams & Solo Developers</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold text-black tracking-tight">Upload Audio. Get Structured Tickets. Save 20 Minutes.</h2>
                   </div>
                 </BlurReveal>
 
@@ -545,7 +541,7 @@ export default function Home() {
         <div className="relative z-10 max-w-6xl mx-auto flex flex-col gap-16 w-full items-center">
           <BlurReveal duration={1} delay={0.1}>
             <div className="flex flex-col items-center text-center gap-4">
-              <h2 className="font-pixel text-4xl md:text-5xl tracking-tighter text-foreground">Simple Pricing for Developers.</h2>
+              <h2 className="font-sergena text-4xl md:text-5xl tracking-tighter text-foreground">Simple Pricing for Developers.</h2>
               <p className="text-distill-muted max-w-2xl text-lg font-sans">
                 Start for free, scale when you need.
               </p>
@@ -677,7 +673,7 @@ export default function Home() {
           {/* Why Free Section */}
           <BlurReveal duration={1} delay={0.5}>
             <div className="max-w-2xl mx-auto flex flex-col items-center text-center gap-6 mt-8">
-              <h3 className="font-pixel text-2xl text-foreground">Why is Distill free?</h3>
+              <h3 className="font-sergena text-2xl text-foreground">Why is Distill free?</h3>
               <p className="text-distill-muted font-sans leading-relaxed">
                 I'm a solo developer building in public. Right now, every user helps me learn what actually matters. When Pro launches, early waitlist members get 50% off for life.
               </p>
@@ -748,12 +744,15 @@ export default function Home() {
           <div className="w-full h-px bg-white/10" />
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <span className="text-xs text-distill-muted font-sans">© 2026 Distill AI. All rights reserved.</span>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-distill-muted font-sans">© 2026 Distill AI. All rights reserved.</span>
+              <span className="text-xs text-distill-muted/60 font-sans">Last updated: May 2026 • v2.0.0 • Built solo with AI by @Jeetheshwar</span>
+            </div>
             <div className="flex items-center gap-6">
-               <a href="https://x.com/Jeetheshwar" target="_blank" rel="noreferrer" className="text-distill-muted hover:text-white transition-colors">
+               <a href="https://x.com/Jeetheshwar" target="_blank" rel="noopener noreferrer" className="text-distill-muted hover:text-white transition-colors">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                </a>
-               <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="text-distill-muted hover:text-white transition-colors">
+               <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noopener noreferrer" className="text-distill-muted hover:text-white transition-colors">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
                </a>
             </div>

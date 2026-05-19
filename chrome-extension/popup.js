@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const apiKeyInput = document.getElementById('apiKey');
+  const apiEndpointInput = document.getElementById('apiEndpoint');
   const startBtn = document.getElementById('startBtn');
   const stopBtn = document.getElementById('stopBtn');
   const sendToJiraBtn = document.getElementById('sendToJiraBtn');
@@ -11,15 +12,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let recordingInterval;
   let seconds = 0;
 
-  // Load API key
-  chrome.storage.local.get(['groqApiKey'], (result) => {
+  // Load API key and Endpoint
+  chrome.storage.local.get(['groqApiKey', 'distillApiEndpoint'], (result) => {
     if (result.groqApiKey) {
       apiKeyInput.value = result.groqApiKey;
+    }
+    if (result.distillApiEndpoint) {
+      apiEndpointInput.value = result.distillApiEndpoint;
     }
   });
 
   apiKeyInput.addEventListener('change', (e) => {
     chrome.storage.local.set({ groqApiKey: e.target.value });
+  });
+
+  apiEndpointInput.addEventListener('change', (e) => {
+    chrome.storage.local.set({ distillApiEndpoint: e.target.value });
   });
 
   function updateTimer() {
@@ -30,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   startBtn.addEventListener('click', () => {
-    // Tell background script to start recording using tabCapture
     chrome.runtime.sendMessage({ action: 'startRecording' }, (response) => {
       if (response && response.success) {
         startBtn.style.display = 'none';
@@ -41,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timer.textContent = '00:00';
         recordingInterval = setInterval(updateTimer, 1000);
       } else {
-        alert('Could not start recording. Make sure you are on a valid tab.');
+        alert('Could not start recording. ' + (response?.error || 'Make sure you are on a valid tab.'));
       }
     });
   });
@@ -53,35 +60,81 @@ document.addEventListener('DOMContentLoaded', () => {
     statusText.textContent = 'Status: Processing';
     loader.style.display = 'block';
 
-    // Tell background script to stop recording
-    chrome.runtime.sendMessage({ action: 'stopRecording' }, (response) => {
-      // In MVP, we might simulate the upload if no real backend is hooked up to the extension yet
-      // We will pretend to hit the local Distill API
-      setTimeout(() => {
-        loader.style.display = 'none';
-        statusText.textContent = 'Status: Ready';
-        showPreview();
-      }, 2000);
-    });
+    // Tell background script to stop recording.
+    // The offscreen document will then finish encoding and send "recordingFinished"
+    chrome.runtime.sendMessage({ action: 'stopRecording' });
   });
 
-  function showPreview() {
+  chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    if (request.action === 'recordingFinished') {
+      try {
+        const base64Audio = request.base64Audio;
+        
+        // Convert Base64 back to Blob
+        const fetchResponse = await fetch(base64Audio);
+        const audioBlob = await fetchResponse.blob();
+        
+        const apiKey = apiKeyInput.value.trim();
+        const endpoint = apiEndpointInput.value.trim() || 'http://localhost:3000/api/extract';
+
+        if (!apiKey) {
+          throw new Error("Missing Groq API Key. Please provide your BYOK.");
+        }
+
+        const formData = new FormData();
+        formData.append("file", audioBlob, "meeting_audio.webm");
+        formData.append("schema", "standup");
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || "Failed to process audio via API.");
+        }
+
+        const json = await response.json();
+        
+        loader.style.display = 'none';
+        statusText.textContent = 'Status: Ready';
+        showPreview(json.entities);
+      } catch (err) {
+        loader.style.display = 'none';
+        statusText.textContent = 'Status: Error';
+        alert(err.message);
+      }
+    }
+  });
+
+  function showPreview(entities) {
     preview.style.display = 'block';
     sendToJiraBtn.style.display = 'block';
     
-    // Mock response for MVP
-    const mockTickets = [
-      { title: "Implement Jira webhook setup", type: "Task", priority: "High" },
-      { title: "Design review for modal", type: "Blocker", priority: "Medium" }
-    ];
-
     preview.innerHTML = '';
-    mockTickets.forEach(t => {
+    
+    // Check if it's the Llama3 JSON array or a single object
+    const tickets = Array.isArray(entities) ? entities : (entities.extracted_tickets || []);
+
+    if (tickets.length === 0) {
+      preview.innerHTML = '<div style="color:red">No tickets extracted.</div>';
+      return;
+    }
+
+    tickets.forEach(t => {
       const div = document.createElement('div');
       div.className = 'ticket';
+      const title = t.title || t.summary || "Untitled";
+      const type = t.type || "Task";
+      const priority = t.priority || "Medium";
+      
       div.innerHTML = `
-        <div class="ticket-title">${t.title}</div>
-        <div class="ticket-meta">${t.type} • ${t.priority}</div>
+        <div class="ticket-title">${title}</div>
+        <div class="ticket-meta">${type} • ${priority}</div>
       `;
       preview.appendChild(div);
     });

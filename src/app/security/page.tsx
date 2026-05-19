@@ -13,7 +13,7 @@ export default function SecurityPage() {
             <ShieldCheck className="w-4 h-4 text-green-500" />
             <span className="text-xs font-medium text-green-500 uppercase tracking-wider">Zero Data Retention</span>
           </div>
-          <h1 className="font-pixel text-4xl md:text-6xl tracking-tighter text-foreground">Security & Architecture.</h1>
+          <h1 className="font-sergena text-4xl md:text-6xl tracking-tighter text-foreground">Security & Architecture.</h1>
           <p className="text-xl text-distill-muted leading-relaxed">
             Your Audio Never Touches Our Servers. We built Distill AI specifically for teams who cannot upload proprietary meeting audio to third-party SaaS.
           </p>
@@ -66,7 +66,7 @@ export default function SecurityPage() {
               Don't trust us? Don't have to. You can review the entire codebase, the proxy logic, and the exact LLM prompts used for schema extraction.
             </p>
           </div>
-          <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="px-6 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors">
+          <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noopener noreferrer" className="px-6 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors">
             View Source Code
           </a>
         </div>

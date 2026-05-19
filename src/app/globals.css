@@ -15,7 +15,7 @@
   --color-distill-violet: var(--distill-violet);
   --color-distill-muted: var(--distill-muted);
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-pixel: var(--font-pixel), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
   --font-anta: var(--font-anta), sans-serif;
   --font-sergena: var(--font-sergena), sans-serif;
 }
@@ -26,16 +26,7 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Force the variable font Doto to use 100% round dots and max weight to interlock them */
-.font-pixel {
-  font-family: var(--font-pixel);
-  font-variation-settings: 'ROND' 100, 'wght' 600 !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.05em; /* Minor kerning reduction */
-  
-  /* Use minimal stroke to bleed the dots together into a solid line without bloating circle radii */
-  -webkit-text-stroke: 0.06em currentColor !important;
-}
+
 
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
