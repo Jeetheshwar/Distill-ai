@@ -143,7 +143,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto gap-5">
+        <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto gap-5 pt-20 md:pt-0">
           
           <BlurReveal duration={1.2}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-[0_0_20px_rgba(72,38,185,0.2)] translate-y-[5px]">
