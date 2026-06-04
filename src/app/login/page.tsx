@@ -97,12 +97,14 @@ export default function LoginPage() {
                 const { data, error } = await supabase.auth.signInWithOAuth({ 
                   provider: 'github',
                   options: {
-                    skipBrowserRedirect: true
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                    skipBrowserRedirect: true,
                   }
                 });
                 
                 if (error) {
-                  setError("GitHub OAuth is unconfigured in Supabase. Please sign in with email.");
+                  console.error("GitHub login error:", error);
+                  setError(error.message || "Failed to sign in with GitHub.");
                   setLoading(false);
                 } else if (data?.url) {
                   window.location.href = data.url;

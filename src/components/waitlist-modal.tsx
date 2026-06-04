@@ -62,7 +62,7 @@ export function WaitlistModal({ isOpen, onClose, planType }: WaitlistModalProps)
       <BlurReveal duration={0.4}>
         <div className="relative w-full max-w-md bg-[#0a0710] border border-white/10 rounded-2xl p-8 shadow-2xl overflow-hidden">
           <div className="absolute top-0 right-0 p-4 z-20">
-            <button 
+            <button suppressHydrationWarning 
               onClick={onClose}
               className="text-white/40 hover:text-white transition-colors p-1"
             >
@@ -85,7 +85,7 @@ export function WaitlistModal({ isOpen, onClose, planType }: WaitlistModalProps)
                 <CheckCircle2 className="w-6 h-6 text-distill-core" />
               </div>
               <h3 className="text-white font-bold">{message.text}</h3>
-              <button 
+              <button suppressHydrationWarning 
                 onClick={onClose}
                 className="mt-4 px-6 py-2 rounded-lg border border-white/10 hover:bg-white/5 text-white text-sm font-medium transition-colors"
               >
@@ -95,7 +95,7 @@ export function WaitlistModal({ isOpen, onClose, planType }: WaitlistModalProps)
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 relative z-10">
               <div className="flex flex-col gap-1.5">
-                <input 
+                <input suppressHydrationWarning 
                   type="email"
                   required
                   value={email}
@@ -113,7 +113,7 @@ export function WaitlistModal({ isOpen, onClose, planType }: WaitlistModalProps)
                 </div>
               )}
 
-              <button 
+              <button suppressHydrationWarning 
                 type="submit"
                 disabled={loading || !email}
                 className="w-full py-3 mt-2 rounded-lg bg-distill-core text-background font-bold tracking-wide hover:bg-white transition-colors flex items-center justify-center shadow-[0_0_15px_rgba(228,221,244,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"

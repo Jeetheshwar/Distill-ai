@@ -254,7 +254,7 @@ export default function Home() {
                         <span className="text-white/30 text-xs font-mono uppercase">or</span>
                         <div className="flex-1 h-px bg-white/10" />
                       </div>
-                      <button 
+                      <button suppressHydrationWarning 
                         onClick={handleSampleAudio}
                         className="px-6 py-3 rounded-lg bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-colors flex items-center gap-2"
                       >
@@ -264,7 +264,7 @@ export default function Home() {
 
                       <div className="mt-8 w-full max-w-md">
                         <label className="text-white/50 text-xs mb-2 block">Enter Groq API key for live demo (optional)</label>
-                        <input 
+                        <input suppressHydrationWarning 
                           type="password" 
                           value={apiKey}
                           onChange={(e) => setApiKey(e.target.value)}
@@ -280,7 +280,7 @@ export default function Home() {
                     <div className="flex flex-col items-center justify-center h-full gap-8 animate-in slide-in-from-right-4 duration-500">
                       <h3 className="text-2xl font-bold text-white text-center">Choose Your Output</h3>
                       <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
-                        <button 
+                        <button suppressHydrationWarning 
                           onClick={() => setSchemaMode("standup")}
                           className={cn("flex-1 p-6 rounded-xl border flex flex-col items-center gap-3 transition-all", schemaMode === "standup" ? "bg-distill-violet/10 border-distill-violet" : "bg-black border-white/10 hover:border-white/30")}
                         >
@@ -288,7 +288,7 @@ export default function Home() {
                           <span className="text-white font-medium">Standup Mode</span>
                           <span className="text-white/40 text-xs text-center">Extracts Tasks, Bugs, Blockers</span>
                         </button>
-                        <button 
+                        <button suppressHydrationWarning 
                           onClick={() => setSchemaMode("retro")}
                           className={cn("flex-1 p-6 rounded-xl border flex flex-col items-center gap-3 transition-all", schemaMode === "retro" ? "bg-distill-core/10 border-distill-core" : "bg-black border-white/10 hover:border-white/30")}
                         >
@@ -298,8 +298,8 @@ export default function Home() {
                         </button>
                       </div>
                       <div className="flex gap-4 mt-4">
-                        <button onClick={() => setDemoStep(1)} className="px-6 py-2 rounded-lg text-white/50 hover:text-white transition-colors">Back</button>
-                        <button onClick={handleProcess} className="px-8 py-2 rounded-lg bg-distill-violet text-white font-bold hover:bg-distill-violet/80 transition-colors shadow-[0_0_20px_rgba(72,38,185,0.4)]">Process Audio</button>
+                        <button suppressHydrationWarning onClick={() => setDemoStep(1)} className="px-6 py-2 rounded-lg text-white/50 hover:text-white transition-colors">Back</button>
+                        <button suppressHydrationWarning onClick={handleProcess} className="px-8 py-2 rounded-lg bg-distill-violet text-white font-bold hover:bg-distill-violet/80 transition-colors shadow-[0_0_20px_rgba(72,38,185,0.4)]">Process Audio</button>
                       </div>
                     </div>
                   )}
@@ -323,7 +323,7 @@ export default function Home() {
                     <div className="flex flex-col h-full gap-6 animate-in slide-in-from-bottom-4 duration-500">
                       <div className="flex justify-between items-center">
                         <h3 className="text-xl font-bold text-white">Extraction Complete</h3>
-                        <button onClick={() => setDemoStep(1)} className="text-xs text-white/40 hover:text-white transition-colors underline">Start Over</button>
+                        <button suppressHydrationWarning onClick={() => setDemoStep(1)} className="text-xs text-white/40 hover:text-white transition-colors underline">Start Over</button>
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
@@ -364,7 +364,7 @@ export default function Home() {
                             Self-Host
                           </a>
                         </div>
-                        <button 
+                        <button suppressHydrationWarning 
                           onClick={() => setShowJiraModal(true)}
                           className="px-6 py-2.5 rounded-lg bg-[#0052CC] text-white font-bold hover:bg-[#0047b3] transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shadow-[0_0_15px_rgba(0,82,204,0.4)]"
                         >
@@ -622,7 +622,7 @@ export default function Home() {
                     <span className="text-distill-core font-sans text-sm">Advanced analytics</span>
                   </div>
                 </div>
-                <button onClick={() => openWaitlist("pro")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
+                <button suppressHydrationWarning onClick={() => openWaitlist("pro")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
                   Notify Me &rarr;
                 </button>
               </div>
@@ -662,7 +662,7 @@ export default function Home() {
                     <span className="text-white/30 font-sans text-sm">SAML SSO (future)</span>
                   </div>
                 </div>
-                <button onClick={() => openWaitlist("team")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
+                <button suppressHydrationWarning onClick={() => openWaitlist("team")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
                   Join Waitlist &rarr;
                 </button>
               </div>
@@ -749,7 +749,7 @@ export default function Home() {
               <span className="text-xs text-distill-muted/60 font-sans">Last updated: May 2026 • v2.0.0 • Built solo with AI by @Jeetheshwar</span>
             </div>
             <div className="flex items-center gap-6">
-               <a href="https://x.com/Jeetheshwar" target="_blank" rel="noopener noreferrer" className="text-distill-muted hover:text-white transition-colors">
+               <a href="https://x.com/Jeetheshwar7" target="_blank" rel="noopener noreferrer" className="text-distill-muted hover:text-white transition-colors">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                </a>
                <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noopener noreferrer" className="text-distill-muted hover:text-white transition-colors">
@@ -771,14 +771,14 @@ export default function Home() {
                 </div>
                 <h3 className="text-white font-medium">Create 2 issues in Jira</h3>
               </div>
-              <button onClick={() => setShowJiraModal(false)} className="text-white/50 hover:text-white"><Square className="w-5 h-5" /></button>
+              <button suppressHydrationWarning onClick={() => setShowJiraModal(false)} className="text-white/50 hover:text-white"><Square className="w-5 h-5" /></button>
             </div>
             
             <div className="p-6 overflow-y-auto max-h-[60vh] flex flex-col gap-4">
               {sampleJson.extracted_tickets.map((ticket, i) => (
                 <div key={i} className="bg-[#22272B] p-4 rounded-lg border border-white/5">
                   <div className="flex justify-between mb-2">
-                    <input type="text" defaultValue={ticket.title} className="bg-transparent border-none text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 w-full" />
+                    <input suppressHydrationWarning type="text" defaultValue={ticket.title} className="bg-transparent border-none text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 w-full" />
                   </div>
                   <textarea defaultValue={ticket.description} className="w-full bg-[#1D2125] border border-white/10 rounded p-2 text-white/70 text-sm mb-3 h-20 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                   <div className="flex gap-4">
@@ -797,8 +797,8 @@ export default function Home() {
             </div>
 
             <div className="p-4 border-t border-white/10 flex justify-end gap-3 bg-[#22272B]">
-              <button onClick={() => setShowJiraModal(false)} className="px-4 py-2 text-white/70 hover:text-white text-sm font-medium">Cancel</button>
-              <button onClick={() => setShowJiraModal(false)} className="px-4 py-2 bg-[#0052CC] text-white rounded text-sm font-medium hover:bg-[#0047b3]">Create Issues</button>
+              <button suppressHydrationWarning onClick={() => setShowJiraModal(false)} className="px-4 py-2 text-white/70 hover:text-white text-sm font-medium">Cancel</button>
+              <button suppressHydrationWarning onClick={() => setShowJiraModal(false)} className="px-4 py-2 bg-[#0052CC] text-white rounded text-sm font-medium hover:bg-[#0047b3]">Create Issues</button>
             </div>
           </div>
         </div>

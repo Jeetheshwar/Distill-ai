@@ -15,39 +15,61 @@ export async function POST(request: NextRequest) {
 
     // 2. Parse Multipart FormData
     const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const file = formData.get("file") as File | null;
     const schema = formData.get("schema");
+    const providedTranscript = formData.get("transcript") as string | null;
+    const answers = formData.get("answers") as string | null;
 
-    if (!file) {
+    if (!file && !providedTranscript) {
       return NextResponse.json(
-        { error: "Bad Request. Audio file binary missing from payload." },
+        { error: "Bad Request. Audio file binary or transcript missing from payload." },
         { status: 400 }
       );
     }
     // 3. Live Groq Transcription (whisper-large-v3-turbo)
     const { default: Groq } = await import("groq-sdk");
     
-    let transcript = "Mocked local transcription: The team discussed migrating the main database to PostgreSQL 16. Sarah will lead the migration effort because of her prior experience with PgBouncer. It is a high priority task.";
+    let transcript = providedTranscript || "Mocked local transcription: The team discussed migrating the main database to PostgreSQL 16. Sarah will lead the migration effort because of her prior experience with PgBouncer. It is a high priority task.";
     let durationSeconds = 45;
     let extractedEntities: any = [];
 
     if (apiKey && apiKey !== "sk_mock_pro_key_9281" && apiKey.startsWith("gsk_")) {
       const groq = new Groq({ apiKey: apiKey });
       
-      const transcription = await groq.audio.transcriptions.create({
-        file: file,
-        model: "whisper-large-v3-turbo",
-      });
+      if (!providedTranscript && file) {
+        const transcription = await groq.audio.transcriptions.create({
+          file: file,
+          model: "whisper-large-v3-turbo",
+        });
 
-      transcript = transcription.text || "No speech detected.";
+        transcript = transcription.text?.trim() || "No speech detected.";
+        console.log("Transcribed text:", transcript);
+      } else {
+        console.log("Using provided transcript:", transcript);
+      }
+
+      // Short-circuit if no speech or common Whisper hallucinations for silence
+      const lowerTranscript = transcript.toLowerCase();
+      if (
+        transcript === "No speech detected." || 
+        transcript.length < 5 ||
+        lowerTranscript.includes("thank you.") ||
+        lowerTranscript.includes("thanks for watching") ||
+        lowerTranscript.includes("amara.org")
+      ) {
+        extractedEntities = {};
+      } else {
 
       // 4. Live JSON Extraction (llama3-8b-8192)
       try {
         let systemPrompt = "";
         if (schema === "standup") {
           systemPrompt = `You are an expert AI extraction system. Read the audio transcript of a daily standup and extract tasks, bugs, and blockers. 
+If the transcript is too vague to confidently create tickets (e.g. missing what the task actually is, or who is doing it), you MUST return "requires_clarification": true and a list of "clarification_questions" to ask the user. DO NOT guess the task if it's vague.
 You MUST respond with a valid JSON object matching this schema:
 {
+  "requires_clarification": boolean,
+  "clarification_questions": ["array of strings (questions to ask the user)"],
   "sprint_id": "string (optional)",
   "date": "ISO date",
   "participants": ["array of names"],
@@ -70,14 +92,16 @@ You MUST respond with a valid JSON object matching this schema:
       "timestamp_start": "milliseconds",
       "timestamp_end": "milliseconds",
       "labels": ["standup", "auto-generated"]
-    }
-  ]
-}`;
+}
+IMPORTANT: If the transcript contains no actionable tasks, or says 'No speech detected', return empty arrays. DO NOT invent or hallucinate tickets.`;
         } else {
           // Retro mode
           systemPrompt = `You are an expert AI extraction system. Read the audio transcript of a sprint retrospective.
+If the transcript is too vague to confidently create action items (e.g. missing details on what needs to be improved), you MUST return "requires_clarification": true and a list of "clarification_questions" to ask the user. DO NOT guess if it's vague.
 You MUST respond with a valid JSON object matching this schema:
 {
+  "requires_clarification": boolean,
+  "clarification_questions": ["array of strings (questions to ask the user)"],
   "sprint_id": "string",
   "date": "ISO date",
   "retro_categories": {
@@ -92,15 +116,21 @@ You MUST respond with a valid JSON object matching this schema:
       }
     ]
   }
-}`;
+}
+IMPORTANT: If the transcript contains no actionable feedback, or says 'No speech detected', return empty arrays. DO NOT invent or hallucinate items.`;
+        }
+
+        let userPrompt = transcript;
+        if (answers) {
+          userPrompt += `\n\n[USER CLARIFICATIONS PROVIDED]:\n${answers}\n\nPlease generate the final tickets incorporating these clarifications. Ensure "requires_clarification" is false if enough context is now provided.`;
         }
 
         const chatCompletion = await groq.chat.completions.create({
           messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: transcript }
+            { role: "user", content: userPrompt }
           ],
-          model: "llama3-8b-8192",
+          model: "llama-3.1-8b-instant",
           response_format: { type: "json_object" },
         });
 
@@ -110,6 +140,7 @@ You MUST respond with a valid JSON object matching this schema:
         console.error("LLM Extraction failed:", llmError);
         extractedEntities = { error: "JSON Extraction failed." };
       }
+      } // Close the if (!hallucination) block
     } else {
       // Mocked extraction for local testing and open source deployments without keys
       extractedEntities = [
@@ -129,7 +160,7 @@ You MUST respond with a valid JSON object matching this schema:
     if (user) {
       await supabase.from("extractions").insert({
         user_id: user.id,
-        source_name: file.name,
+        source_name: file ? file.name : "Clarification Submission",
         duration_seconds: durationSeconds,
         model_used: "whisper-large-v3-turbo",
         schema_applied: schema || "linear_feature_request",
@@ -142,8 +173,8 @@ You MUST respond with a valid JSON object matching this schema:
       id: `ext_${Math.random().toString(36).substring(2, 9)}`,
       status: "completed",
       metadata: {
-        source: file.name,
-        size_bytes: file.size,
+        source: file ? file.name : "Clarification Submission",
+        size_bytes: file ? file.size : Buffer.from(transcript).length,
         duration_seconds: durationSeconds,
         model: "whisper-large-v3-turbo",
         schema_applied: schema || "linear_feature_request"
@@ -157,10 +188,14 @@ You MUST respond with a valid JSON object matching this schema:
 
     // 8. Return Live Artifacts
     return NextResponse.json(responsePayload);
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("Extraction Pipeline Error:", error);
+    
+    // Extract actual error message from API failures (like Groq Cloudflare blocks)
+    const errorMessage = error?.error?.error?.message || error?.message || "Internal Server Error during extraction sequence.";
+    
     return NextResponse.json(
-      { error: "Internal Server Error during extraction sequence." },
+      { error: errorMessage },
       { status: 500 }
     );
   }

@@ -8,13 +8,16 @@ import { cn } from "@/lib/utils";
 
 export default function TranscribePipelinePage() {
   const [activeTab, setActiveTab] = useState<"new" | "history" | "schema">("new");
-  const [stage, setStage] = useState<"idle" | "processing" | "finished">("idle");
+  const [stage, setStage] = useState<"idle" | "processing" | "clarifying" | "finished">("idle");
   const [logs, setLogs] = useState<string[]>([]);
   const [resultPayload, setResultPayload] = useState<any>(null);
   const [hasKey, setHasKey] = useState(true);
   const [schemaMode, setSchemaMode] = useState<"standup" | "retro">("standup");
   const [showJiraModal, setShowJiraModal] = useState(false);
   const [isSendingWebhook, setIsSendingWebhook] = useState(false);
+  const [clarificationQuestions, setClarificationQuestions] = useState<string[]>([]);
+  const [clarificationAnswers, setClarificationAnswers] = useState<string[]>([]);
+  const [currentTranscript, setCurrentTranscript] = useState<string>("");
 
   useEffect(() => {
     const key = localStorage.getItem("groq_api_key");
@@ -64,10 +67,71 @@ export default function TranscribePipelinePage() {
       const data = await res.json();
       
       if (res.ok) {
-        setResultPayload(data);
-        // Guarantee terminal visually finishes if server responds faster than 2 seconds
+        if (data.entities?.requires_clarification) {
+          setCurrentTranscript(data.transcript);
+          setClarificationQuestions(data.entities.clarification_questions || []);
+          setClarificationAnswers(new Array((data.entities.clarification_questions || []).length).fill(""));
+          clearInterval(interval);
+          setTimeout(() => setStage("clarifying"), 800);
+        } else {
+          setResultPayload(data);
+          // Guarantee terminal visually finishes if server responds faster than 2 seconds
+          clearInterval(interval);
+          setTimeout(() => setStage("finished"), 800);
+        }
+      } else {
         clearInterval(interval);
-        setTimeout(() => setStage("finished"), 800);
+        setLogs((prev) => [...prev, `[ERROR] ${data.error}`]);
+      }
+    } catch (err) {
+      clearInterval(interval);
+      setLogs((prev) => [...prev, "[ERROR] Connection to API closed dynamically."]);
+    }
+  };
+
+  const submitClarifications = async () => {
+    setStage("processing");
+    setLogs([]);
+    setResultPayload(null);
+
+    let currentIndex = 0;
+    const interval = setInterval(() => {
+      if (currentIndex < logQueue.current.length) {
+        setLogs((prev) => [...prev, logQueue.current[currentIndex]]);
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 400);
+
+    const formData = new FormData();
+    formData.append("schema", schemaMode);
+    formData.append("transcript", currentTranscript);
+    
+    const answersStr = clarificationQuestions.map((q, i) => `Q: ${q}\nA: ${clarificationAnswers[i]}`).join('\n\n');
+    formData.append("answers", answersStr);
+
+    try {
+      const key = localStorage.getItem("groq_api_key") || "sk_mock_pro_key_9281";
+      const res = await fetch("/api/extract", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${key}` },
+        body: formData
+      });
+
+      const data = await res.json();
+      
+      if (res.ok) {
+        if (data.entities?.requires_clarification) {
+           setClarificationQuestions(data.entities.clarification_questions || []);
+           setClarificationAnswers(new Array((data.entities.clarification_questions || []).length).fill(""));
+           clearInterval(interval);
+           setTimeout(() => setStage("clarifying"), 800);
+        } else {
+           setResultPayload(data);
+           clearInterval(interval);
+           setTimeout(() => setStage("finished"), 800);
+        }
       } else {
         clearInterval(interval);
         setLogs((prev) => [...prev, `[ERROR] ${data.error}`]);
@@ -140,14 +204,19 @@ export default function TranscribePipelinePage() {
               </div>
               <div className="flex flex-col gap-2 w-64">
                 <label className="text-xs font-mono text-distill-muted uppercase tracking-wider">Target Schema</label>
-                <select 
-                  value={schemaMode}
-                  onChange={(e) => setSchemaMode(e.target.value as any)}
-                  className="w-full bg-[#0a0710] border border-white/10 rounded-md p-2 text-sm text-foreground font-mono focus:outline-none focus:border-distill-violet/50"
-                >
-                  <option value="standup">Standup Mode</option>
-                  <option value="retro">Sprint Retro Mode</option>
-                </select>
+                <div className="relative">
+                  <select 
+                    value={schemaMode}
+                    onChange={(e) => setSchemaMode(e.target.value as any)}
+                    className="w-full bg-[#0a0710] border border-white/10 rounded-md p-2 pr-8 text-sm text-foreground font-mono focus:outline-none focus:border-distill-violet/50 appearance-none cursor-pointer"
+                  >
+                    <option value="standup" className="bg-[#111] text-white py-2">Standup Mode</option>
+                    <option value="retro" className="bg-[#111] text-white py-2">Sprint Retro Mode</option>
+                  </select>
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
+                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -224,6 +293,44 @@ export default function TranscribePipelinePage() {
               <div className="animate-pulse w-3 h-5 bg-white/50 mt-1" />
             </div>
           </div>
+        </BlurReveal>
+      )}
+
+      {/* STAGE B.5: CLARIFICATION */}
+      {stage === "clarifying" && (
+        <BlurReveal duration={0.8}>
+           <div className="flex flex-col gap-6 relative w-full justify-center max-w-3xl mx-auto mt-10">
+             <div className="flex items-center gap-3">
+               <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center border border-orange-500/50">
+                 <svg className="w-5 h-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+               </div>
+               <h2 className="text-2xl font-bold text-foreground font-sans tracking-tight">Clarification Needed</h2>
+             </div>
+             <p className="text-distill-muted">The audio was too vague to generate accurate tickets. Please answer the following questions so we don't have to guess.</p>
+             
+             <div className="flex flex-col gap-6 mt-4">
+               {clarificationQuestions.map((q, i) => (
+                 <div key={i} className="flex flex-col gap-2">
+                   <label className="text-sm font-medium text-white">{q}</label>
+                   <input
+                     type="text"
+                     value={clarificationAnswers[i] || ""}
+                     onChange={(e) => {
+                       const newAnswers = [...clarificationAnswers];
+                       newAnswers[i] = e.target.value;
+                       setClarificationAnswers(newAnswers);
+                     }}
+                     className="w-full bg-[#0a0710] border border-white/10 rounded-md p-3 text-sm text-white focus:outline-none focus:border-distill-violet focus:ring-1 focus:ring-distill-violet"
+                     placeholder="Your answer..."
+                   />
+                 </div>
+               ))}
+               <div className="flex justify-end gap-4 mt-2">
+                 <button onClick={() => setStage("idle")} className="px-6 py-2 border border-white/10 rounded-md font-sans text-sm hover:bg-white/5 transition-colors text-white">Cancel</button>
+                 <button onClick={submitClarifications} className="px-6 py-2 bg-distill-core text-white rounded-md font-sans text-sm font-bold hover:bg-distill-violet transition-colors">Submit Clarifications</button>
+               </div>
+             </div>
+           </div>
         </BlurReveal>
       )}
 

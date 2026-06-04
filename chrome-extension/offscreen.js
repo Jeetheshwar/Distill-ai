@@ -28,6 +28,12 @@ async function startRecording(streamId) {
       }
     });
 
+    // CRITICAL: Play the audio back to the user so they can still hear the meeting!
+    // When tabCapture intercepts the stream, it mutes the tab by default.
+    const audioCtx = new AudioContext();
+    const source = audioCtx.createMediaStreamSource(stream);
+    source.connect(audioCtx.destination);
+
     audioChunks = [];
     mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
 
