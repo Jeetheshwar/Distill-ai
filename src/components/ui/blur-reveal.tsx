@@ -15,12 +15,12 @@ export function BlurReveal({
   children,
   className,
   delay = 0,
-  duration = 0.8,
+  duration = 0.5,
 }: BlurRevealProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, filter: "blur(10px)", y: 10 }}
-      whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{
         duration: duration,

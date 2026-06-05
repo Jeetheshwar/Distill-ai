@@ -194,21 +194,21 @@ export default function Home() {
           <BlurReveal duration={1.2} delay={0.6}>
             <div className="mt-12 flex flex-col items-center gap-4">
               <span className="text-xs font-mono text-white/60 uppercase tracking-widest">Natively Integrates With</span>
-              <div className="flex items-center gap-8 md:gap-12 opacity-80 hover:opacity-100 transition-opacity duration-500">
+              <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 opacity-100 transition-opacity duration-500">
                 {/* Jira */}
                 <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
                   <svg className="w-6 h-6 text-[#0052CC]" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 10.37h-3.3v-3.3c0-.66-.54-1.2-1.2-1.2h-3.3c-.66 0-1.2.54-1.2 1.2v3.3h3.3c.66 0 1.2.54 1.2 1.2v3.3h-3.3c-.66 0-1.2.54-1.2 1.2v3.3c0 .66.54 1.2 1.2 1.2h3.3c.66 0 1.2-.54 1.2-1.2v-3.3h3.3c.66 0 1.2-.54 1.2-1.2v-3.3c0-.66-.54-1.2-1.2-1.2z"/></svg>
-                  <span className="font-bold text-white tracking-tight hidden sm:inline">Jira</span>
+                  <span className="font-bold text-white tracking-tight inline">Jira</span>
                 </div>
                 {/* Linear */}
                 <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
                   <svg className="w-6 h-6 text-[#5E6AD2]" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2H3C2.4 2 2 2.4 2 3v10.2c0 .3.1.5.3.7l9.8 9.8c.4.4 1 .4 1.4 0l10.2-10.2c.4-.4.4-1 0-1.4L13.9 2.3C13.7 2.1 13.5 2 13.2 2zM12 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                  <span className="font-bold text-white tracking-tight hidden sm:inline">Linear</span>
+                  <span className="font-bold text-white tracking-tight inline">Linear</span>
                 </div>
                 {/* Slack */}
                 <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
                   <svg className="w-6 h-6 text-[#E01E5A]" fill="currentColor" viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1 2.521-2.52A2.528 2.528 0 0 1 13.876 5.042a2.527 2.527 0 0 1-2.521 2.52h-2.52v-2.52zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.527 2.527 0 0 1-2.522 2.52h-2.522v-2.52zM17.688 8.834a2.527 2.527 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1-2.523 2.52A2.528 2.528 0 0 1 10.12 18.956a2.527 2.527 0 0 1 2.522-2.52h2.523v2.52zM15.165 17.688a2.527 2.527 0 0 1-2.523-2.521 2.527 2.527 0 0 1 2.523-2.521h6.312A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.521h-6.313z"/></svg>
-                  <span className="font-bold text-white tracking-tight hidden sm:inline">Slack</span>
+                  <span className="font-bold text-white tracking-tight inline">Slack</span>
                 </div>
               </div>
             </div>
