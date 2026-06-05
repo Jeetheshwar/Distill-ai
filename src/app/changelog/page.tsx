@@ -21,7 +21,7 @@ export default function ChangelogPage() {
       changes: [
         "Introduced Team Workspaces for shared webhook management.",
         "Added support for completely custom JSON extraction schemas.",
-        "Improved Groq Llama-3 parsing reliability to 99.7%."
+        "Improved Groq Llama-3.3 parsing reliability to 99.7%."
       ]
     },
     {

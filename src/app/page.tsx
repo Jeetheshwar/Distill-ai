@@ -127,7 +127,7 @@ export default function Home() {
     },
     {
       question: "Which models are you using under the hood?",
-      answer: "We utilize whisper-large-v3-turbo for ASR via the Groq API, paired with Llama 3 8B to guarantee pure, structural JSON output."
+      answer: "We utilize whisper-large-v3-turbo for ASR via the Groq API, paired with Llama 3.3 70B Versatile to guarantee pure, structural JSON output."
     },
     {
       question: "Are my audio files stored securely?",
@@ -154,7 +154,7 @@ export default function Home() {
           <BlurReveal duration={1.2}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-xl shadow-[0_0_30px_rgba(72,38,185,0.3)] translate-y-[5px]">
               <span className="flex h-2 w-2 rounded-full bg-distill-core animate-pulse shadow-[0_0_10px_var(--distill-core)]"></span>
-              <span className="text-sm font-mono text-white/90">Llama 3.1 Inference Online <span className="text-white/40 ml-2 hidden sm:inline">• 2,000+ developers</span></span>
+              <span className="text-sm font-mono text-white/90">Llama 3.3 Inference Online <span className="text-white/40 ml-2 hidden sm:inline">• 2,000+ developers</span></span>
             </div>
           </BlurReveal>
 
@@ -560,7 +560,7 @@ export default function Home() {
                     <span className="text-black/40 text-xs uppercase tracking-[0.2em] font-mono">Engineered With</span>
                     <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 hover:opacity-100 transition-opacity duration-500">
                       <span className="text-xl font-bold font-sans text-black tracking-tight">Groq LPU™</span>
-                      <span className="text-xl font-bold font-sans text-black tracking-tight">Llama 3.1</span>
+                      <span className="text-xl font-bold font-sans text-black tracking-tight">Llama 3.3</span>
                       <span className="text-xl font-bold font-sans text-black tracking-tight">Whisper v3</span>
                       <span className="text-xl font-bold font-sans text-black tracking-tight">Next.js</span>
                       <span className="text-xl font-bold font-sans text-black tracking-tight">Supabase</span>

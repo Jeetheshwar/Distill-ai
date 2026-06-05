@@ -48,7 +48,7 @@ export default function SecurityPage() {
       ├─► Uses user's Groq API Key
       │
       ▼
-<span className="text-distill-core">Groq Inference API</span> (Whisper-v3 & Llama-3)
+<span className="text-distill-core">Groq Inference API</span> (Whisper-v3 & Llama-3.3)
       │
       ▼
 <span className="text-white">JSON Payload</span> (Tasks, Bugs, Blockers)
