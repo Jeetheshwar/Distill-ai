@@ -14,7 +14,7 @@ export default function BlogPage() {
             <span className="text-xs font-mono text-distill-core tracking-widest uppercase">April 2026</span>
             <h2 className="text-2xl font-bold text-foreground font-sans">Why we abandoned the Cloud for Audio Processing</h2>
             <p className="text-distill-muted leading-relaxed font-sans">
-              The shift from centralized API endpoints to localized Docker execution environments for heavy machine learning tasks.
+              The shift from centralized API endpoints to optimized proxy routing for heavy machine learning tasks.
             </p>
           </div>
         </BlurReveal>

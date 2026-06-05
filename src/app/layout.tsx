@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Sulphur_Point, Anta } from "next/font/google";
+import { Inter, Anta } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar";
 import { BottomBar } from "@/components/layout/bottom-bar";
 
-const sulphurPoint = Sulphur_Point({
-  weight: ["300", "400", "700"],
-  variable: "--font-sans",
+const interFont = Inter({
   subsets: ["latin"],
+  variable: "--font-sans",
 });
 
 
@@ -25,12 +24,12 @@ const sergenaFont = localFont({
 
 export const metadata: Metadata = {
   title: 'Distill AI — Turn Standups into Jira Tickets Automatically',
-  description: 'Upload standup audio, get structured Jira/Linear tickets in 30 seconds. BYOK, zero data retention, open source. Built for agile teams.',
+  description: 'Upload standup audio, get structured Jira/Linear tickets in 30 seconds. BYOK, no audio retention, open source. Built for agile teams.',
   metadataBase: new URL('https://distill-ai-zeta.vercel.app'),
   alternates: { canonical: '/' },
   openGraph: {
     title: 'Distill AI — Turn Standups into Jira Tickets',
-    description: 'Automate the worst part of agile. Upload audio, get tickets. Open source, BYOK, zero data retention.',
+    description: 'Automate the worst part of agile. Upload audio, get tickets. Open source, BYOK, no audio retention.',
     url: 'https://distill-ai-zeta.vercel.app',
     siteName: 'Distill AI',
     images: [
@@ -64,7 +63,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${sulphurPoint.variable} ${antaFont.variable} ${sergenaFont.variable} h-full antialiased`}
+      className={`${interFont.variable} ${antaFont.variable} ${sergenaFont.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body 

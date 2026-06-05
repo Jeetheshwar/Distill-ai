@@ -19,25 +19,25 @@ export default function DocsPage() {
   const codeSnippets = {
     python: `import httpx
 
-# Send an audio buffer directly to Distill's Engine 2.0 FastAPI
+# Send an audio buffer directly to Distill's API
 def extract_ticket(audio_path: str):
     with open(audio_path, 'rb') as f:
         audio_bytes = f.read()
         
     response = httpx.post(
-        "https://api.distill.ai/v1/extract",
+        "https://distill-ai-zeta.vercel.app/api/extract",
         headers={"Authorization": "Bearer YOUR_GROQ_API_KEY"},
         files={"file": ("interview.wav", audio_bytes, "audio/wav")},
-        data={"schema": "linear_feature_request"}
+        data={"schema": "standup"}
     )
     
     return response.json()
 
 print(extract_ticket("ux-sync.wav"))`,
-    curl: `curl -X POST https://api.distill.ai/v1/extract \\
+    curl: `curl -X POST https://distill-ai-zeta.vercel.app/api/extract \\
   -H "Authorization: Bearer YOUR_GROQ_API_KEY" \\
   -F "file=@interview.wav" \\
-  -F "schema=linear_feature_request"`,
+  -F "schema=standup"`,
     js: `const fs = require('fs');
 
 async function extractTicket(audioPath) {
@@ -45,9 +45,9 @@ async function extractTicket(audioPath) {
   
   const form = new FormData();
   form.append('file', fileStream);
-  form.append('schema', 'linear_feature_request');
+  form.append('schema', 'standup');
 
-  const response = await fetch('https://api.distill.ai/v1/extract', {
+  const response = await fetch('https://distill-ai-zeta.vercel.app/api/extract', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer YOUR_GROQ_API_KEY' },
     body: form,
@@ -66,11 +66,7 @@ extractTicket('ux-sync.wav').then(console.log);`
     {
       "type": "feature_request",
       "summary": "Implement Dark Mode across Dashboard charts",
-      "confidence": 0.98,
-      "audio_buffer_anchor": {
-        "start_ms": 124500,
-        "end_ms": 136000
-      }
+      "confidence": 0.98
     }
   ]
 }`;
@@ -100,7 +96,7 @@ extractTicket('ux-sync.wav').then(console.log);`
               <span className="text-distill-core font-mono text-sm tracking-widest uppercase">API Reference</span>
               <h1 className="font-sergena text-5xl md:text-6xl text-foreground">Developer Hub</h1>
               <p className="text-distill-muted text-lg font-sans max-w-2xl mt-2 leading-relaxed">
-                Connect directly to our high-performance FastAPI ingestion endpoints or spin up a local CLI container. Everything goes in unstructured, and comes out as deterministic JSON.
+                Connect directly to our Next.js API route. Everything goes in unstructured, and comes out as structured JSON.
               </p>
               <div className="mt-4 inline-flex w-max items-center gap-2 bg-distill-core/10 border border-distill-core/20 text-distill-core px-4 py-2 rounded-lg font-mono text-sm">
                 <ShieldCheck className="w-4 h-4" />
@@ -167,7 +163,7 @@ extractTicket('ux-sync.wav').then(console.log);`
                 Deterministic Output Architecture
               </h2>
               <p className="text-distill-muted font-sans text-base">
-                Engine 2.0 strictly constrains generation. The resultant JSON is guaranteed to meet your required Schema, providing an <code className="text-white px-1">audio_buffer_anchor</code> linking exact millisecond timestamps back to the source tensor.
+                The extraction route uses structured generation. The resultant JSON conforms to your required Schema, providing clear entity extraction.
               </p>
 
               {/* JSON preview */}

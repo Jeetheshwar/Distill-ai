@@ -21,6 +21,7 @@ export default function Home() {
   const [apiKey, setApiKey] = useState("");
   const [processingText, setProcessingText] = useState("Transcribing with Groq Whisper...");
   const [showJiraModal, setShowJiraModal] = useState(false);
+  const [streamedJson, setStreamedJson] = useState("");
   
   // Waitlist State
   const [waitlistOpen, setWaitlistOpen] = useState(false);
@@ -101,6 +102,24 @@ export default function Home() {
     ]
   };
 
+  useEffect(() => {
+    if (demoStep === 4) {
+      setStreamedJson("");
+      let currentIndex = 0;
+      const fullString = JSON.stringify(sampleJson, null, 2);
+      const interval = setInterval(() => {
+        currentIndex += 8;
+        if (currentIndex <= fullString.length) {
+          setStreamedJson(fullString.slice(0, currentIndex));
+        } else {
+          setStreamedJson(fullString);
+          clearInterval(interval);
+        }
+      }, 15);
+      return () => clearInterval(interval);
+    }
+  }, [demoStep]);
+
   const faqs = [
     {
       question: "How does Bring Your Own Key (BYOK) work?",
@@ -128,27 +147,14 @@ export default function Home() {
         {/* Triple-Node Massive Vibrant U-Shape Glow managed by Component */}
         <Aura variant="hero" />
 
-        {/* Animated Waveform Visualization (CSS only) */}
-        <div className="absolute top-1/2 left-0 right-0 h-32 -translate-y-1/2 flex items-center justify-center gap-1 opacity-20 pointer-events-none z-0">
-          {[...Array(40)].map((_, i) => (
-            <div 
-              key={i} 
-              className="w-1 bg-distill-violet rounded-full animate-waveform"
-              style={{
-                height: `${Math.max(10, (Math.sin(i * 12.34) * 0.5 + 0.5) * 80).toFixed(2)}%`,
-                animationDelay: `${(i * 0.05).toFixed(2)}s`,
-                animationDuration: `${(0.8 + (Math.cos(i * 56.78) * 0.5 + 0.5) * 0.5).toFixed(2)}s`
-              }}
-            />
-          ))}
-        </div>
+
 
         <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto gap-5 pt-20 md:pt-0">
           
           <BlurReveal duration={1.2}>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-[0_0_20px_rgba(72,38,185,0.2)] translate-y-[5px]">
-              <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span className="text-sm font-medium text-white/80">Open Source • Free Forever • 2,000+ developers</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-xl shadow-[0_0_30px_rgba(72,38,185,0.3)] translate-y-[5px]">
+              <span className="flex h-2 w-2 rounded-full bg-distill-core animate-pulse shadow-[0_0_10px_var(--distill-core)]"></span>
+              <span className="text-sm font-mono text-white/90">Llama 3.1 Inference Online <span className="text-white/40 ml-2 hidden sm:inline">• 2,000+ developers</span></span>
             </div>
           </BlurReveal>
 
@@ -156,27 +162,55 @@ export default function Home() {
             <BlurReveal duration={1.2} delay={0.1}>
               <h1 className="font-sergena text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1]">
                 <span className="block text-foreground">Turn Standup Recordings</span>
-                <span className="block text-distill-muted mt-2">into Jira Tickets in 30 Seconds</span>
+                <span className="block text-distill-muted mt-2">
+                  into <span className="bg-gradient-to-br from-[#0052CC] to-distill-violet bg-clip-text text-transparent drop-shadow-lg">Jira Tickets</span> in <span className="bg-gradient-to-br from-distill-core to-white bg-clip-text text-transparent drop-shadow-lg">30 Seconds</span>
+                </span>
               </h1>
             </BlurReveal>
           </div>
 
           <BlurReveal duration={1.2} delay={0.2}>
             <p className="text-lg md:text-xl text-distill-muted leading-relaxed max-w-2xl text-white/70">
-              Upload your daily standup audio. Distill auto-extracts tasks, bugs, and blockers — then creates Jira/Linear tickets automatically. BYOK. Zero data retention.
+              Upload your daily standup audio. Distill auto-extracts tasks, bugs, and blockers — then creates Jira/Linear tickets automatically. BYOK. We do not persist audio files.
             </p>
           </BlurReveal>
 
           <BlurReveal duration={1.2} delay={0.4}>
             <div className="flex flex-col sm:flex-row items-center gap-4 mt-2 justify-center">
-              <Link href="#demo" onClick={(e) => { e.preventDefault(); document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' }); }} className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-distill-core text-background font-bold tracking-wide hover:bg-white transition-all shadow-[0_0_30px_rgba(228,221,244,0.4)] hover:scale-105 group w-full sm:w-auto">
-                Try Free Demo
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              <div className="relative group w-full sm:w-auto">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-distill-core via-distill-violet to-distill-core rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                <Link href="#demo" onClick={(e) => { e.preventDefault(); document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' }); }} className="relative inline-flex items-center justify-center px-8 py-4 rounded-full bg-black border border-white/10 text-white font-bold tracking-wide transition-all group-hover:bg-white/5 w-full sm:w-auto overflow-hidden">
+                  Try Free Demo
+                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform text-distill-core" />
+                </Link>
+              </div>
               <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-medium tracking-wide hover:bg-white/10 transition-colors w-full sm:w-auto">
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
                 View on GitHub
               </a>
+            </div>
+          </BlurReveal>
+
+          <BlurReveal duration={1.2} delay={0.6}>
+            <div className="mt-12 flex flex-col items-center gap-4">
+              <span className="text-xs font-mono text-white/60 uppercase tracking-widest">Natively Integrates With</span>
+              <div className="flex items-center gap-8 md:gap-12 opacity-80 hover:opacity-100 transition-opacity duration-500">
+                {/* Jira */}
+                <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
+                  <svg className="w-6 h-6 text-[#0052CC]" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 10.37h-3.3v-3.3c0-.66-.54-1.2-1.2-1.2h-3.3c-.66 0-1.2.54-1.2 1.2v3.3h3.3c.66 0 1.2.54 1.2 1.2v3.3h-3.3c-.66 0-1.2.54-1.2 1.2v3.3c0 .66.54 1.2 1.2 1.2h3.3c.66 0 1.2-.54 1.2-1.2v-3.3h3.3c.66 0 1.2-.54 1.2-1.2v-3.3c0-.66-.54-1.2-1.2-1.2z"/></svg>
+                  <span className="font-bold text-white tracking-tight hidden sm:inline">Jira</span>
+                </div>
+                {/* Linear */}
+                <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
+                  <svg className="w-6 h-6 text-[#5E6AD2]" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2H3C2.4 2 2 2.4 2 3v10.2c0 .3.1.5.3.7l9.8 9.8c.4.4 1 .4 1.4 0l10.2-10.2c.4-.4.4-1 0-1.4L13.9 2.3C13.7 2.1 13.5 2 13.2 2zM12 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                  <span className="font-bold text-white tracking-tight hidden sm:inline">Linear</span>
+                </div>
+                {/* Slack */}
+                <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
+                  <svg className="w-6 h-6 text-[#E01E5A]" fill="currentColor" viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1 2.521-2.52A2.528 2.528 0 0 1 13.876 5.042a2.527 2.527 0 0 1-2.521 2.52h-2.52v-2.52zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.527 2.527 0 0 1-2.522 2.52h-2.522v-2.52zM17.688 8.834a2.527 2.527 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1-2.523 2.52A2.528 2.528 0 0 1 10.12 18.956a2.527 2.527 0 0 1 2.522-2.52h2.523v2.52zM15.165 17.688a2.527 2.527 0 0 1-2.523-2.521 2.527 2.527 0 0 1 2.523-2.521h6.312A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.521h-6.313z"/></svg>
+                  <span className="font-bold text-white tracking-tight hidden sm:inline">Slack</span>
+                </div>
+              </div>
             </div>
           </BlurReveal>
         </div>
@@ -216,19 +250,29 @@ export default function Home() {
             </div>
 
             <BlurReveal duration={1} delay={0.3}>
-              <div className="w-full rounded-2xl border border-white/10 bg-black/60 backdrop-blur-3xl shadow-[0_0_80px_rgba(72,38,185,0.1)] overflow-hidden min-h-[400px] flex flex-col">
-                {/* Header */}
-                <div className="h-12 w-full bg-white/[0.02] border-b border-white/5 flex items-center px-6 gap-4">
-                   <div className="flex gap-2.5">
-                      <div className="w-3 h-3 rounded-full bg-white/20" />
-                      <div className="w-3 h-3 rounded-full bg-white/20" />
-                      <div className="w-3 h-3 rounded-full bg-white/20" />
+              <div className="relative group w-full">
+                {/* Ultra Premium Glow Background */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-distill-violet via-[#0052CC] to-distill-core rounded-[2.2rem] blur-2xl opacity-30 group-hover:opacity-60 transition duration-1000 z-0"></div>
+                
+                <div className="w-full rounded-[2rem] border border-white/10 bg-gradient-to-b from-[#0a0710]/95 to-[#000000]/95 backdrop-blur-3xl shadow-[0_40px_100px_-20px_rgba(72,38,185,0.3)] overflow-hidden min-h-[650px] flex flex-col relative ring-1 ring-white/5 z-10">
+                {/* Premium Top Glow Line */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-distill-violet/60 to-transparent z-10" />
+                
+                {/* Mac-style Title Bar */}
+                <div className="h-14 w-full bg-white/[0.01] border-b border-white/10 flex items-center px-6 gap-4 relative z-10">
+                   <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80 border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.4)]" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80 border border-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.4)]" />
+                      <div className="w-3 h-3 rounded-full bg-green-500/80 border border-green-500/50 shadow-[0_0_10px_rgba(34,197,94,0.4)]" />
                    </div>
-                   <div className="flex items-center gap-2 ml-4 overflow-hidden">
+                   <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 text-xs font-mono text-white/30 tracking-widest uppercase">
+                     sandbox.tsx <span className="w-1.5 h-1.5 rounded-full bg-distill-violet/50" />
+                   </div>
+                   <div className="flex items-center gap-2 ml-auto overflow-hidden">
                      {[1,2,3,4].map(s => (
                         <div key={s} className="flex items-center gap-2">
-                          <span className={cn("text-xs font-mono px-2 py-1 rounded", demoStep === s ? "bg-distill-violet/20 text-distill-violet" : "text-white/30")}>
-                            Step {s}
+                          <span className={cn("text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded transition-colors", demoStep === s ? "bg-distill-violet/20 text-distill-violet ring-1 ring-distill-violet/30" : "text-white/20")}>
+                            {s}
                           </span>
                           {s < 4 && <ArrowRight className="w-3 h-3 text-white/10" />}
                         </div>
@@ -326,9 +370,9 @@ export default function Home() {
                         <button suppressHydrationWarning onClick={() => setDemoStep(1)} className="text-xs text-white/40 hover:text-white transition-colors underline">Start Over</button>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
                         {/* Transcript side */}
-                        <div className="flex flex-col gap-4 border border-white/10 rounded-xl p-6 bg-white/[0.02] overflow-y-auto max-h-[400px]">
+                        <div className="flex flex-col gap-4 border border-white/10 rounded-xl p-6 bg-white/[0.02] overflow-y-auto h-full max-h-[340px]">
                           <h4 className="text-sm font-mono text-white/50 uppercase">Transcript</h4>
                           <div className="text-white/80 text-sm leading-relaxed font-sans space-y-4">
                             <p>
@@ -340,16 +384,19 @@ export default function Home() {
                         </div>
 
                         {/* JSON side */}
-                        <div className="flex flex-col gap-4 border border-white/10 rounded-xl bg-black overflow-hidden max-h-[400px]">
+                        <div className="flex flex-col gap-4 border border-white/10 rounded-xl bg-black overflow-hidden h-full max-h-[340px]">
                           <div className="h-10 bg-white/5 flex items-center px-4 justify-between border-b border-white/10">
                             <span className="text-xs font-mono text-white/50 uppercase">output.json</span>
                             <span className="text-xs font-mono text-green-400">Valid Schema</span>
                           </div>
                           <div className="p-4 overflow-y-auto">
                             <pre className="text-xs font-mono text-white/80">
-{JSON.stringify(sampleJson, null, 2).split('\n').map((line, i) => (
-  <span key={i} className="block hover:bg-white/5 px-2 -mx-2 rounded">{line}</span>
+{streamedJson.split('\n').map((line, i) => (
+  <span key={i} className="block hover:bg-white/5 px-2 -mx-2 rounded h-4">{line}</span>
 ))}
+{streamedJson.length < JSON.stringify(sampleJson, null, 2).length && (
+  <span className="inline-block w-2 h-3 bg-white/80 animate-pulse ml-1 align-middle mt-1" />
+)}
                             </pre>
                           </div>
                         </div>
@@ -357,7 +404,7 @@ export default function Home() {
 
                       <div className="flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-white/10 mt-2 gap-4">
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                          <Link href="/login" className="px-6 py-3 sm:py-2.5 rounded-lg bg-distill-core text-black font-bold hover:bg-white transition-colors text-sm text-center w-full sm:w-auto">
+                          <Link href="/login?signup=true" className="px-6 py-3 sm:py-2.5 rounded-lg bg-distill-core text-black font-bold hover:bg-white transition-colors text-sm text-center w-full sm:w-auto">
                             Get Full Access — Free
                           </Link>
                           <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="px-6 py-3 sm:py-2.5 rounded-lg border border-white/20 text-white font-medium hover:bg-white/10 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto">
@@ -376,6 +423,7 @@ export default function Home() {
                   )}
                 </div>
               </div>
+              </div>
             </BlurReveal>
           </div>
         </section>
@@ -390,7 +438,7 @@ export default function Home() {
           ARCHITECTURE & SOCIAL PROOF WRAPPER (Lavender White)
           ---------------------------------------------
         */}
-        <div className="w-full bg-distill-core rounded-[3rem] overflow-hidden my-24 shadow-[0_0_100px_rgba(228,221,244,0.15)] relative">
+        <div id="features" className="w-full bg-distill-core rounded-[3rem] overflow-hidden my-24 shadow-[0_0_100px_rgba(228,221,244,0.15)] relative">
           
           <section className="relative w-full py-24 px-8 bg-transparent text-black">
             <div className="max-w-6xl mx-auto flex flex-col gap-16">
@@ -401,40 +449,40 @@ export default function Home() {
                   </div>
                 </BlurReveal>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <div className="w-full relative">
                   <BlurReveal duration={1} delay={0.2}>
-                    <div className="flex flex-col items-center text-center gap-6 relative z-10">
-                      <div className="w-20 h-20 rounded-full bg-white border border-black/10 flex items-center justify-center shadow-lg">
-                        <Mic className="w-8 h-8 text-black" />
+                    <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-black/10 border border-black/10 rounded-[2.5rem] bg-white/30 backdrop-blur-2xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.02)]">
+                      
+                      <div className="flex-1 flex flex-col items-start gap-6 p-10 lg:p-14 group">
+                        <div className="w-12 h-12 flex items-center justify-start transition-transform duration-500 group-hover:-translate-y-1">
+                          <Mic className="w-8 h-8 text-black" strokeWidth={1.5} />
+                        </div>
+                        <div className="flex flex-col gap-4">
+                          <h3 className="text-2xl font-bold text-black font-sans tracking-tight leading-snug">BYOK Architecture</h3>
+                          <p className="text-black/60 text-sm leading-relaxed font-medium">Record your standup on Zoom, Meet, or upload audio directly. We don't store your files.</p>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-bold text-black font-mono tracking-tight">BYOK: Your Audio Never Touches Our Servers</h3>
-                        <p className="text-black/60 text-sm max-w-xs">Record your standup on Zoom, Meet, or upload audio directly.</p>
-                      </div>
-                    </div>
-                  </BlurReveal>
 
-                  <BlurReveal duration={1} delay={0.4}>
-                    <div className="flex flex-col items-center text-center gap-6 relative z-10">
-                      <div className="w-20 h-20 rounded-full bg-distill-violet/10 border border-distill-violet/30 flex items-center justify-center shadow-lg">
-                        <Sparkles className="w-8 h-8 text-distill-violet" />
+                      <div className="flex-1 flex flex-col items-start gap-6 p-10 lg:p-14 group">
+                        <div className="w-12 h-12 flex items-center justify-start transition-transform duration-500 group-hover:-translate-y-1">
+                          <Sparkles className="w-8 h-8 text-black" strokeWidth={1.5} />
+                        </div>
+                        <div className="flex flex-col gap-4">
+                          <h3 className="text-2xl font-bold text-black font-sans tracking-tight leading-snug">AI Extraction</h3>
+                          <p className="text-black/60 text-sm leading-relaxed font-medium">AI analyzes the transcript to extract actionable tasks, track bugs, remove blockers, and assign priority securely.</p>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-bold text-black font-mono tracking-tight">Extract Tasks, Bugs, and Blockers in Seconds</h3>
-                        <p className="text-black/60 text-sm max-w-xs">AI extracts tasks, bugs, blockers, and assigns priority securely.</p>
-                      </div>
-                    </div>
-                  </BlurReveal>
 
-                  <BlurReveal duration={1} delay={0.6}>
-                    <div className="flex flex-col items-center text-center gap-6 relative z-10">
-                      <div className="w-20 h-20 rounded-full bg-[#0052CC]/10 border border-[#0052CC]/30 flex items-center justify-center shadow-lg">
-                        <Rocket className="w-8 h-8 text-[#0052CC]" />
+                      <div className="flex-1 flex flex-col items-start gap-6 p-10 lg:p-14 group">
+                        <div className="w-12 h-12 flex items-center justify-start transition-transform duration-500 group-hover:-translate-y-1">
+                          <Rocket className="w-8 h-8 text-black" strokeWidth={1.5} />
+                        </div>
+                        <div className="flex flex-col gap-4">
+                          <h3 className="text-2xl font-bold text-black font-sans tracking-tight leading-snug">Instant Routing</h3>
+                          <p className="text-black/60 text-sm leading-relaxed font-medium">Structured JSON tickets are auto-created in Jira, Linear, or GitHub instantly.</p>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-xl font-bold text-black font-mono tracking-tight">Route to Jira, Linear, or GitHub Issues Instantly</h3>
-                        <p className="text-black/60 text-sm max-w-xs">Tickets auto-created in Jira, Linear, or GitHub instantly.</p>
-                      </div>
+
                     </div>
                   </BlurReveal>
                 </div>
@@ -451,61 +499,55 @@ export default function Home() {
 
                 {/* Stats Bar */}
                 <BlurReveal duration={1} delay={0.2}>
-                  <div className="flex justify-center flex-wrap gap-8 md:gap-16 pb-12 border-b border-black/10">
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-4xl font-black text-black">2,000+</span>
-                      <span className="text-black/50 text-sm uppercase tracking-widest font-mono">Developers</span>
+                  <div className="flex justify-center flex-wrap gap-12 md:gap-24 pb-16 border-b border-black/5">
+                    <div className="flex flex-col items-center gap-2 group cursor-default">
+                      <span className="text-5xl font-bold text-black tracking-tighter group-hover:scale-105 transition-transform duration-300">2,000+</span>
+                      <span className="text-black/50 text-sm font-semibold tracking-widest uppercase">Developers</span>
                     </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-4xl font-black text-distill-violet">50k+</span>
-                      <span className="text-black/50 text-sm uppercase tracking-widest font-mono">Standups Processed</span>
+                    <div className="flex flex-col items-center gap-2 group cursor-default">
+                      <span className="text-5xl font-bold text-distill-violet tracking-tighter group-hover:scale-105 transition-transform duration-300">50k+</span>
+                      <span className="text-black/50 text-sm font-semibold tracking-widest uppercase">Standups Processed</span>
                     </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-4xl font-black text-[#0052CC]">99.7%</span>
-                      <span className="text-black/50 text-sm uppercase tracking-widest font-mono">JSON Accuracy</span>
+                    <div className="flex flex-col items-center gap-2 group cursor-default">
+                      <span className="text-5xl font-bold text-[#0052CC] tracking-tighter group-hover:scale-105 transition-transform duration-300">99.7%</span>
+                      <span className="text-black/50 text-sm font-semibold tracking-widest uppercase">JSON Accuracy</span>
                     </div>
                   </div>
                 </BlurReveal>
 
                 {/* Testimonials */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 lg:gap-16 pt-8">
                   <BlurReveal duration={1} delay={0.3}>
-                    <div className="p-8 rounded-3xl bg-black h-full flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300 shadow-2xl border border-black/10 group">
-                      <div className="text-distill-violet text-6xl font-serif leading-none opacity-50 group-hover:opacity-100 transition-opacity">"</div>
-                      <p className="text-white/80 italic mb-8 -mt-2 text-lg">I used to spend 20 minutes after every standup writing tickets. Now it's 30 seconds.</p>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-distill-violet/20 flex items-center justify-center text-distill-violet font-bold text-lg">A</div>
-                        <div>
-                          <p className="text-white text-sm font-bold">Alex</p>
-                          <p className="text-white/50 text-xs">Solo Dev</p>
+                    <div className="flex flex-col gap-8 border-l-2 border-black/10 pl-8 h-full">
+                      <p className="text-black/80 font-serif leading-relaxed text-2xl italic">"I used to spend 20 minutes after every standup writing tickets. Now it takes exactly 30 seconds."</p>
+                      <div className="mt-auto flex items-center gap-4">
+                        <div className="flex flex-col">
+                          <p className="text-black font-bold tracking-tight text-lg">Alex M.</p>
+                          <p className="text-black/40 text-xs tracking-widest uppercase font-semibold">Solo Dev</p>
                         </div>
                       </div>
                     </div>
                   </BlurReveal>
                   
                   <BlurReveal duration={1} delay={0.4}>
-                    <div className="p-8 rounded-3xl bg-black h-full flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300 shadow-2xl border border-black/10 group">
-                      <div className="text-distill-core text-6xl font-serif leading-none opacity-50 group-hover:opacity-100 transition-opacity">"</div>
-                      <p className="text-white/80 italic mb-8 -mt-2 text-lg">We integrated Distill into our sprint ritual. Our Jira board updates itself.</p>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-distill-core/20 flex items-center justify-center text-distill-core font-bold text-lg">S</div>
-                        <div>
-                          <p className="text-white text-sm font-bold">Sarah</p>
-                          <p className="text-white/50 text-xs">Engineering Lead</p>
+                    <div className="flex flex-col gap-8 border-l-2 border-black/10 pl-8 h-full">
+                      <p className="text-black/80 font-serif leading-relaxed text-2xl italic">"We integrated Distill into our sprint ritual. Our Jira board updates itself effortlessly."</p>
+                      <div className="mt-auto flex items-center gap-4">
+                        <div className="flex flex-col">
+                          <p className="text-black font-bold tracking-tight text-lg">Sarah J.</p>
+                          <p className="text-black/40 text-xs tracking-widest uppercase font-semibold">Engineering Lead</p>
                         </div>
                       </div>
                     </div>
                   </BlurReveal>
 
                   <BlurReveal duration={1} delay={0.5}>
-                    <div className="p-8 rounded-3xl bg-black h-full flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300 shadow-2xl border border-black/10 group">
-                      <div className="text-[#0052CC] text-6xl font-serif leading-none opacity-50 group-hover:opacity-100 transition-opacity">"</div>
-                      <p className="text-white/80 italic mb-8 -mt-2 text-lg">BYOK means I control my data. The JSON schema validation is rock solid.</p>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-[#0052CC]/20 flex items-center justify-center text-[#0052CC] font-bold text-lg">M</div>
-                        <div>
-                          <p className="text-white text-sm font-bold">Mike</p>
-                          <p className="text-white/50 text-xs">Security Developer</p>
+                    <div className="flex flex-col gap-8 border-l-2 border-black/10 pl-8 h-full">
+                      <p className="text-black/80 font-serif leading-relaxed text-2xl italic">"BYOK means I control my data entirely. The JSON schema validation is incredibly rock solid."</p>
+                      <div className="mt-auto flex items-center gap-4">
+                        <div className="flex flex-col">
+                          <p className="text-black font-bold tracking-tight text-lg">Mike T.</p>
+                          <p className="text-black/40 text-xs tracking-widest uppercase font-semibold">Security Dev</p>
                         </div>
                       </div>
                     </div>
@@ -514,14 +556,14 @@ export default function Home() {
 
                 {/* Logos */}
                 <BlurReveal duration={1} delay={0.6}>
-                  <div className="flex flex-col items-center gap-6 mt-8">
-                    <span className="text-black/40 text-xs uppercase tracking-[0.2em] font-mono">Works With</span>
-                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-                      <span className="text-xl font-bold font-sans text-black">Jira</span>
-                      <span className="text-xl font-bold font-sans text-black">Linear</span>
-                      <span className="text-xl font-bold font-sans text-black">GitHub</span>
-                      <span className="text-xl font-bold font-sans text-black">Slack</span>
-                      <span className="text-xl font-bold font-sans text-black">Discord</span>
+                  <div className="flex flex-col items-center gap-6 mt-16 pt-12 border-t border-black/5 w-full">
+                    <span className="text-black/40 text-xs uppercase tracking-[0.2em] font-mono">Engineered With</span>
+                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 hover:opacity-100 transition-opacity duration-500">
+                      <span className="text-xl font-bold font-sans text-black tracking-tight">Groq LPU™</span>
+                      <span className="text-xl font-bold font-sans text-black tracking-tight">Llama 3.1</span>
+                      <span className="text-xl font-bold font-sans text-black tracking-tight">Whisper v3</span>
+                      <span className="text-xl font-bold font-sans text-black tracking-tight">Next.js</span>
+                      <span className="text-xl font-bold font-sans text-black tracking-tight">Supabase</span>
                     </div>
                   </div>
                 </BlurReveal>
@@ -582,8 +624,8 @@ export default function Home() {
                     <span className="text-white/70 font-sans text-xs">BYOK required</span>
                   </div>
                 </div>
-                <Link href="/login" className="w-full py-3 rounded-xl bg-distill-violet text-white font-bold tracking-wide font-sans relative z-10 hover:bg-distill-violet/80 transition-colors flex justify-center items-center shadow-[0_0_20px_rgba(72,38,185,0.4)] mt-auto">
-                  Get Started Free
+                <Link href="/login?signup=true" className="w-full py-3 rounded-xl bg-distill-violet text-white font-bold tracking-wide font-sans relative z-10 hover:bg-distill-violet/80 transition-colors flex justify-center items-center shadow-[0_0_20px_rgba(72,38,185,0.4)] mt-auto">
+                  Start Automating Free
                 </Link>
               </div>
             </BlurReveal>

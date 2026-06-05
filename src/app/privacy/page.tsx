@@ -19,20 +19,20 @@ export default function PrivacyPage() {
           <div className="prose prose-invert max-w-none prose-p:text-distill-muted prose-headings:text-foreground prose-headings:font-sans">
             <h2>1. Data Sovereignty First</h2>
             <p>
-              Distill.ai is built on the fundamental principle of zero-trust. Because our core extraction engine acts as a stateless Bring-Your-Own-Key (BYOK) proxy, we physically cannot access, read, or store the audio data you process. Audio is streamed directly to the inference provider (Groq).
+              Distill.ai is built on the fundamental principle of zero-trust. Because our core extraction engine acts as a Bring-Your-Own-Key (BYOK) proxy, we route your audio through our proxy and discard it immediately. We do not persist the audio data you process. Audio is streamed to the inference provider (Groq) without being stored on our servers.
             </p>
             
             <h2>2. What We Collect</h2>
             <p>
               We only collect metadata necessary to maintain your account and provide the dashboard services. This includes:
               <br/>- Authentication data (Email addresses)
-              <br/>- Billing information (processed securely via Stripe)
+              <br/>- Billing information, if paid plans are introduced, will be handled by the payment provider disclosed at that time.
               <br/>- Dashboard telemetry (Webhook failure logs, schema configurations)
             </p>
 
             <h2>3. Third-Party Processors</h2>
             <p>
-              We do not share your account metadata with any third parties other than essential infrastructure providers (Supabase for Auth/Database, Stripe for Billing, and Vercel for Edge Routing). Your audio processing is governed by your own API agreements with the BYOK inference provider (Groq).
+              We do not share your account metadata with any third parties other than essential infrastructure providers (Supabase for Auth/Database, and Vercel for Edge Routing). Your audio processing is governed by your own API agreements with the BYOK inference provider (Groq).
             </p>
           </div>
         </BlurReveal>

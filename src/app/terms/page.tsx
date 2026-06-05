@@ -19,17 +19,17 @@ export default function TermsPage() {
           <div className="prose prose-invert max-w-none prose-p:text-distill-muted prose-headings:text-foreground prose-headings:font-sans">
             <h2>1. Acceptance of Terms</h2>
             <p>
-              By pulling the Distill Docker image, accessing the Dashboard, or utilizing our APIs, you agree to be bound by these Terms of Service.
+              By accessing the Dashboard or utilizing our APIs, you agree to be bound by these Terms of Service.
             </p>
             
             <h2>2. License to Use</h2>
             <p>
-              Distill grants you a revocable, non-exclusive, non-transferable license to deploy our extraction engine on your local hardware or VPC infrastructure subject to the tier you have subscribed to (Hacker, Pro, or Team). 
+              Distill grants you a revocable, non-exclusive, non-transferable license to access and use our application subject to the tier you have subscribed to. 
             </p>
 
             <h2>3. Reverse Engineering</h2>
             <p>
-              While Distill is designed to run locally, the core inference routing engine remains proprietary. You agree not to reverse engineer, decompile, or attempt to extract the model weights or processing logic embedded within the compiled Docker images.
+              You agree not to reverse engineer, decompile, or attempt to extract the processing logic embedded within the application.
             </p>
             
             <h2>4. Limitation of Liability</h2>

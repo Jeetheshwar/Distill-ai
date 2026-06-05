@@ -2,12 +2,10 @@
 
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import { Webhook, Zap, PlayCircle, Plus, CheckCircle2, History, AlertCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-
 import { Aura } from "@/components/ui/aura";
-
-import { useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
 
 export default function WebhookPlaygroundPage() {
   const [activeTab, setActiveTab] = useState<"endpoints" | "templates" | "logs">("endpoints");
@@ -15,18 +13,35 @@ export default function WebhookPlaygroundPage() {
   const [hasRun, setHasRun] = useState(false);
   const [endpointUrl, setEndpointUrl] = useState("");
   const [activeUrl, setActiveUrl] = useState("");
+  const supabase = createClient();
 
   useEffect(() => {
-    const saved = localStorage.getItem("distill_webhook_url");
-    if (saved) {
-      setEndpointUrl(saved);
-      setActiveUrl(saved);
+    async function loadSettings() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const { data } = await supabase.from('user_settings').select('webhook_url').eq('user_id', user.id).single();
+      if (data?.webhook_url) {
+        setEndpointUrl(data.webhook_url);
+        setActiveUrl(data.webhook_url);
+      }
     }
+    loadSettings();
   }, []);
 
-  const saveEndpoint = () => {
+  const saveEndpoint = async () => {
     if (!endpointUrl) return;
-    localStorage.setItem("distill_webhook_url", endpointUrl);
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    
+    const { data: existing } = await supabase.from('user_settings').select('id').eq('user_id', user.id).single();
+    if (existing) {
+      await supabase.from('user_settings').update({ webhook_url: endpointUrl }).eq('user_id', user.id);
+    } else {
+      await supabase.from('user_settings').insert({ user_id: user.id, webhook_url: endpointUrl });
+    }
+    
     setActiveUrl(endpointUrl);
   };
 
@@ -80,7 +95,7 @@ export default function WebhookPlaygroundPage() {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-2">
               <h1 className="text-3xl font-bold text-foreground font-sans tracking-tight">Integration Settings</h1>
-              <p className="text-distill-muted font-sans text-sm">Define POST targets for automatic JSON ingestion. Webhooks retry on failure up to 3 times over 72 hours.</p>
+              <p className="text-distill-muted font-sans text-sm">Define POST targets for manual or preview-based JSON delivery.</p>
             </div>
           </div>
         </div>

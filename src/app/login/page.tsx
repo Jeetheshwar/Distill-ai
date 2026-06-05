@@ -1,22 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import { Aura } from "@/components/ui/aura";
 import { Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
-export default function LoginPage() {
+function LoginContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const supabase = createClient();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const supabase = createClient();
+
+  useEffect(() => {
+    if (searchParams.get("signup") === "true") {
+      setIsSignUp(true);
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,5 +199,17 @@ export default function LoginPage() {
         </BlurReveal>
       </main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 text-distill-core animate-spin" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

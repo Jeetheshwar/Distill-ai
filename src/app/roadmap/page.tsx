@@ -30,7 +30,7 @@ export default function RoadmapPage() {
       title: "The Open-Source Pivot",
       status: "completed",
       items: [
-        "Removed all artificial Stripe paywalls.",
+        "Removed all artificial payment paywalls.",
         "Transitioned to a pure Bring Your Own Key (BYOK) architecture.",
         "Launched Chrome Extension MVP for one-click recording.",
         "Completely rebuilt the landing page."

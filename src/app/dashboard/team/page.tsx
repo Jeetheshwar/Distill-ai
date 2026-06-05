@@ -20,7 +20,7 @@ export default function TeamPage() {
             Upgrade to the Team plan to unlock shared workspaces, admin controls, and team analytics dashboards.
           </p>
           <button disabled className="px-8 py-3 rounded-xl bg-distill-violet text-white font-bold opacity-50 cursor-not-allowed">
-            Upgrade via Stripe (Coming Soon)
+            Upgrade Plan (Coming Soon)
           </button>
         </div>
       </div>

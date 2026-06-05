@@ -11,7 +11,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <DashboardSidebar userEmail={user?.email} />
 
       {/* Main App Canvas */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto relative z-10 bg-black/50">
+      <main className="dashboard-scroll flex-1 flex flex-col min-w-0 overflow-y-auto relative z-10 bg-black/50">
         
         <div className="flex-1 p-8 lg:p-12 relative z-10">
           {children}

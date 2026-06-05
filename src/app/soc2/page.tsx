@@ -18,7 +18,7 @@ export default function SOC2Page() {
         <BlurReveal duration={1} delay={0.1}>
           <div className="flex flex-col gap-8">
              <div className="p-8 border border-white/10 bg-white/5 rounded-2xl flex flex-col gap-4">
-                <h2 className="text-2xl font-bold text-foreground">We bypass SOC2 entirely.</h2>
+                <h2 className="text-2xl font-bold text-foreground">We prioritize a minimal-retention architecture.</h2>
                 <p className="text-distill-muted leading-relaxed">
                   Traditional SaaS platforms require massive, expensive SOC2 Type II audits because they take your sensitive audio data, send it over the wire, process it on their servers, and store the results in their databases. 
                 </p>
@@ -26,7 +26,7 @@ export default function SOC2Page() {
                   <strong>Distill changes the paradigm.</strong>
                 </p>
                 <p className="text-distill-muted leading-relaxed">
-                  Because our extraction engine runs purely as a stateless Docker container within your own AWS/GCP/Azure environment, your audio data never leaves your network. We do not need a SOC2 audit to prove your data is safe, because we literally never touch it.
+                  Audio data is proxy-routed through our servers to the inference provider but is never persisted to disk. We prioritize data privacy by ensuring your meeting recordings are discarded immediately after processing.
                 </p>
              </div>
              

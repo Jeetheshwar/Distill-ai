@@ -11,11 +11,11 @@ export default function SecurityPage() {
         <div className="flex flex-col gap-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/10 w-fit mb-2">
             <ShieldCheck className="w-4 h-4 text-green-500" />
-            <span className="text-xs font-medium text-green-500 uppercase tracking-wider">Zero Data Retention</span>
+            <span className="text-xs font-medium text-green-500 uppercase tracking-wider">No Audio Retention</span>
           </div>
           <h1 className="font-sergena text-4xl md:text-6xl tracking-tighter text-foreground">Security & Architecture.</h1>
           <p className="text-xl text-distill-muted leading-relaxed">
-            Your Audio Never Touches Our Servers. We built Distill AI specifically for teams who cannot upload proprietary meeting audio to third-party SaaS.
+            We Do Not Persist Your Audio Files. We built Distill AI for teams that need clearer control over how proprietary meeting audio is routed, processed, and retained.
           </p>
         </div>
 

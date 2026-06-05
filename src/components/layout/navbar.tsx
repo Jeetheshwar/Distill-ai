@@ -25,7 +25,7 @@ export async function Navbar() {
               Sign In
             </Link>
           )}
-          <Link href={user ? "/dashboard" : "/login"} className="px-5 md:px-8 py-2 rounded-xl bg-foreground text-background font-bold tracking-wide hover:scale-105 transition-transform text-sm shadow-[0_0_15px_rgba(255,255,255,0.2)] whitespace-nowrap">
+          <Link href={user ? "/dashboard" : "/login?signup=true"} className="px-5 md:px-8 py-2 rounded-xl bg-foreground text-background font-bold tracking-wide hover:scale-105 transition-transform text-sm shadow-[0_0_15px_rgba(255,255,255,0.2)] whitespace-nowrap">
             {user ? "Dashboard" : "Get Started"}
           </Link>
         </div>

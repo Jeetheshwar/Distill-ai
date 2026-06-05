@@ -23,12 +23,12 @@ export function DashboardSidebar({ userEmail }: { userEmail: string | undefined 
     <aside className="w-64 border-r border-white/5 bg-black/20 backdrop-blur-md hidden md:flex flex-col relative z-20">
       <div className="h-20 flex items-center px-6 border-b border-white/5">
         <Link href="/" className="font-anta text-xl tracking-widest text-foreground hover:text-white transition-colors">
-          DISTILL.<span className="text-distill-violet">AI</span>
+          DISTILL.<span className="text-white/50">AI</span>
         </Link>
       </div>
       
-      <nav className="flex-1 px-4 py-8 flex flex-col gap-2 overflow-y-auto">
-        <span className="text-xs font-mono text-distill-muted ml-2 mb-4 uppercase tracking-wider">Control Plane</span>
+      <nav className="dashboard-scroll flex-1 px-4 py-8 flex flex-col gap-2 overflow-y-auto">
+        <span className="text-xs font-mono text-zinc-500 ml-2 mb-4 uppercase tracking-wider">Control Plane</span>
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -38,33 +38,33 @@ export function DashboardSidebar({ userEmail }: { userEmail: string | undefined 
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group",
                 isActive 
-                  ? "bg-distill-violet/10 text-white border border-distill-violet/20 shadow-[0_0_15px_rgba(72,38,185,0.15)]" 
-                  : "text-distill-muted hover:bg-white/[0.03] hover:text-white border border-transparent"
+                  ? "bg-white/[0.04] text-white border-l-2 border-l-white/80 rounded-l-none border-y border-r border-transparent" 
+                  : "text-zinc-500 hover:bg-white/[0.02] hover:text-zinc-300 border border-transparent"
               )}
             >
-              <item.icon className={cn("w-5 h-5", isActive ? "text-distill-core" : "text-distill-muted group-hover:text-white")} />
+              <item.icon className={cn("w-5 h-5 transition-colors", isActive ? "text-white" : "text-zinc-600 group-hover:text-zinc-400")} />
               {item.name}
             </Link>
           );
         })}
 
         <div className="mt-8">
-          <div className="mx-2 bg-black/40 border border-white/5 rounded-lg p-4 flex flex-col gap-2">
+          <div className="mx-2 bg-white/[0.01] border border-white/[0.05] rounded-lg p-4 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse" />
-              <span className="text-xs font-bold text-foreground font-sans">BYOK Proxy Ready</span>
+              <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)] animate-pulse" />
+              <span className="text-xs font-bold text-zinc-300 font-sans">BYOK Proxy Ready</span>
             </div>
-            <span className="text-[10px] font-mono text-distill-muted">v2.1.0 • Groq Inference Layer</span>
-            <span className="text-[10px] font-mono text-distill-muted mt-1 flex items-center gap-1">
-              <div className="w-1 h-1 border border-distill-muted rounded-full" /> Stateless Session
+            <span className="text-[10px] font-mono text-zinc-500">v2.1.0 • Groq Inference Layer</span>
+            <span className="text-[10px] font-mono text-zinc-500 mt-1 flex items-center gap-1">
+              <div className="w-1 h-1 border border-zinc-500 rounded-full" /> Stateless Session
             </span>
           </div>
         </div>
 
         <div className="mt-8">
-          <span className="text-xs font-mono text-distill-muted ml-2 mb-4 uppercase tracking-wider block">Resources</span>
-          <Link href="/docs" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-distill-muted hover:bg-white/[0.03] hover:text-white transition-all group">
-            <FileText className="w-5 h-5 group-hover:text-white text-distill-muted" />
+          <span className="text-xs font-mono text-zinc-500 ml-2 mb-4 uppercase tracking-wider block">Resources</span>
+          <Link href="/docs" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-500 hover:bg-white/[0.02] hover:text-zinc-300 transition-all group">
+            <FileText className="w-5 h-5 group-hover:text-zinc-400 text-zinc-600 transition-colors" />
             Documentation
           </Link>
         </div>
@@ -74,8 +74,8 @@ export function DashboardSidebar({ userEmail }: { userEmail: string | undefined 
       <div className="p-4 border-t border-white/5">
         <div className="flex items-center justify-between p-2 py-3 rounded-lg hover:bg-white/[0.02] transition-colors border border-transparent">
           <div className="flex items-center gap-3 truncate">
-            <div className="w-8 h-8 rounded-full bg-distill-violet/20 flex items-center justify-center border border-distill-violet/40 shrink-0">
-              <span className="text-xs font-bold text-distill-core">
+            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shrink-0">
+              <span className="text-xs font-bold text-white">
                 {userEmail ? userEmail.substring(0, 2).toUpperCase() : "US"}
               </span>
             </div>
@@ -83,7 +83,7 @@ export function DashboardSidebar({ userEmail }: { userEmail: string | undefined 
               <span className="text-sm font-bold text-foreground truncate">
                 {userEmail ? userEmail.split("@")[0] : "Sandbox User"}
               </span>
-              <span className="text-xs text-distill-muted truncate">
+              <span className="text-xs text-zinc-500 truncate">
                 {userEmail || "No Session"}
               </span>
             </div>
