@@ -139,6 +139,17 @@ export default function Home() {
     <div className="w-full bg-background flex flex-col font-sans overflow-x-clip relative">
       {/* Premium Background Grid (+ - dots) spread across hero and wrapper */}
       <div className="absolute top-0 left-0 w-full h-[150vh] z-0 pointer-events-none overflow-hidden [mask-image:radial-gradient(ellipse_at_top,black_40%,transparent_70%)]">
+        
+        {/* Premium Noise Grain Overlay */}
+        <div className="absolute inset-0 w-full h-full opacity-20 mix-blend-overlay">
+           <svg className="w-full h-full">
+             <filter id="noiseFilter">
+               <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+             </filter>
+             <rect width="100%" height="100%" filter="url(#noiseFilter)" />
+           </svg>
+        </div>
+
         <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="premium-grid" width="48" height="48" patternUnits="userSpaceOnUse">
