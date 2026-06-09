@@ -258,7 +258,7 @@ const PillNav = ({
               logoRef.current = el as unknown as HTMLAnchorElement;
             }}
           >
-            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <div className="font-bold text-[#16131D] tracking-widest text-xs">DISTILL</div>}
+            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16131D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>}
           </Link>
         ) : (
           <a
@@ -270,7 +270,7 @@ const PillNav = ({
               logoRef.current = el as unknown as HTMLAnchorElement;
             }}
           >
-            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <div className="font-bold text-[#16131D] tracking-widest text-xs">DISTILL</div>}
+            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16131D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>}
           </a>
         ))}
 
