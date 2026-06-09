@@ -63,7 +63,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${interFont.variable} ${antaFont.variable} ${sergenaFont.variable} h-full antialiased`}
+      className={`${interFont.variable} ${antaFont.variable} ${sergenaFont.variable} h-full antialiased scroll-smooth`}
       suppressHydrationWarning
     >
       <body 

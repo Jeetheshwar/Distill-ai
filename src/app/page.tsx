@@ -225,7 +225,7 @@ export default function Home() {
           </BlurReveal>
 
           <BlurReveal duration={1.2} delay={0.6}>
-            <div className="mt-12 flex flex-col items-center gap-4">
+            <div className="mt-20 md:mt-28 flex flex-col items-center gap-4">
               <span className="text-xs font-mono text-white/60 uppercase tracking-widest">Natively Integrates With</span>
               <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 opacity-100 transition-opacity duration-500">
                 {/* Jira */}
