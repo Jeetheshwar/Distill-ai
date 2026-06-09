@@ -228,8 +228,8 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error("Extraction Pipeline Error: Top level failure.");
     
-    // Extract actual error message from API failures (like Groq Cloudflare blocks)
-    const errorMessage = error?.error?.error?.message || error?.message || "Internal Server Error during extraction sequence.";
+    const err = error as any;
+    const errorMessage = err?.error?.error?.message || err?.message || "Internal Server Error during extraction sequence.";
     
     return NextResponse.json(
       { error: errorMessage },
