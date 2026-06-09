@@ -189,7 +189,7 @@ export default function Home() {
 
           <div className="flex flex-col gap-2">
             <BlurReveal duration={1.2} delay={0.1}>
-              <h1 className="font-sergena text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-tighter leading-[1.1]">
+              <h1 className="font-sergena text-[32px] sm:text-[40px] md:text-[64px] lg:text-[74px] tracking-tighter leading-[1.1]">
                 <span className="block text-foreground">Turn Standup Recordings</span>
                 <span className="block text-distill-muted mt-2">
                   into <span className="bg-gradient-to-br from-[#0052CC] to-distill-violet bg-clip-text text-transparent drop-shadow-lg">Jira Tickets</span> in <span className="bg-gradient-to-br from-distill-core to-white bg-clip-text text-transparent drop-shadow-lg">30 Seconds</span>
