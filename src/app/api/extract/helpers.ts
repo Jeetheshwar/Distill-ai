@@ -1,5 +1,4 @@
-import { z } from "zod";
-import { SchemaMode } from "./types";
+import { SchemaMode, StandupEntities, RetroEntities } from "./types";
 
 export function extractAuthToken(authHeader: string | null): string | null {
   if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
@@ -9,9 +8,11 @@ export function extractAuthToken(authHeader: string | null): string | null {
   return null;
 }
 
-export function validateSchemaMode(schema: string | null): SchemaMode {
+export function validateSchemaMode(schema: string | null): SchemaMode | null {
+  if (!schema) return "standup";
   if (schema === "retro") return "retro";
-  return "standup";
+  if (schema === "standup") return "standup";
+  return null;
 }
 
 export function validateAudioFile(file: File | null): string | null {
@@ -19,63 +20,20 @@ export function validateAudioFile(file: File | null): string | null {
   if (file.size > 100 * 1024 * 1024) return "File size exceeds 100MB limit.";
   
   const isAudio = file.type.startsWith("audio/");
-  const isText = file.type === "text/plain" || file.name.toLowerCase().endsWith(".txt") || file.name.toLowerCase().endsWith(".md");
-  
-  if (!isAudio && !isText) {
-    return "Invalid file type. Only audio, .txt, or .md files are supported.";
+  if (!isAudio) {
+    return "Invalid file type. Only audio files are supported.";
   }
   return null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function safeJsonParse(jsonString: string): any | { error: string } {
   try {
     return JSON.parse(jsonString);
-  } catch (error) {
+  } catch (_error) {
     return { error: "Failed to parse JSON from inference provider." };
   }
 }
-
-export const ZodRetroSchema = z.object({
-  requires_clarification: z.boolean().describe("Set to true if the transcript is too vague to confidently create action items"),
-  clarification_questions: z.array(z.string()).describe("List of questions to ask the user if clarification is needed"),
-  sprint_id: z.string().describe("Optional sprint identifier"),
-  date: z.string().describe("ISO date of the retrospective"),
-  retro_categories: z.object({
-    went_well: z.array(z.string()),
-    needs_improvement: z.array(z.string()),
-    action_items: z.array(z.object({
-      title: z.string().describe("Short title for the action item"),
-      owner: z.string().describe("Assignee or owner"),
-      due_date: z.string().describe("ISO date or descriptive timeline"),
-      ticket_type: z.enum(["Improvement", "Task"])
-    }))
-  })
-});
-
-export const ZodStandupSchema = z.object({
-  requires_clarification: z.boolean().describe("Set to true if the transcript is too vague to confidently create tickets"),
-  clarification_questions: z.array(z.string()).describe("List of questions to ask the user if clarification is needed"),
-  sprint_id: z.string().optional().describe("Optional sprint identifier"),
-  date: z.string().describe("ISO date of the standup"),
-  participants: z.array(z.string()).describe("List of people in the standup"),
-  updates: z.array(z.object({
-    speaker: z.string(),
-    yesterday: z.string(),
-    today: z.string(),
-    blockers: z.array(z.string()),
-    confidence_score: z.number().min(0).max(1)
-  })),
-  extracted_tickets: z.array(z.object({
-    title: z.string().describe("Short clear title"),
-    description: z.string().describe("Detailed context"),
-    type: z.enum(["Task", "Bug", "Story", "Blocker", "Other"]),
-    priority: z.enum(["Low", "Medium", "High", "Critical"]),
-    assignee: z.string(),
-    timestamp_start: z.number().optional(),
-    timestamp_end: z.number().optional(),
-    labels: z.array(z.string())
-  }))
-});
 
 export const defaultRetroPrompt = `You are an expert technical project manager and AI extraction system. Read the audio transcript of a sprint retrospective.
 If the transcript is too vague to confidently create action items, you MUST return "requires_clarification": true and a list of "clarification_questions" to ask the user. DO NOT guess if it's vague.
@@ -145,5 +103,33 @@ export function getSystemPrompt(mode: SchemaMode, customPrompt?: string | null):
   if (customPrompt && customPrompt.trim() !== "") {
     return customPrompt;
   }
-  return mode === "retro" ? defaultRetroPrompt : defaultStandupPrompt;
+  return mode === "retro" ? defaultRetroSchema : defaultStandupSchema;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function normalizeStandupEntities(input: any): StandupEntities {
+  return {
+    requires_clarification: Boolean(input?.requires_clarification),
+    clarification_questions: Array.isArray(input?.clarification_questions) ? input.clarification_questions : [],
+    sprint_id: input?.sprint_id || undefined,
+    date: input?.date || new Date().toISOString(),
+    participants: Array.isArray(input?.participants) ? input.participants : [],
+    updates: Array.isArray(input?.updates) ? input.updates : [],
+    extracted_tickets: Array.isArray(input?.extracted_tickets) ? input.extracted_tickets : [],
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function normalizeRetroEntities(input: any): RetroEntities {
+  return {
+    requires_clarification: Boolean(input?.requires_clarification),
+    clarification_questions: Array.isArray(input?.clarification_questions) ? input.clarification_questions : [],
+    sprint_id: input?.sprint_id || undefined,
+    date: input?.date || new Date().toISOString(),
+    retro_categories: {
+      went_well: Array.isArray(input?.retro_categories?.went_well) ? input.retro_categories.went_well : [],
+      needs_improvement: Array.isArray(input?.retro_categories?.needs_improvement) ? input.retro_categories.needs_improvement : [],
+      action_items: Array.isArray(input?.retro_categories?.action_items) ? input.retro_categories.action_items : []
+    }
+  };
 }

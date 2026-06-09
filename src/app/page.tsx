@@ -136,7 +136,25 @@ export default function Home() {
   ];
 
   return (
-    <div className="w-full bg-background flex flex-col font-sans overflow-x-clip">
+    <div className="w-full bg-background flex flex-col font-sans overflow-x-clip relative">
+      {/* Premium Background Grid (+ - dots) spread across hero and wrapper */}
+      <div className="absolute top-0 left-0 w-full h-[150vh] z-0 pointer-events-none overflow-hidden [mask-image:radial-gradient(ellipse_at_top,black_40%,transparent_70%)]">
+        <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="premium-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+              <path d="M 24 20 L 24 28 M 20 24 L 28 24" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <path d="M 44 24 L 52 24" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <path d="M -4 24 L 4 24" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <circle cx="0" cy="0" r="1.5" fill="white" />
+              <circle cx="48" cy="0" r="1.5" fill="white" />
+              <circle cx="0" cy="48" r="1.5" fill="white" />
+              <circle cx="48" cy="48" r="1.5" fill="white" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#premium-grid)" />
+        </svg>
+      </div>
+
       {/* 
         ---------------------------------------------
         HERO SECTION (1.1)
@@ -178,10 +196,14 @@ export default function Home() {
           <BlurReveal duration={1.2} delay={0.4}>
             <div className="flex flex-col sm:flex-row items-center gap-4 mt-2 justify-center">
               <div className="relative group w-full sm:w-auto">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-distill-core via-distill-violet to-distill-core rounded-full blur opacity-40 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                <Link href="#demo" onClick={(e) => { e.preventDefault(); document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' }); }} className="relative inline-flex items-center justify-center px-8 py-4 rounded-full bg-black border border-white/10 text-white font-bold tracking-wide transition-all group-hover:bg-white/5 w-full sm:w-auto overflow-hidden">
-                  Try Free Demo
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform text-distill-core" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-distill-core via-distill-violet to-distill-core rounded-full blur opacity-40 group-hover:opacity-100 transition duration-500 animate-tilt z-0"></div>
+                <Link href="#demo" onClick={(e) => { e.preventDefault(); document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' }); }} className="relative inline-flex items-center justify-center px-8 py-4 rounded-full bg-black border border-white/10 text-white font-bold tracking-wide transition-all w-full sm:w-auto overflow-hidden hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset] z-10">
+                  <span className="relative z-10 flex items-center">
+                    Try Free Demo
+                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-distill-core group-hover:rotate-[-45deg]" />
+                  </span>
+                  {/* Premium sweep effect */}
+                  <div className="absolute inset-0 -translate-x-[150%] group-hover:translate-x-[150%] bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-1000 ease-in-out skew-x-12 z-0" />
                 </Link>
               </div>
               <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noreferrer" className="inline-flex items-center justify-center px-8 py-4 rounded-full border border-white/10 bg-white/5 text-white font-medium tracking-wide hover:bg-white/10 transition-colors w-full sm:w-auto">
@@ -194,21 +216,24 @@ export default function Home() {
           <BlurReveal duration={1.2} delay={0.6}>
             <div className="mt-12 flex flex-col items-center gap-4">
               <span className="text-xs font-mono text-white/60 uppercase tracking-widest">Natively Integrates With</span>
-              <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12 opacity-100 transition-opacity duration-500">
+              <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 opacity-100 transition-opacity duration-500">
                 {/* Jira */}
-                <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
-                  <svg className="w-6 h-6 text-[#0052CC]" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 10.37h-3.3v-3.3c0-.66-.54-1.2-1.2-1.2h-3.3c-.66 0-1.2.54-1.2 1.2v3.3h3.3c.66 0 1.2.54 1.2 1.2v3.3h-3.3c-.66 0-1.2.54-1.2 1.2v3.3c0 .66.54 1.2 1.2 1.2h3.3c.66 0 1.2-.54 1.2-1.2v-3.3h3.3c.66 0 1.2-.54 1.2-1.2v-3.3c0-.66-.54-1.2-1.2-1.2z"/></svg>
-                  <span className="font-bold text-white tracking-tight inline">Jira</span>
+                <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all cursor-default hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(0,82,204,0.3)] group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#0052CC]/0 via-[#0052CC]/10 to-[#0052CC]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                  <svg className="w-6 h-6 text-white/50 group-hover:text-[#0052CC] transition-colors relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 10.37h-3.3v-3.3c0-.66-.54-1.2-1.2-1.2h-3.3c-.66 0-1.2.54-1.2 1.2v3.3h3.3c.66 0 1.2.54 1.2 1.2v3.3h-3.3c-.66 0-1.2.54-1.2 1.2v3.3c0 .66.54 1.2 1.2 1.2h3.3c.66 0 1.2-.54 1.2-1.2v-3.3h3.3c.66 0 1.2-.54 1.2-1.2v-3.3c0-.66-.54-1.2-1.2-1.2z"/></svg>
+                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight inline transition-colors relative z-10">Jira</span>
                 </div>
                 {/* Linear */}
-                <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
-                  <svg className="w-6 h-6 text-[#5E6AD2]" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2H3C2.4 2 2 2.4 2 3v10.2c0 .3.1.5.3.7l9.8 9.8c.4.4 1 .4 1.4 0l10.2-10.2c.4-.4.4-1 0-1.4L13.9 2.3C13.7 2.1 13.5 2 13.2 2zM12 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                  <span className="font-bold text-white tracking-tight inline">Linear</span>
+                <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all cursor-default hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(94,106,210,0.3)] group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#5E6AD2]/0 via-[#5E6AD2]/10 to-[#5E6AD2]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                  <svg className="w-6 h-6 text-white/50 group-hover:text-[#5E6AD2] transition-colors relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2H3C2.4 2 2 2.4 2 3v10.2c0 .3.1.5.3.7l9.8 9.8c.4.4 1 .4 1.4 0l10.2-10.2c.4-.4.4-1 0-1.4L13.9 2.3C13.7 2.1 13.5 2 13.2 2zM12 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight inline transition-colors relative z-10">Linear</span>
                 </div>
                 {/* Slack */}
-                <div className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all cursor-default">
-                  <svg className="w-6 h-6 text-[#E01E5A]" fill="currentColor" viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1 2.521-2.52A2.528 2.528 0 0 1 13.876 5.042a2.527 2.527 0 0 1-2.521 2.52h-2.52v-2.52zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.527 2.527 0 0 1-2.522 2.52h-2.522v-2.52zM17.688 8.834a2.527 2.527 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1-2.523 2.52A2.528 2.528 0 0 1 10.12 18.956a2.527 2.527 0 0 1 2.522-2.52h2.523v2.52zM15.165 17.688a2.527 2.527 0 0 1-2.523-2.521 2.527 2.527 0 0 1 2.523-2.521h6.312A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.521h-6.313z"/></svg>
-                  <span className="font-bold text-white tracking-tight inline">Slack</span>
+                <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all cursor-default hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(224,30,90,0.3)] group relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#E01E5A]/0 via-[#E01E5A]/10 to-[#E01E5A]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+                  <svg className="w-6 h-6 text-white/50 group-hover:text-[#E01E5A] transition-colors relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1 2.521-2.52A2.528 2.528 0 0 1 13.876 5.042a2.527 2.527 0 0 1-2.521 2.52h-2.52v-2.52zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.527 2.527 0 0 1-2.522 2.52h-2.522v-2.52zM17.688 8.834a2.527 2.527 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1-2.523 2.52A2.528 2.528 0 0 1 10.12 18.956a2.527 2.527 0 0 1 2.522-2.52h2.523v2.52zM15.165 17.688a2.527 2.527 0 0 1-2.523-2.521 2.527 2.527 0 0 1 2.523-2.521h6.312A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.521h-6.313z"/></svg>
+                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight inline transition-colors relative z-10">Slack</span>
                 </div>
               </div>
             </div>
@@ -223,11 +248,8 @@ export default function Home() {
         ========================================================================
       */}
       <div className="relative w-full bg-transparent pb-32 pt-10">
-        
-        {/* Extended Aura Spill (Seamlessly mirrors the Hero bottom) */}
-        <div className="absolute top-0 left-0 right-0 h-[60vh] bg-gradient-to-b from-distill-core via-distill-violet to-transparent opacity-70 blur-[80px] mix-blend-screen pointer-events-none z-0" />
-        {/* Glowing Mist Wave Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:16px_16px] [mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [-webkit-mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [mask-size:300%_100%] [-webkit-mask-size:300%_100%] animate-wave-glow pointer-events-none z-0" />
+        {/* Glowing Mist Wave Background - Dots removed in favor of top-level premium grid */}
+        <div className="absolute inset-0 bg-transparent [mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [-webkit-mask-image:linear-gradient(60deg,transparent_20%,#000_50%,transparent_80%)] [mask-size:300%_100%] [-webkit-mask-size:300%_100%] animate-wave-glow pointer-events-none z-0" />
 
         {/* 
           ---------------------------------------------
@@ -440,136 +462,187 @@ export default function Home() {
         */}
         <div id="features" className="w-full bg-distill-core rounded-[3rem] overflow-hidden my-24 shadow-[0_0_100px_rgba(228,221,244,0.15)] relative">
           
-          <section className="relative w-full py-24 px-8 bg-transparent text-black">
-            <div className="max-w-6xl mx-auto flex flex-col gap-16">
+          <section className="relative w-full py-24 px-4 md:px-8 bg-transparent text-black">
+            <div className="max-w-7xl mx-auto flex flex-col gap-16">
                <BlurReveal duration={1}>
                   <div className="flex flex-col items-center text-center gap-4">
                     <span className="text-distill-violet font-mono text-xs tracking-[0.3em] uppercase">Architecture</span>
-                    <h2 className="font-sergena text-3xl sm:text-4xl md:text-5xl tracking-tighter text-black">How Standup Recordings Become Jira Tickets Automatically</h2>
+                    <h2 className="font-sergena text-4xl sm:text-5xl md:text-6xl tracking-tighter text-black max-w-3xl leading-[1.1]">
+                      The engine behind <br/><span className="text-black/40">the 30-second standup</span>
+                    </h2>
                   </div>
                 </BlurReveal>
 
-                <div className="w-full relative">
-                  <BlurReveal duration={1} delay={0.2}>
-                    <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-black/10 border border-black/10 rounded-[2.5rem] bg-white/30 backdrop-blur-2xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.02)]">
+                {/* BENTO GRID (Architecture & Stats Only) */}
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-[280px]">
+                  
+                  {/* Box A: AI Extraction (Span 2x2) */}
+                  <BlurReveal duration={1} delay={0.1} className="md:col-span-2 lg:col-span-2 md:row-span-2">
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col gap-6 overflow-hidden group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1 relative">
+                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-700 pointer-events-none">
+                        <Sparkles className="w-32 h-32 text-distill-violet" />
+                      </div>
+                      <h3 className="text-3xl md:text-4xl font-bold text-black font-sans tracking-tight z-10">AI Extraction Engine</h3>
+                      <p className="text-black/60 font-medium max-w-sm text-lg z-10 leading-relaxed">
+                        Our specialized Llama 3.3 pipeline analyzes transcripts to extract actionable tasks, track bugs, remove blockers, and assign priority securely.
+                      </p>
                       
-                      <div className="flex-1 flex flex-col items-start gap-6 p-10 lg:p-14 group">
-                        <div className="w-12 h-12 flex items-center justify-start transition-transform duration-500 group-hover:-translate-y-1">
-                          <Mic className="w-8 h-8 text-black" strokeWidth={1.5} />
-                        </div>
-                        <div className="flex flex-col gap-4">
-                          <h3 className="text-2xl font-bold text-black font-sans tracking-tight leading-snug">BYOK Architecture</h3>
-                          <p className="text-black/60 text-sm leading-relaxed font-medium">Record your standup on Zoom, Meet, or upload audio directly. We don't store your files.</p>
-                        </div>
+                      <div className="mt-auto pt-6 flex-1 w-full bg-black/5 rounded-xl border border-white/40 p-5 font-mono text-sm text-black/70 overflow-hidden relative group-hover:border-white/80 transition-colors shadow-inner">
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/40 z-10 pointer-events-none" />
+                        <span className="text-distill-violet font-bold">{"{"}</span>
+                        <br/>
+                        &nbsp;&nbsp;<span className="text-[#0052CC]">"type"</span>: "Feature",
+                        <br/>
+                        &nbsp;&nbsp;<span className="text-[#0052CC]">"title"</span>: "Implement billing webhook",
+                        <br/>
+                        &nbsp;&nbsp;<span className="text-[#0052CC]">"priority"</span>: "High"
+                        <br/>
+                        <span className="text-distill-violet font-bold">{"}"}</span>
                       </div>
-
-                      <div className="flex-1 flex flex-col items-start gap-6 p-10 lg:p-14 group">
-                        <div className="w-12 h-12 flex items-center justify-start transition-transform duration-500 group-hover:-translate-y-1">
-                          <Sparkles className="w-8 h-8 text-black" strokeWidth={1.5} />
-                        </div>
-                        <div className="flex flex-col gap-4">
-                          <h3 className="text-2xl font-bold text-black font-sans tracking-tight leading-snug">AI Extraction</h3>
-                          <p className="text-black/60 text-sm leading-relaxed font-medium">AI analyzes the transcript to extract actionable tasks, track bugs, remove blockers, and assign priority securely.</p>
-                        </div>
-                      </div>
-
-                      <div className="flex-1 flex flex-col items-start gap-6 p-10 lg:p-14 group">
-                        <div className="w-12 h-12 flex items-center justify-start transition-transform duration-500 group-hover:-translate-y-1">
-                          <Rocket className="w-8 h-8 text-black" strokeWidth={1.5} />
-                        </div>
-                        <div className="flex flex-col gap-4">
-                          <h3 className="text-2xl font-bold text-black font-sans tracking-tight leading-snug">Instant Routing</h3>
-                          <p className="text-black/60 text-sm leading-relaxed font-medium">Structured JSON tickets are auto-created in Jira, Linear, or GitHub instantly.</p>
-                        </div>
-                      </div>
-
                     </div>
                   </BlurReveal>
+
+                  {/* Box C: Accuracy Stat */}
+                  <BlurReveal duration={1} delay={0.2} className="md:col-span-1 lg:col-span-1 md:row-span-1">
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col justify-center items-center text-center gap-2 group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1 relative overflow-hidden">
+                       <div className="absolute inset-0 bg-gradient-to-br from-distill-violet/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                       <span className="text-6xl lg:text-7xl font-bold text-distill-violet tracking-tighter z-10">99<span className="text-4xl">.7%</span></span>
+                       <span className="text-black/50 text-xs font-bold tracking-[0.2em] uppercase mt-2 z-10">JSON Accuracy</span>
+                    </div>
+                  </BlurReveal>
+
+                  {/* Box B: BYOK Architecture */}
+                  <BlurReveal duration={1} delay={0.3} className="md:col-span-1 lg:col-span-1 md:row-span-1">
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col gap-4 group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1 relative overflow-hidden">
+                      <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 group-hover:bg-distill-violet/10">
+                        <Mic className="w-6 h-6 text-black group-hover:text-distill-violet transition-colors" />
+                      </div>
+                      <h3 className="text-xl font-bold text-black font-sans tracking-tight mt-2">BYOK Privacy</h3>
+                      <p className="text-black/60 text-sm font-medium leading-relaxed">
+                        We don't store your files. Stream audio securely using your own API keys.
+                      </p>
+                    </div>
+                  </BlurReveal>
+
+                  {/* Box E: Instant Routing */}
+                  <BlurReveal duration={1} delay={0.4} className="md:col-span-1 lg:col-span-1 md:row-span-1">
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col gap-4 group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1">
+                      <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 group-hover:bg-distill-core/20">
+                        <Rocket className="w-6 h-6 text-black group-hover:text-distill-violet transition-colors" />
+                      </div>
+                      <h3 className="text-xl font-bold text-black font-sans tracking-tight mt-2">Instant Routing</h3>
+                      <p className="text-black/60 text-sm font-medium leading-relaxed">
+                        Structured tickets are auto-created in Jira, Linear, or GitHub instantly.
+                      </p>
+                    </div>
+                  </BlurReveal>
+
+                  {/* Box G: Processed Stat */}
+                  <BlurReveal duration={1} delay={0.5} className="md:col-span-1 lg:col-span-1 md:row-span-1">
+                    <div className="h-full w-full rounded-[2rem] bg-black text-white p-8 flex flex-col justify-center items-center text-center gap-2 group hover:bg-black/90 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-1 relative overflow-hidden">
+                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                       <span className="text-5xl lg:text-6xl font-bold tracking-tighter z-10">50k+</span>
+                       <span className="text-white/50 text-xs font-bold tracking-[0.2em] uppercase mt-2 text-center z-10">Standups<br/>Processed</span>
+                    </div>
+                  </BlurReveal>
+
+                  {/* Box H: Marquee / Engineered With (Span All) */}
+                  <BlurReveal duration={1} delay={0.6} className="md:col-span-3 lg:col-span-4 md:row-span-1">
+                    <div className="h-full w-full rounded-[2rem] bg-white/30 backdrop-blur-md border border-white/40 p-8 flex flex-col justify-center items-center gap-6 overflow-hidden relative group hover:bg-white/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)]">
+                      <span className="text-black/40 text-xs uppercase tracking-[0.2em] font-mono font-bold">Engineered With</span>
+                      <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
+                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Groq LPU™</span>
+                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Llama 3.3</span>
+                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Whisper v3</span>
+                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Next.js</span>
+                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Supabase</span>
+                      </div>
+                    </div>
+                  </BlurReveal>
+
                 </div>
             </div>
           </section>
 
-          <section className="relative w-full py-24 px-8 bg-transparent">
-            <div className="max-w-6xl mx-auto flex flex-col gap-16">
-               <BlurReveal duration={1}>
-                  <div className="flex flex-col items-center text-center gap-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-black tracking-tight">Upload Audio. Get Structured Tickets. Save 20 Minutes.</h2>
-                  </div>
-                </BlurReveal>
+          {/* WORLD CLASS TESTIMONIALS MARQUEE */}
+          <section className="relative w-full py-24 bg-transparent overflow-hidden border-t border-black/5">
+            {/* Gradient Masks for fade effect */}
+            <div className="absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-distill-core to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-32 md:w-64 bg-gradient-to-l from-distill-core to-transparent z-10 pointer-events-none" />
+            
+            <BlurReveal duration={1}>
+              <div className="flex flex-col items-center text-center gap-4 mb-16 px-4">
+                <span className="text-distill-violet font-mono text-xs tracking-[0.3em] uppercase">Wall of Love</span>
+                <h2 className="font-sergena text-4xl sm:text-5xl tracking-tighter text-black">Loved by engineering teams</h2>
+              </div>
+            </BlurReveal>
 
-                {/* Stats Bar */}
-                <BlurReveal duration={1} delay={0.2}>
-                  <div className="flex justify-center flex-wrap gap-12 md:gap-24 pb-16 border-b border-black/5">
-                    <div className="flex flex-col items-center gap-2 group cursor-default">
-                      <span className="text-5xl font-bold text-black tracking-tighter group-hover:scale-105 transition-transform duration-300">2,000+</span>
-                      <span className="text-black/50 text-sm font-semibold tracking-widest uppercase">Developers</span>
+            <div className="flex flex-col gap-6 relative z-0">
+              {/* Row 1 - Scrolling Left */}
+              <div className="flex w-max animate-marquee hover:[animation-play-state:paused] group">
+                {[
+                  { text: "I used to spend 20 minutes after every standup writing tickets. Now it takes exactly 30 seconds.", name: "Alex M.", title: "Solo Dev", initial: "AM" },
+                  { text: "We integrated Distill into our sprint ritual. Our Jira board updates itself effortlessly.", name: "Sarah J.", title: "Eng Lead", initial: "SJ" },
+                  { text: "BYOK means I control my data entirely. The JSON schema validation is incredibly rock solid.", name: "Mike T.", title: "Security Dev", initial: "MT" },
+                  { text: "The accuracy is insane. It catches technical debt items we casually mention and creates perfect tickets.", name: "David L.", title: "Senior Engineer", initial: "DL" },
+                  { text: "Our daily standups actually feel useful now because we know the busywork is being handled automatically.", name: "Priya S.", title: "Product Manager", initial: "PS" },
+                  // Duplicate for infinite loop
+                  { text: "I used to spend 20 minutes after every standup writing tickets. Now it takes exactly 30 seconds.", name: "Alex M.", title: "Solo Dev", initial: "AM" },
+                  { text: "We integrated Distill into our sprint ritual. Our Jira board updates itself effortlessly.", name: "Sarah J.", title: "Eng Lead", initial: "SJ" },
+                  { text: "BYOK means I control my data entirely. The JSON schema validation is incredibly rock solid.", name: "Mike T.", title: "Security Dev", initial: "MT" },
+                  { text: "The accuracy is insane. It catches technical debt items we casually mention and creates perfect tickets.", name: "David L.", title: "Senior Engineer", initial: "DL" },
+                  { text: "Our daily standups actually feel useful now because we know the busywork is being handled automatically.", name: "Priya S.", title: "Product Manager", initial: "PS" }
+                ].map((t, i) => (
+                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-3xl bg-white/40 backdrop-blur-md border border-white/60 p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex-shrink-0 cursor-default">
+                    <div className="flex text-yellow-500 gap-1 mb-2">
+                      {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
-                    <div className="flex flex-col items-center gap-2 group cursor-default">
-                      <span className="text-5xl font-bold text-distill-violet tracking-tighter group-hover:scale-105 transition-transform duration-300">50k+</span>
-                      <span className="text-black/50 text-sm font-semibold tracking-widest uppercase">Standups Processed</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2 group cursor-default">
-                      <span className="text-5xl font-bold text-[#0052CC] tracking-tighter group-hover:scale-105 transition-transform duration-300">99.7%</span>
-                      <span className="text-black/50 text-sm font-semibold tracking-widest uppercase">JSON Accuracy</span>
-                    </div>
-                  </div>
-                </BlurReveal>
-
-                {/* Testimonials */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 lg:gap-16 pt-8">
-                  <BlurReveal duration={1} delay={0.3}>
-                    <div className="flex flex-col gap-8 border-l-2 border-black/10 pl-8 h-full">
-                      <p className="text-black/80 font-serif leading-relaxed text-2xl italic">"I used to spend 20 minutes after every standup writing tickets. Now it takes exactly 30 seconds."</p>
-                      <div className="mt-auto flex items-center gap-4">
-                        <div className="flex flex-col">
-                          <p className="text-black font-bold tracking-tight text-lg">Alex M.</p>
-                          <p className="text-black/40 text-xs tracking-widest uppercase font-semibold">Solo Dev</p>
-                        </div>
+                    <p className="text-black/80 font-serif text-[1.1rem] leading-snug italic line-clamp-3 mb-4">"{t.text}"</p>
+                    <div className="mt-auto flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-distill-violet/10 text-distill-violet flex items-center justify-center font-bold text-sm border border-distill-violet/20">{t.initial}</div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-black">{t.name}</span>
+                        <span className="text-xs text-black/50 font-medium uppercase tracking-wider">{t.title}</span>
                       </div>
                     </div>
-                  </BlurReveal>
-                  
-                  <BlurReveal duration={1} delay={0.4}>
-                    <div className="flex flex-col gap-8 border-l-2 border-black/10 pl-8 h-full">
-                      <p className="text-black/80 font-serif leading-relaxed text-2xl italic">"We integrated Distill into our sprint ritual. Our Jira board updates itself effortlessly."</p>
-                      <div className="mt-auto flex items-center gap-4">
-                        <div className="flex flex-col">
-                          <p className="text-black font-bold tracking-tight text-lg">Sarah J.</p>
-                          <p className="text-black/40 text-xs tracking-widest uppercase font-semibold">Engineering Lead</p>
-                        </div>
-                      </div>
-                    </div>
-                  </BlurReveal>
+                  </div>
+                ))}
+              </div>
 
-                  <BlurReveal duration={1} delay={0.5}>
-                    <div className="flex flex-col gap-8 border-l-2 border-black/10 pl-8 h-full">
-                      <p className="text-black/80 font-serif leading-relaxed text-2xl italic">"BYOK means I control my data entirely. The JSON schema validation is incredibly rock solid."</p>
-                      <div className="mt-auto flex items-center gap-4">
-                        <div className="flex flex-col">
-                          <p className="text-black font-bold tracking-tight text-lg">Mike T.</p>
-                          <p className="text-black/40 text-xs tracking-widest uppercase font-semibold">Security Dev</p>
-                        </div>
-                      </div>
+              {/* Row 2 - Scrolling Right */}
+              <div className="flex w-max animate-marquee-reverse hover:[animation-play-state:paused] group">
+                {[
+                  { text: "Finally, an AI tool that actually understands developer context and doesn't just summarize.", name: "James W.", title: "Tech Lead", initial: "JW" },
+                  { text: "Setup took 5 minutes. The webhook integration with Linear is flawless. Highly recommend.", name: "Elena R.", title: "Frontend Dev", initial: "ER" },
+                  { text: "We run it on our weekly syncs too. It pulls out action items and assigns them perfectly.", name: "Tom H.", title: "Engineering Manager", initial: "TH" },
+                  { text: "I love that I can bring my own Groq key. The inference is blazing fast and completely private.", name: "Chris B.", title: "Backend Engineer", initial: "CB" },
+                  { text: "It's like having a dedicated project manager in every call, but without the overhead.", name: "Anna K.", title: "Fullstack Dev", initial: "AK" },
+                  // Duplicate for infinite loop
+                  { text: "Finally, an AI tool that actually understands developer context and doesn't just summarize.", name: "James W.", title: "Tech Lead", initial: "JW" },
+                  { text: "Setup took 5 minutes. The webhook integration with Linear is flawless. Highly recommend.", name: "Elena R.", title: "Frontend Dev", initial: "ER" },
+                  { text: "We run it on our weekly syncs too. It pulls out action items and assigns them perfectly.", name: "Tom H.", title: "Engineering Manager", initial: "TH" },
+                  { text: "I love that I can bring my own Groq key. The inference is blazing fast and completely private.", name: "Chris B.", title: "Backend Engineer", initial: "CB" },
+                  { text: "It's like having a dedicated project manager in every call, but without the overhead.", name: "Anna K.", title: "Fullstack Dev", initial: "AK" }
+                ].map((t, i) => (
+                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-3xl bg-white/40 backdrop-blur-md border border-white/60 p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex-shrink-0 cursor-default">
+                    <div className="flex text-yellow-500 gap-1 mb-2">
+                      {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
-                  </BlurReveal>
-                </div>
-
-                {/* Logos */}
-                <BlurReveal duration={1} delay={0.6}>
-                  <div className="flex flex-col items-center gap-6 mt-16 pt-12 border-t border-black/5 w-full">
-                    <span className="text-black/40 text-xs uppercase tracking-[0.2em] font-mono">Engineered With</span>
-                    <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-40 hover:opacity-100 transition-opacity duration-500">
-                      <span className="text-xl font-bold font-sans text-black tracking-tight">Groq LPU™</span>
-                      <span className="text-xl font-bold font-sans text-black tracking-tight">Llama 3.3</span>
-                      <span className="text-xl font-bold font-sans text-black tracking-tight">Whisper v3</span>
-                      <span className="text-xl font-bold font-sans text-black tracking-tight">Next.js</span>
-                      <span className="text-xl font-bold font-sans text-black tracking-tight">Supabase</span>
+                    <p className="text-black/80 font-serif text-[1.1rem] leading-snug italic line-clamp-3 mb-4">"{t.text}"</p>
+                    <div className="mt-auto flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-black/10 text-black flex items-center justify-center font-bold text-sm border border-black/10">{t.initial}</div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-black">{t.name}</span>
+                        <span className="text-xs text-black/50 font-medium uppercase tracking-wider">{t.title}</span>
+                      </div>
                     </div>
                   </div>
-                </BlurReveal>
+                ))}
+              </div>
             </div>
           </section>
         </div>
+
 
       </div> {/* END CORE PLATFORM WRAPPER */}
 

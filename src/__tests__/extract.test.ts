@@ -3,6 +3,8 @@ import {
   validateSchemaMode,
   validateAudioFile,
   safeJsonParse,
+  normalizeStandupEntities,
+  normalizeRetroEntities
 } from "../app/api/extract/helpers";
 
 describe("extract helpers", () => {
@@ -27,8 +29,11 @@ describe("extract helpers", () => {
   });
 
   describe("validateSchemaMode", () => {
-    it("defaults to standup for unknown schemas", () => {
-      expect(validateSchemaMode("invalid")).toBe("standup");
+    it("returns null for invalid schemas", () => {
+      expect(validateSchemaMode("invalid")).toBeNull();
+    });
+    
+    it("defaults to standup for missing schemas", () => {
       expect(validateSchemaMode(null)).toBe("standup");
     });
 
@@ -39,7 +44,6 @@ describe("extract helpers", () => {
 
   describe("validateAudioFile", () => {
     it("returns error for files over 100MB", () => {
-      // Mock File object
       const largeFile = {
         size: 101 * 1024 * 1024,
         type: "audio/wav",
@@ -47,7 +51,7 @@ describe("extract helpers", () => {
       expect(validateAudioFile(largeFile)).toBe("File size exceeds 100MB limit.");
     });
 
-    it("returns error for non-audio types", () => {
+    it("returns error for non-audio types like text", () => {
       const textFile = {
         size: 1000,
         type: "text/plain",
@@ -73,6 +77,30 @@ describe("extract helpers", () => {
     it("returns error object for invalid JSON", () => {
       const result = safeJsonParse("invalid json");
       expect(result).toHaveProperty("error");
+    });
+  });
+
+  describe("normalizeStandupEntities", () => {
+    it("handles empty object", () => {
+      const result = normalizeStandupEntities({});
+      expect(result.requires_clarification).toBe(false);
+      expect(result.clarification_questions).toEqual([]);
+      expect(result.extracted_tickets).toEqual([]);
+    });
+
+    it("preserves valid arrays", () => {
+      const result = normalizeStandupEntities({
+        extracted_tickets: [{ title: "Task 1" }]
+      });
+      expect(result.extracted_tickets).toEqual([{ title: "Task 1" }]);
+    });
+  });
+
+  describe("normalizeRetroEntities", () => {
+    it("handles empty object", () => {
+      const result = normalizeRetroEntities({});
+      expect(result.requires_clarification).toBe(false);
+      expect(result.retro_categories.action_items).toEqual([]);
     });
   });
 });

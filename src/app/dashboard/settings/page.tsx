@@ -4,38 +4,22 @@ import { BlurReveal } from "@/components/ui/blur-reveal";
 import { Settings, Users, CreditCard, Activity, Key } from "lucide-react";
 import { Aura } from "@/components/ui/aura";
 import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
 
 export default function SettingsPage() {
   const [apiKey, setApiKey] = useState("");
+  const [provider, setProvider] = useState("hosted");
   const [saved, setSaved] = useState(false);
-  const supabase = createClient();
 
   useEffect(() => {
-    async function loadSettings() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      
-      const { data } = await supabase.from('user_settings').select('groq_api_key').eq('user_id', user.id).single();
-      if (data?.groq_api_key) {
-        setApiKey(data.groq_api_key);
-      }
-    }
-    loadSettings();
+    const key = localStorage.getItem("groq_api_key");
+    if (key) setApiKey(key);
+    const prov = localStorage.getItem("extraction_provider");
+    if (prov) setProvider(prov);
   }, []);
 
   const handleSave = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    
-    // Upsert equivalent since we have unique(user_id) but need to handle insert vs update gracefully
-    const { data: existing } = await supabase.from('user_settings').select('id').eq('user_id', user.id).single();
-    
-    if (existing) {
-      await supabase.from('user_settings').update({ groq_api_key: apiKey }).eq('user_id', user.id);
-    } else {
-      await supabase.from('user_settings').insert({ user_id: user.id, groq_api_key: apiKey });
-    }
+    localStorage.setItem("groq_api_key", apiKey);
+    localStorage.setItem("extraction_provider", provider);
     
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -60,10 +44,25 @@ export default function SettingsPage() {
           <div className="flex flex-col gap-6 p-8 rounded-2xl bg-[#05040a] border border-white/5 shadow-2xl h-full">
             <div className="flex items-center gap-3">
                <Key className="w-6 h-6 text-white" />
-               <h2 className="text-lg font-bold text-foreground font-sans">Bring Your Own Key (BYOK)</h2>
+               <h2 className="text-lg font-bold text-foreground font-sans">Extraction Provider & BYOK</h2>
             </div>
-            <p className="text-sm text-zinc-500 font-sans max-w-2xl">
-              Distill operates as a secure, stateless proxy. Provide your Groq API key to enable lightning-fast audio extraction. Your key is stored securely in your database.
+            
+            <div className="flex flex-col gap-3 mt-2 max-w-md">
+              <label className="text-xs font-mono text-zinc-500 uppercase tracking-wider">Extraction Provider</label>
+              <select 
+                value={provider}
+                onChange={(e) => setProvider(e.target.value)}
+                className="w-full bg-[#05040a] border border-white/10 rounded-md p-2 text-sm text-foreground focus:outline-none focus:border-white/50"
+              >
+                <option value="hosted">Hosted BYOK / Groq</option>
+                <option value="local">Local Open Source</option>
+              </select>
+            </div>
+
+            <p className="text-sm text-zinc-500 font-sans max-w-2xl mt-2">
+              {provider === "local" 
+                ? "Local Mode keeps audio on your machine. Run the Distill local companion, then process audio with local Whisper + Ollama models."
+                : "Distill operates as a secure, stateless proxy. Provide your Groq API key to enable lightning-fast audio extraction. Your key is stored securely in your browser."}
             </p>
             <div className="flex flex-col gap-3 mt-2 max-w-md">
               <label className="text-xs font-mono text-zinc-500 uppercase tracking-wider">Groq API Key</label>

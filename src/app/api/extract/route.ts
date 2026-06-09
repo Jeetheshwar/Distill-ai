@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { NormalizedExtractionResponse, StandupEntities, RetroEntities } from "./types";
-import { extractAuthToken, validateSchemaMode, validateAudioFile, safeJsonParse, getSystemPrompt, ZodStandupSchema, ZodRetroSchema } from "./helpers";
-import { zodToJsonSchema } from "zod-to-json-schema";
+import { extractAuthToken, validateSchemaMode, validateAudioFile, safeJsonParse, getSystemPrompt, normalizeStandupEntities, normalizeRetroEntities } from "./helpers";
 import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
@@ -49,6 +48,12 @@ export async function POST(request: NextRequest) {
     const answers = formData.get("answers") as string | null;
 
     const schema = validateSchemaMode(rawSchema);
+    if (!schema) {
+      return NextResponse.json(
+        { error: "Bad Request. Invalid schema mode provided." },
+        { status: 400 }
+      );
+    }
 
     if (!file && !providedTranscript) {
       return NextResponse.json(
@@ -66,27 +71,20 @@ export async function POST(request: NextRequest) {
     const { default: Groq } = await import("groq-sdk");
     
     let transcript = providedTranscript || "Mocked local transcription: The team discussed migrating the main database to PostgreSQL 16. Sarah will lead the migration effort because of her prior experience with PgBouncer. It is a high priority task.";
-    let durationSeconds = 45;
+    const durationSeconds = 45;
     let extractedEntities: StandupEntities | RetroEntities | { error: string };
 
     if (apiKey !== "sk_mock_pro_key_9281") {
       const groq = new Groq({ apiKey: apiKey });
       
       if (!providedTranscript && file) {
-        const isTextFile = file.type === "text/plain" || file.name.toLowerCase().endsWith(".txt") || file.name.toLowerCase().endsWith(".md");
-        
-        if (isTextFile) {
-          transcript = await file.text();
-        } else {
-          const transcription = await groq.audio.transcriptions.create({
-            file: file,
-            model: "whisper-large-v3-turbo",
-            prompt: "The following is a transcript of a technical meeting, daily standup, or retrospective. It contains software engineering terminology.",
-            temperature: 0.0,
-          });
-  
-          transcript = transcription.text?.trim() || "No speech detected.";
-        }
+        const transcription = await groq.audio.transcriptions.create({
+          file: file,
+          model: "whisper-large-v3-turbo",
+          prompt: "The following is a transcript of a technical meeting, daily standup, or retrospective. It contains software engineering terminology.",
+          temperature: 0.0,
+        });
+        transcript = transcription.text?.trim() || "No speech detected.";
       }
 
       // Short-circuit if no speech or common Whisper hallucinations for silence
@@ -116,7 +114,7 @@ export async function POST(request: NextRequest) {
           extracted_tickets: []
         };
       } else {
-        // 4. Live JSON Extraction (deepseek-r1-distill-llama-70b with Zod Tool Calling)
+        // 4. Live JSON Extraction
         try {
           const customSchema = formData.get("custom_schema") as string | null;
           const systemPrompt = getSystemPrompt(schema, customSchema);
@@ -125,50 +123,33 @@ export async function POST(request: NextRequest) {
             userPrompt += `\n\n[USER CLARIFICATIONS PROVIDED]:\n${answers}\n\nPlease generate the final tickets incorporating these clarifications. Ensure "requires_clarification" is false if enough context is now provided.`;
           }
 
-          let jsonPayload;
-
-          if (customSchema && customSchema.trim() !== "") {
-            // Fallback to json_object for completely unstructured custom schemas
-            const chatCompletion = await groq.chat.completions.create({
-              messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt }
-              ],
-              model: "llama-3.3-70b-versatile",
-              response_format: { type: "json_object" },
-            });
-            jsonPayload = safeJsonParse(chatCompletion.choices[0]?.message?.content || '{}');
-          } else {
-            // Strict Zod tool calling for base schemas
-            const targetSchema = schema === "retro" ? ZodRetroSchema : ZodStandupSchema;
-            const chatCompletion = await groq.chat.completions.create({
-              messages: [
-                { role: "system", content: systemPrompt },
-                { role: "user", content: userPrompt }
-              ],
-              model: "llama-3.3-70b-versatile",
-              tools: [{
-                type: 'function',
-                function: {
-                  name: 'extract_structured_data',
-                  description: 'Extract actionable data from transcript',
-                  parameters: zodToJsonSchema(targetSchema as any) as any,
-                }
-              }],
-              tool_choice: { type: 'function', function: { name: 'extract_structured_data' } }
-            });
-            
-            const toolCallArgs = chatCompletion.choices[0]?.message?.tool_calls?.[0]?.function?.arguments;
-            jsonPayload = safeJsonParse(toolCallArgs || '{}');
-          }
+          const chatCompletion = await groq.chat.completions.create({
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt }
+            ],
+            model: "llama-3.3-70b-versatile",
+            response_format: { type: "json_object" },
+          });
+          
+          const rawContent = chatCompletion.choices[0]?.message?.content || '{}';
+          const jsonPayload = safeJsonParse(rawContent);
 
           if (jsonPayload.error) {
              throw new Error(jsonPayload.error);
           }
-          extractedEntities = jsonPayload;
-        } catch (llmError: any) {
+          
+          if (schema === "retro") {
+            extractedEntities = normalizeRetroEntities(jsonPayload);
+          } else {
+            extractedEntities = normalizeStandupEntities(jsonPayload);
+          }
+        } catch (llmError: unknown) {
           console.error("LLM Extraction failed", llmError);
-          extractedEntities = { error: "JSON Extraction failed or returned malformed structure." };
+          return NextResponse.json(
+            { error: "JSON Extraction failed or returned malformed structure." },
+            { status: 500 }
+          );
         }
       } 
     } else {
@@ -221,7 +202,7 @@ export async function POST(request: NextRequest) {
           status: "completed"
         });
       }
-    } catch (dbError) {
+    } catch (_dbError) {
       console.error("Failed to persist extraction metadata to Supabase.");
     }
 
@@ -244,7 +225,7 @@ export async function POST(request: NextRequest) {
 
     // 8. Return Live Artifacts
     return NextResponse.json(responsePayload);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Extraction Pipeline Error: Top level failure.");
     
     // Extract actual error message from API failures (like Groq Cloudflare blocks)

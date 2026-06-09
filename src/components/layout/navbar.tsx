@@ -7,11 +7,17 @@ export async function Navbar() {
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
-    <nav className="fixed top-6 left-0 w-full z-50 flex justify-center px-4">
-      <div className="flex justify-between items-center w-full max-w-[95%] xl:max-w-[1400px] bg-[#0a0710]/80 backdrop-blur-xl border border-white/10 rounded-2xl px-5 md:px-8 py-2.5 shadow-[0_0_30px_rgba(72,38,185,0.15)] relative z-10">
-        <Link href="/" className="font-anta text-2xl tracking-widest text-foreground">
-          DISTILL.<span className="text-distill-violet">AI</span>
-        </Link>
+    <nav className="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+      {/* Premium blur background layer with fade out to bottom */}
+      <div className="absolute inset-0 bg-transparent backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_60%,transparent)] -z-10 h-full" />
+      {/* Optional top highlight line */}
+      <div className="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent -z-10" />
+      
+      <div className="flex justify-center w-full px-4 pt-4 pb-6">
+        <div className="flex justify-between items-center w-full max-w-[95%] xl:max-w-[1400px] px-5 md:px-8 relative z-10">
+          <Link href="/" className="font-anta text-2xl tracking-widest text-foreground">
+            DISTILL.<span className="text-distill-violet">AI</span>
+          </Link>
         
         <div className="hidden md:flex gap-10 items-center text-sm font-bold tracking-wide text-distill-muted">
           <Link href="/#features" className="hover:text-foreground transition-colors">Features</Link>
@@ -28,6 +34,7 @@ export async function Navbar() {
           <Link href={user ? "/dashboard" : "/login?signup=true"} className="px-5 md:px-8 py-2 rounded-xl bg-foreground text-background font-bold tracking-wide hover:scale-105 transition-transform text-sm shadow-[0_0_15px_rgba(255,255,255,0.2)] whitespace-nowrap">
             {user ? "Dashboard" : "Get Started"}
           </Link>
+        </div>
         </div>
       </div>
     </nav>

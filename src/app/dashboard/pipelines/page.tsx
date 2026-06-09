@@ -21,6 +21,7 @@ export default function TranscribePipelinePage() {
   const [clarificationAnswers, setClarificationAnswers] = useState<string[]>([]);
   const [currentTranscript, setCurrentTranscript] = useState<string>("");
   const [userSettings, setUserSettings] = useState<{ groq_api_key?: string, webhook_url?: string, custom_standup_schema?: string, custom_retro_schema?: string } | null>(null);
+  const [provider, setProvider] = useState<string>("hosted");
   const [historyData, setHistoryData] = useState<any[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -87,21 +88,20 @@ export default function TranscribePipelinePage() {
   };
 
   useEffect(() => {
-    async function loadSettings() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase.from('user_settings').select('groq_api_key, webhook_url, custom_standup_schema, custom_retro_schema').eq('user_id', user.id).single();
-      if (data) {
-        setUserSettings(data);
-        setHasKey(!!data.groq_api_key);
-        setSchemaEditorContent(schemaEditorMode === "retro" ? (data.custom_retro_schema || defaultRetroSchema) : (data.custom_standup_schema || defaultStandupSchema));
-      } else {
-        setHasKey(false);
-        setSchemaEditorContent(schemaEditorMode === "retro" ? defaultRetroSchema : defaultStandupSchema);
-      }
+    function loadSettings() {
+      const groq_api_key = localStorage.getItem("groq_api_key") || undefined;
+      const webhook_url = localStorage.getItem("webhook_url") || undefined;
+      const custom_standup_schema = localStorage.getItem("custom_standup_schema") || undefined;
+      const custom_retro_schema = localStorage.getItem("custom_retro_schema") || undefined;
+      const extraction_provider = localStorage.getItem("extraction_provider") || "hosted";
+      
+      setUserSettings({ groq_api_key, webhook_url, custom_standup_schema, custom_retro_schema });
+      setProvider(extraction_provider);
+      setHasKey(!!groq_api_key || extraction_provider === "local");
+      setSchemaEditorContent(schemaEditorMode === "retro" ? (custom_retro_schema || defaultRetroSchema) : (custom_standup_schema || defaultStandupSchema));
     }
     loadSettings();
-  }, []);
+  }, [schemaEditorMode]);
 
   useEffect(() => {
     if (activeTab === "history") {
@@ -159,9 +159,12 @@ export default function TranscribePipelinePage() {
     try {
       // 3. Dispatch to API Infrastructure
       const key = userSettings?.groq_api_key || "sk_mock_pro_key_9281";
-      const res = await fetch("/api/extract", {
+      const provider = localStorage.getItem("extraction_provider") || "hosted";
+      const endpoint = provider === "local" ? "http://127.0.0.1:47341/extract" : "/api/extract";
+      
+      const res = await fetch(endpoint, {
         method: "POST",
-        headers: {
+        headers: provider === "local" ? {} : {
           "Authorization": `Bearer ${key}`
         },
         body: formData
@@ -216,9 +219,12 @@ export default function TranscribePipelinePage() {
 
     try {
       const key = userSettings?.groq_api_key || "sk_mock_pro_key_9281";
-      const res = await fetch("/api/extract", {
+      const provider = localStorage.getItem("extraction_provider") || "hosted";
+      const endpoint = provider === "local" ? "http://127.0.0.1:47341/extract" : "/api/extract";
+
+      const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Authorization": `Bearer ${key}` },
+        headers: provider === "local" ? {} : { "Authorization": `Bearer ${key}` },
         body: formData
       });
 
@@ -477,7 +483,7 @@ export default function TranscribePipelinePage() {
             
             <div className="w-full flex items-center justify-center gap-2 mt-4 text-xs font-mono text-zinc-500">
               <ShieldCheck className="w-4 h-4 text-zinc-500" />
-              <span>BYOK Proxied: Audio is processed via Groq and never stored.</span>
+              <span>{provider === "local" ? "Local Mode Active: Audio stays on your machine and is processed via Local Companion." : "BYOK Proxied: Audio is processed via Groq and never stored."}</span>
             </div>
           </div>
         </BlurReveal>
@@ -747,20 +753,14 @@ export default function TranscribePipelinePage() {
                 Restore Defaults
               </button>
               <button 
-                onClick={async () => {
+                onClick={() => {
                   setIsSavingSchema(true);
-                  const { data: { user } } = await supabase.auth.getUser();
-                  if (user) {
-                    const updateData = schemaEditorMode === "retro" 
-                      ? { custom_retro_schema: schemaEditorContent }
-                      : { custom_standup_schema: schemaEditorContent };
-                    
-                    await supabase.from("user_settings").upsert({
-                      user_id: user.id,
-                      ...updateData
-                    }, { onConflict: "user_id" });
-
-                    setUserSettings(prev => prev ? { ...prev, ...updateData } : { ...updateData });
+                  if (schemaEditorMode === "retro") {
+                    localStorage.setItem("custom_retro_schema", schemaEditorContent);
+                    setUserSettings(prev => prev ? { ...prev, custom_retro_schema: schemaEditorContent } : { custom_retro_schema: schemaEditorContent });
+                  } else {
+                    localStorage.setItem("custom_standup_schema", schemaEditorContent);
+                    setUserSettings(prev => prev ? { ...prev, custom_standup_schema: schemaEditorContent } : { custom_standup_schema: schemaEditorContent });
                   }
                   setIsSavingSchema(false);
                 }}
