@@ -41,9 +41,10 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // If user is already logged in, push them away from the login page directly into dashboard
-  const isAccessingLogin = request.nextUrl.pathname === '/login'
-  if (isAccessingLogin && user) {
+  // If user is already logged in, push them away from the auth pages directly into dashboard
+  const authRoutes = ['/login', '/forgot-password', '/update-password']
+  const isAccessingAuth = authRoutes.includes(request.nextUrl.pathname)
+  if (isAccessingAuth && user) {
      const url = request.nextUrl.clone()
      url.pathname = '/dashboard'
      return NextResponse.redirect(url)
