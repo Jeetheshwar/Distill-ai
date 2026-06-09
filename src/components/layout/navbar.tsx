@@ -31,7 +31,7 @@ export async function Navbar() {
             items={navItems}
             activeHref="/"
             className=""
-            baseColor="#EAE4F2"
+            baseColor="#CBB1EC"
             pillColor="#16131D"
             hoveredPillTextColor="#ffffff"
             pillTextColor="#ffffff"
@@ -49,7 +49,7 @@ export async function Navbar() {
             )}
             <Link 
               href={user ? "/dashboard" : "/login?signup=true"} 
-              className="px-6 py-[10px] rounded-[9999px] bg-[#EAE4F2] text-[#16131D] font-bold tracking-wide hover:scale-105 transition-transform text-sm shadow-[0_0_15px_rgba(234,228,242,0.2)] whitespace-nowrap"
+              className="px-6 py-[10px] rounded-[9999px] bg-[#CBB1EC] text-[#16131D] font-bold tracking-wide hover:scale-105 transition-transform text-sm shadow-[0_0_15px_rgba(203,177,236,0.2)] whitespace-nowrap"
             >
               {user ? "Dashboard" : "Get Started"}
             </Link>
