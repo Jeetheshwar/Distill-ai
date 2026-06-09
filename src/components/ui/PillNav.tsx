@@ -247,33 +247,6 @@ const PillNav = ({
   return (
     <div className="pill-nav-container w-full flex justify-center mt-2">
       <nav className={`pill-nav ${className}`} aria-label="Primary" style={cssVars}>
-        {items?.[0] && (isRouterLink(items[0].href) ? (
-          <Link
-            className="pill-logo"
-            href={items[0].href}
-            aria-label="Home"
-            onMouseEnter={handleLogoEnter}
-            role="menuitem"
-            ref={(el) => {
-              logoRef.current = el as unknown as HTMLAnchorElement;
-            }}
-          >
-            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16131D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>}
-          </Link>
-        ) : (
-          <a
-            className="pill-logo"
-            href={items[0].href || '#'}
-            aria-label="Home"
-            onMouseEnter={handleLogoEnter}
-            ref={(el) => {
-              logoRef.current = el as unknown as HTMLAnchorElement;
-            }}
-          >
-            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16131D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>}
-          </a>
-        ))}
-
         <div className="pill-nav-items desktop-only" ref={navItemsRef}>
           <ul className="pill-list" role="menubar">
             {items.map((item, i) => (

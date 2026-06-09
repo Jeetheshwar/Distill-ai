@@ -22,8 +22,15 @@ export async function Navbar() {
       {/* Layout Container */}
       <div className="pointer-events-auto w-full max-w-[95%] xl:max-w-[1400px] flex justify-between items-start pt-3 px-5 md:px-8 relative z-10">
         
-        {/* Left spacing placeholder (keeps center perfectly aligned) */}
-        <div className="flex-1 hidden md:block"></div>
+        {/* Left side: Logo */}
+        <div className="flex-1 hidden md:flex items-center pt-1">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-full bg-[#CBB1EC] flex items-center justify-center transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16131D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <span className="font-anta text-xl tracking-widest text-foreground mt-1">DISTILL.<span className="text-[#CBB1EC]">AI</span></span>
+          </Link>
+        </div>
 
         {/* Center: Pill Navigation */}
         <div className="flex-shrink-0 flex justify-center items-center">

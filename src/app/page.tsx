@@ -182,7 +182,7 @@ export default function Home() {
           
           <div className="flex flex-col gap-2">
             <BlurReveal duration={1.2} delay={0.1}>
-              <h1 className="font-sergena text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[1.1]">
+              <h1 className="font-sergena text-3xl sm:text-4xl md:text-6xl lg:text-7xl tracking-tighter leading-[1.1]">
                 <span className="block text-foreground">Turn Standup Recordings</span>
                 <span className="block text-distill-muted mt-2">
                   into <span className="bg-gradient-to-br from-[#0052CC] to-distill-violet bg-clip-text text-transparent drop-shadow-lg">Jira Tickets</span> in <span className="bg-gradient-to-br from-distill-core to-white bg-clip-text text-transparent drop-shadow-lg">30 Seconds</span>
@@ -192,7 +192,7 @@ export default function Home() {
           </div>
 
           <BlurReveal duration={1.2} delay={0.2}>
-            <p className="text-lg md:text-xl text-distill-muted leading-relaxed max-w-2xl text-white/70">
+            <p className="text-base md:text-lg text-distill-muted leading-relaxed max-w-2xl text-white/70">
               Upload your daily standup audio. Distill auto-extracts tasks, bugs, and blockers — then creates Jira/Linear tickets automatically. BYOK. We do not persist audio files.
             </p>
           </BlurReveal>
