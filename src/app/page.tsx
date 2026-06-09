@@ -227,24 +227,36 @@ export default function Home() {
           <BlurReveal duration={1.2} delay={0.6}>
             <div className="mt-20 md:mt-28 flex flex-col items-center gap-4">
               <span className="text-xs font-mono text-white/60 uppercase tracking-widest">Natively Integrates With</span>
-              <div className="flex flex-wrap justify-center items-center gap-4 md:gap-6 opacity-100 transition-opacity duration-500">
+              <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-100 transition-opacity duration-500">
                 {/* Jira */}
-                <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all cursor-default hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(0,82,204,0.3)] group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#0052CC]/0 via-[#0052CC]/10 to-[#0052CC]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                  <svg className="w-6 h-6 text-white/50 group-hover:text-[#0052CC] transition-colors relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 10.37h-3.3v-3.3c0-.66-.54-1.2-1.2-1.2h-3.3c-.66 0-1.2.54-1.2 1.2v3.3h3.3c.66 0 1.2.54 1.2 1.2v3.3h-3.3c-.66 0-1.2.54-1.2 1.2v3.3c0 .66.54 1.2 1.2 1.2h3.3c.66 0 1.2-.54 1.2-1.2v-3.3h3.3c.66 0 1.2-.54 1.2-1.2v-3.3c0-.66-.54-1.2-1.2-1.2z"/></svg>
-                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight inline transition-colors relative z-10">Jira</span>
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#0052CC] shadow-[0_4px_20px_rgba(0,82,204,0.3)] shrink-0 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
+                    <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 10.37h-3.3v-3.3c0-.66-.54-1.2-1.2-1.2h-3.3c-.66 0-1.2.54-1.2 1.2v3.3h3.3c.66 0 1.2.54 1.2 1.2v3.3h-3.3c-.66 0-1.2.54-1.2 1.2v3.3c0 .66.54 1.2 1.2 1.2h3.3c.66 0 1.2-.54 1.2-1.2v-3.3h3.3c.66 0 1.2-.54 1.2-1.2v-3.3c0-.66-.54-1.2-1.2-1.2z"/></svg>
+                  </div>
+                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight transition-colors">Jira</span>
                 </div>
                 {/* Linear */}
-                <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all cursor-default hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(94,106,210,0.3)] group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#5E6AD2]/0 via-[#5E6AD2]/10 to-[#5E6AD2]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                  <svg className="w-6 h-6 text-white/50 group-hover:text-[#5E6AD2] transition-colors relative z-10" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2H3C2.4 2 2 2.4 2 3v10.2c0 .3.1.5.3.7l9.8 9.8c.4.4 1 .4 1.4 0l10.2-10.2c.4-.4.4-1 0-1.4L13.9 2.3C13.7 2.1 13.5 2 13.2 2zM12 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight inline transition-colors relative z-10">Linear</span>
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-[#1A1A1A] border border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.5)] shrink-0 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
+                    <svg className="w-6 h-6 text-[#E0E0E0]" viewBox="0 0 24 24" fill="currentColor"><path d="M13.2 2H3C2.4 2 2 2.4 2 3v10.2c0 .3.1.5.3.7l9.8 9.8c.4.4 1 .4 1.4 0l10.2-10.2c.4-.4.4-1 0-1.4L13.9 2.3C13.7 2.1 13.5 2 13.2 2zM12 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                  </div>
+                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight transition-colors">Linear</span>
                 </div>
                 {/* Slack */}
-                <div className="flex items-center gap-3 px-5 py-2.5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all cursor-default hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(224,30,90,0.3)] group relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#E01E5A]/0 via-[#E01E5A]/10 to-[#E01E5A]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                  <svg className="w-6 h-6 text-white/50 group-hover:text-[#E01E5A] transition-colors relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1 2.521-2.52A2.528 2.528 0 0 1 13.876 5.042a2.527 2.527 0 0 1-2.521 2.52h-2.52v-2.52zM8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.527 2.527 0 0 1-2.522 2.52h-2.522v-2.52zM17.688 8.834a2.527 2.527 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1-2.523 2.52A2.528 2.528 0 0 1 10.12 18.956a2.527 2.527 0 0 1 2.522-2.52h2.523v2.52zM15.165 17.688a2.527 2.527 0 0 1-2.523-2.521 2.527 2.527 0 0 1 2.523-2.521h6.312A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.521h-6.313z"/></svg>
-                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight inline transition-colors relative z-10">Slack</span>
+                <div className="flex items-center gap-3 group cursor-default">
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-[0_4px_20px_rgba(255,255,255,0.15)] shrink-0 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-105">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24">
+                      <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52z" fill="#E01E5A"/>
+                      <path d="M6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313z" fill="#E01E5A"/>
+                      <path d="M8.834 5.042a2.528 2.528 0 0 1 2.521-2.52A2.528 2.528 0 0 1 13.876 5.042a2.527 2.527 0 0 1-2.521 2.52h-2.52v-2.52z" fill="#36C5F0"/>
+                      <path d="M8.834 6.313a2.527 2.527 0 0 1 2.521 2.521 2.527 2.527 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312z" fill="#36C5F0"/>
+                      <path d="M18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.527 2.527 0 0 1-2.522 2.52h-2.522v-2.52z" fill="#2EB67D"/>
+                      <path d="M17.688 8.834a2.527 2.527 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.528 2.528 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312z" fill="#2EB67D"/>
+                      <path d="M15.165 18.956a2.528 2.528 0 0 1-2.523 2.52A2.528 2.528 0 0 1 10.12 18.956a2.527 2.527 0 0 1 2.522-2.52h2.523v2.52z" fill="#ECB22E"/>
+                      <path d="M15.165 17.688a2.527 2.527 0 0 1-2.523-2.521 2.527 2.527 0 0 1 2.523-2.521h6.312A2.528 2.528 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.521h-6.313z" fill="#ECB22E"/>
+                    </svg>
+                  </div>
+                  <span className="font-bold text-white/70 group-hover:text-white tracking-tight transition-colors">Slack</span>
                 </div>
               </div>
             </div>

@@ -54,6 +54,7 @@ export const metadata: Metadata = {
 
 import { NavigationWrapper } from "@/components/layout/navigation-wrapper";
 import { Analytics } from '@vercel/analytics/react';
+import { SmoothScrolling } from "@/components/ui/SmoothScrolling";
 
 export default function RootLayout({
   children,
@@ -63,16 +64,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${interFont.variable} ${antaFont.variable} ${sergenaFont.variable} h-full antialiased scroll-smooth`}
+      className={`${interFont.variable} ${antaFont.variable} ${sergenaFont.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body 
         className="min-h-full flex flex-col bg-background text-foreground antialiased relative"
         suppressHydrationWarning
       >
-        <NavigationWrapper navbar={<Navbar />}>
-          {children}
-        </NavigationWrapper>
+        <SmoothScrolling>
+          <NavigationWrapper navbar={<Navbar />}>
+            {children}
+          </NavigationWrapper>
+        </SmoothScrolling>
         <Analytics />
       </body>
     </html>
