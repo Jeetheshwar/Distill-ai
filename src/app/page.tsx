@@ -12,7 +12,22 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { WaitlistModal } from "@/components/waitlist-modal";
 
+import { createClient } from "@/utils/supabase/client";
+
 export default function Home() {
+  const [user, setUser] = useState<any>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUser(data.user);
+      }
+    };
+    checkUser();
+  }, []);
+
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   // Demo State
@@ -208,9 +223,9 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center gap-4 mt-2 justify-center">
               <div className="relative group w-full sm:w-auto">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-distill-core via-distill-violet to-distill-core rounded-full blur opacity-40 group-hover:opacity-100 transition duration-500 animate-tilt z-0"></div>
-                <Link href="/login?signup=true" className="relative inline-flex items-center justify-center px-8 py-4 rounded-full bg-black border border-white/10 text-white font-bold tracking-wide transition-all w-full sm:w-auto overflow-hidden hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset] z-10">
+                <Link href={user ? "/dashboard" : "/login?signup=true"} className="relative inline-flex items-center justify-center px-8 py-4 rounded-full bg-black border border-white/10 text-white font-bold tracking-wide transition-all w-full sm:w-auto overflow-hidden hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset] z-10">
                   <span className="relative z-10 flex items-center">
-                    Create Free Account
+                    {user ? "Go to Dashboard" : "Create Free Account"}
                     <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300 text-distill-core group-hover:rotate-[-45deg]" />
                   </span>
                   {/* Premium sweep effect */}
