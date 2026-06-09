@@ -114,14 +114,3 @@ body {
   animation: marquee-reverse 40s linear infinite;
 }
 
-@keyframes aurora-drift {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(5%, -10%) scale(1.1) rotate(5deg); }
-  66% { transform: translate(-5%, 5%) scale(0.95) rotate(-5deg); }
-}
-
-.animate-aurora-drift {
-  animation: aurora-drift 20s ease-in-out infinite;
-  will-change: transform;
-}
-

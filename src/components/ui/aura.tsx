@@ -6,22 +6,12 @@ export function Aura({ variant }: { variant: AuraVariant }) {
   if (variant === "hero") {
     return (
       <div className="absolute inset-0 z-0 pointer-events-none overflow-visible -translate-y-[15vh]">
-        {/* Irregular Aurora Highs & Intense Base */}
-
-        {/* Central Intense Blue/White Core */}
-        <div className="absolute bottom-[-10vh] left-1/2 -translate-x-1/2 w-[60vw] h-[50vh] bg-[radial-gradient(ellipse_at_bottom,_white_0%,_#0052CC_40%,_transparent_70%)] opacity-80 blur-[100px] mix-blend-screen animate-aurora-drift" style={{ animationDelay: '0s', animationDuration: '25s' }} />
-
-        {/* High White/Violet Peak (Left) */}
-        <div className="absolute bottom-[10vh] left-[-10vw] w-[50vw] h-[80vh] bg-[radial-gradient(ellipse_at_center,_white_0%,_var(--distill-violet)_45%,_transparent_70%)] opacity-[0.95] blur-[130px] mix-blend-screen animate-aurora-drift" style={{ animationDelay: '-5s', animationDuration: '20s' }} />
-
-        {/* Irregular Blue Cloud (Top Right) */}
-        <div className="absolute bottom-[20vh] right-[5vw] w-[40vw] h-[60vh] bg-[radial-gradient(ellipse_at_center,_#0052CC_0%,_transparent_70%)] opacity-[0.85] blur-[140px] mix-blend-screen animate-aurora-drift" style={{ animationDelay: '-12s', animationDuration: '28s' }} />
-
-        {/* Massive Violet Base Horizon */}
-        <div className="absolute bottom-[-15vh] right-[-20vw] w-[80vw] h-[90vh] bg-[radial-gradient(ellipse_at_bottom_right,_var(--distill-violet)_0%,_transparent_70%)] opacity-90 blur-[120px] mix-blend-screen animate-aurora-drift" style={{ animationDelay: '-8s', animationDuration: '22s' }} />
-        
-        {/* Soft White Filler (Center Top) */}
-        <div className="absolute bottom-[30vh] left-[30vw] w-[40vw] h-[40vh] bg-[radial-gradient(circle_at_center,_white_0%,_transparent_60%)] opacity-70 blur-[100px] mix-blend-screen animate-aurora-drift" style={{ animationDelay: '-15s', animationDuration: '18s' }} />
+        {/* Solid Bottom Horizon bridging the gap and filling corners */}
+        <div className="absolute bottom-0 left-0 right-0 h-[40vh] bg-gradient-to-t from-distill-core via-distill-violet to-transparent opacity-70 blur-[80px] mix-blend-screen" />
+        {/* Left Vertical Curve of the U */}
+        <div className="absolute bottom-[-10vh] left-[-30vw] w-[90vw] h-[100vh] bg-[radial-gradient(ellipse_at_bottom_left,_var(--distill-core)_0%,_var(--distill-violet)_45%,_transparent_70%)] opacity-90 blur-[120px] mix-blend-screen" />
+        {/* Right Vertical Curve of the U */}
+        <div className="absolute bottom-[-10vh] right-[-30vw] w-[90vw] h-[100vh] bg-[radial-gradient(ellipse_at_bottom_right,_var(--distill-core)_0%,_var(--distill-violet)_45%,_transparent_70%)] opacity-90 blur-[120px] mix-blend-screen" />
       </div>
     );
   }
