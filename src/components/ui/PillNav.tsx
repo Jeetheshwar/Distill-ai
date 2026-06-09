@@ -258,7 +258,7 @@ const PillNav = ({
               logoRef.current = el as unknown as HTMLAnchorElement;
             }}
           >
-            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <div className="font-bold text-white tracking-widest text-xs">DISTILL</div>}
+            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <div className="font-bold text-[#16131D] tracking-widest text-xs">DISTILL</div>}
           </Link>
         ) : (
           <a
@@ -270,7 +270,7 @@ const PillNav = ({
               logoRef.current = el as unknown as HTMLAnchorElement;
             }}
           >
-            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <div className="font-bold text-white tracking-widest text-xs">DISTILL</div>}
+            {logo ? <img src={logo} alt={logoAlt} ref={logoImgRef} /> : <div className="font-bold text-[#16131D] tracking-widest text-xs">DISTILL</div>}
           </a>
         ))}
 
