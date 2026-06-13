@@ -19,7 +19,7 @@ import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder");
 
 export default function Home() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<unknown>(null);
   const supabase = createClient();
   const [isAnnual, setIsAnnual] = useState(true);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
@@ -36,6 +36,7 @@ export default function Home() {
       
       if (data.sessionId) {
         const stripe = await stripePromise;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await (stripe as any)?.redirectToCheckout({ sessionId: data.sessionId });
       } else {
         alert("Stripe is running in stub mode (Missing API Keys). In production, this redirects to checkout.");
@@ -67,7 +68,7 @@ export default function Home() {
   const [showJiraModal, setShowJiraModal] = useState(false);
   const [streamedJson, setStreamedJson] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [demoResult, setDemoResult] = useState<any>(null);
+  const [demoResult, setDemoResult] = useState<unknown>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,7 +144,7 @@ export default function Home() {
       setStreamedJson("");
       setDemoStep(4);
       setProcessingText("Transcribing with Groq Whisper..."); // Reset text
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       alert(`Extraction failed: ${err.message || "Check API key or file."}`);
       setDemoStep(1);
@@ -468,9 +469,9 @@ export default function Home() {
                           <h4 className="text-sm font-mono text-white/50 uppercase">Transcript</h4>
                           <div className="text-white/80 text-sm leading-relaxed font-sans space-y-4">
                             <p>
-                              <span className="font-bold text-distill-violet">Alex:</span> "Hey team. So <span className="bg-green-500/20 text-green-300 px-1 rounded">yesterday I finally finished the billing integration</span>, that's all pushed to prod. 
-                              <span className="bg-blue-500/20 text-blue-300 px-1 rounded ml-1">Today I'm working on the Jira webhook setup</span> so we can auto-create tickets. 
-                              The only issue is <span className="bg-red-500/20 text-red-300 px-1 rounded">I'm currently waiting on design for the modal</span>, so that's a blocker right now. That's it for me."
+                              <span className="font-bold text-distill-violet">Alex:</span> &quot;Hey team. So <span className="bg-green-500/20 text-green-300 px-1 rounded">yesterday I finally finished the billing integration</span>, that&apos;s all pushed to prod. 
+                              <span className="bg-blue-500/20 text-blue-300 px-1 rounded ml-1">Today I&apos;m working on the Jira webhook setup</span> so we can auto-create tickets. 
+                              The only issue is <span className="bg-red-500/20 text-red-300 px-1 rounded">I&apos;m currently waiting on design for the modal</span>, so that&apos;s a blocker right now. That&apos;s it for me.&quot;
                             </p>
                           </div>
                         </div>
@@ -566,9 +567,9 @@ export default function Home() {
                         <div className="leading-relaxed">
                           <span className="text-distill-violet">{"{"}</span>
                           <br/>
-                          &nbsp;&nbsp;<span className="text-black">"type"</span>: <span className="text-black/60">"Feature"</span>,
+                          &nbsp;&nbsp;<span className="text-black">&quot;type&quot;</span>: <span className="text-black/60">&quot;Feature&quot;</span>,
                           <br/>
-                          &nbsp;&nbsp;<span className="text-black">"title"</span>: <span className="text-black/60">"Implement billing webhook"</span>,
+                          &nbsp;&nbsp;<span className="text-black">&quot;title&quot;</span>: <span className="text-black/60">&quot;Implement billing webhook&quot;</span>,
                           <br/>
                           <span className="text-distill-violet">{"}"}</span>
                         </div>
@@ -967,7 +968,8 @@ export default function Home() {
             </div>
             
             <div className="p-6 overflow-y-auto max-h-[60vh] flex flex-col gap-4">
-              {(demoResult?.extracted_tickets || []).map((ticket: any, i: number) => (
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {(demoResult as any)?.extracted_tickets?.map((ticket: any, i: number) => (
                 <div key={i} className="bg-[#22272B] p-4 rounded-lg border border-white/5">
                   <div className="flex justify-between mb-2">
                     <input suppressHydrationWarning type="text" defaultValue={ticket.title} className="bg-transparent border-none text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 w-full" />

@@ -21,10 +21,6 @@ export default function TeamSettingsPage() {
   const [inviting, setInviting] = useState(false);
   const [message, setMessage] = useState<{text: string, type: 'error'|'success'} | null>(null);
 
-  useEffect(() => {
-    fetchTeamData();
-  }, []);
-
   const fetchTeamData = async () => {
     setLoading(true);
     try {
@@ -41,6 +37,11 @@ export default function TeamSettingsPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchTeamData();
+  }, []);
 
   const handleCreateTeam = async (e: React.FormEvent) => {
     e.preventDefault();

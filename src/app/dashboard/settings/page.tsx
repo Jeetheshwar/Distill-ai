@@ -16,8 +16,10 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const key = localStorage.getItem("groq_api_key");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (key) setApiKey(key);
     const prov = localStorage.getItem("extraction_provider");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (prov) setProvider(prov);
 
     async function loadPlan() {
