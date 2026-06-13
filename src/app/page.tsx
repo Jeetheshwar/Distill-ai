@@ -750,18 +750,20 @@ export default function Home() {
               </p>
 
               <div className="flex items-center gap-3 mt-8 bg-black/40 border border-white/10 p-1.5 rounded-full">
-                <button suppressHydrationWarning
+                <div role="button" tabIndex={0}
                   onClick={() => setIsAnnual(false)} 
-                  className={cn("px-6 py-2 rounded-full text-sm font-bold transition-all", !isAnnual ? "bg-white text-black shadow-lg" : "text-zinc-400 hover:text-white")}
+                  onKeyDown={(e) => e.key === 'Enter' && setIsAnnual(false)}
+                  className={cn("px-6 py-2 rounded-full text-sm font-bold transition-all cursor-pointer", !isAnnual ? "bg-white text-black shadow-lg" : "text-zinc-400 hover:text-white")}
                 >
                   Monthly
-                </button>
-                <button suppressHydrationWarning
+                </div>
+                <div role="button" tabIndex={0}
                   onClick={() => setIsAnnual(true)} 
-                  className={cn("px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2", isAnnual ? "bg-white text-black shadow-lg" : "text-zinc-400 hover:text-white")}
+                  onKeyDown={(e) => e.key === 'Enter' && setIsAnnual(true)}
+                  className={cn("px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2 cursor-pointer", isAnnual ? "bg-white text-black shadow-lg" : "text-zinc-400 hover:text-white")}
                 >
-                  Annually <span className={cn("px-2 py-0.5 rounded-full text-[10px] uppercase font-black tracking-widest", isAnnual ? "bg-distill-violet text-white" : "bg-white/10 text-white")}>Save 20%</span>
-                </button>
+                  Annually <span className={cn("px-2 py-0.5 rounded-full text-[10px] uppercase font-black tracking-widest pointer-events-none", isAnnual ? "bg-distill-violet text-white" : "bg-white/10 text-white")}>Save 20%</span>
+                </div>
               </div>
             </div>
           </BlurReveal>
@@ -810,13 +812,13 @@ export default function Home() {
                   <span className="text-5xl font-black text-white">{isAnnual ? "$29" : "$39"}</span>
                   <span className="text-zinc-500 mb-2">/ month</span>
                 </div>
-                <button suppressHydrationWarning
+                <div role="button" tabIndex={0}
                   onClick={() => handleSubscribe("pro", isAnnual ? "price_pro_annual" : "price_pro_monthly")}
-                  disabled={loadingTier === "pro"}
-                  className="w-full py-4 rounded-xl bg-white text-black font-bold flex justify-center items-center gap-2 hover:bg-zinc-200 transition-colors mb-8 disabled:opacity-50"
+                  onKeyDown={(e) => e.key === 'Enter' && handleSubscribe("pro", isAnnual ? "price_pro_annual" : "price_pro_monthly")}
+                  className={cn("w-full py-4 rounded-xl bg-white text-black font-bold flex justify-center items-center gap-2 hover:bg-zinc-200 transition-colors mb-8 cursor-pointer", loadingTier === "pro" && "opacity-50 pointer-events-none")}
                 >
                   {loadingTier === "pro" ? <span className="animate-pulse">Loading...</span> : <>Subscribe to Pro <ArrowRight className="w-4 h-4" /></>}
-                </button>
+                </div>
                 <div className="flex flex-col gap-4">
                   <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Everything in Hobby, including:</p>
                   <ul className="flex flex-col gap-3">
@@ -842,13 +844,13 @@ export default function Home() {
                   <span className="text-5xl font-black text-white">{isAnnual ? "$99" : "$129"}</span>
                   <span className="text-zinc-500 mb-2">/ month</span>
                 </div>
-                <button suppressHydrationWarning
+                <div role="button" tabIndex={0}
                   onClick={() => handleSubscribe("team", isAnnual ? "price_team_annual" : "price_team_monthly")}
-                  disabled={loadingTier === "team"}
-                  className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-center hover:bg-white/10 transition-colors mb-8 disabled:opacity-50"
+                  onKeyDown={(e) => e.key === 'Enter' && handleSubscribe("team", isAnnual ? "price_team_annual" : "price_team_monthly")}
+                  className={cn("w-full py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-center hover:bg-white/10 transition-colors mb-8 cursor-pointer", loadingTier === "team" && "opacity-50 pointer-events-none")}
                 >
                   {loadingTier === "team" ? <span className="animate-pulse">Loading...</span> : "Start 14-day Free Trial"}
-                </button>
+                </div>
                 <div className="flex flex-col gap-4">
                   <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Everything in Pro, including:</p>
                   <ul className="flex flex-col gap-3">
