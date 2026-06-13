@@ -530,7 +530,12 @@ export default function Home() {
           ARCHITECTURE & SOCIAL PROOF WRAPPER (Lavender White)
           ---------------------------------------------
         */}
-        <div id="features" className="w-full bg-distill-core rounded-[3rem] overflow-hidden my-24 shadow-[0_0_100px_rgba(228,221,244,0.15)] relative">
+        <div id="features" className="w-full bg-[#E5F0FF] rounded-[3rem] overflow-hidden my-24 border-4 border-black/5 shadow-[12px_12px_0px_rgba(0,0,0,0.05)] relative">
+          {/* Abstract colorful blobs for Neubrutalist Glass to overlay */}
+          <div className="absolute top-10 -left-20 w-[40rem] h-[40rem] bg-pink-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+          <div className="absolute bottom-10 -right-20 w-[40rem] h-[40rem] bg-indigo-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+          <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[30rem] h-[30rem] bg-emerald-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+          <div className="absolute bottom-1/4 left-2/3 w-[35rem] h-[35rem] bg-amber-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
           
           <section className="relative w-full py-24 px-4 md:px-8 bg-transparent text-black">
             <div className="max-w-7xl mx-auto flex flex-col gap-16">
@@ -548,61 +553,60 @@ export default function Home() {
                   
                   {/* Box A: AI Extraction (Span 2x2) */}
                   <BlurReveal duration={1} delay={0.1} className="md:col-span-2 lg:col-span-2 md:row-span-2">
-                    <div className="h-full w-full rounded-[2rem] bg-[#0A0A0B] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(72,38,185,0.3),rgba(255,255,255,0))] border border-white/10 p-8 flex flex-col gap-6 overflow-hidden group hover:border-white/20 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(72,38,185,0.2)] hover:-translate-y-1 relative">
-                      <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 pointer-events-none">
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 md:p-10 flex flex-col gap-6 overflow-hidden group transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 relative">
+                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 pointer-events-none">
                         <Sparkles className="w-32 h-32 text-distill-violet" />
                       </div>
-                      <h3 className="text-3xl md:text-4xl font-bold text-white font-sans tracking-tight z-10">AI Extraction Engine</h3>
-                      <p className="text-white/60 font-medium max-w-sm text-lg z-10 leading-relaxed">
-                        Our specialized Llama 3.3 pipeline analyzes transcripts to extract actionable tasks, track bugs, remove blockers, and assign priority securely.
+                      <h3 className="text-3xl md:text-4xl font-black text-black font-sans tracking-tight z-10 uppercase">AI Extraction</h3>
+                      <p className="text-black/70 font-semibold max-w-sm text-lg z-10 leading-relaxed border-l-4 border-black/20 pl-4">
+                        Our specialized Llama 3.3 pipeline analyzes transcripts to extract actionable tasks securely.
                       </p>
                       
-                      <div className="mt-auto pt-6 flex-1 w-full bg-white/[0.03] rounded-xl border border-white/10 p-5 font-mono text-sm text-white/80 overflow-hidden relative group-hover:bg-white/[0.05] transition-colors shadow-inner backdrop-blur-md">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 z-10 pointer-events-none" />
-                        <span className="text-distill-violet font-bold">{"{"}</span>
-                        <br/>
-                        &nbsp;&nbsp;<span className="text-blue-400">"type"</span>: <span className="text-emerald-400">"Feature"</span>,
-                        <br/>
-                        &nbsp;&nbsp;<span className="text-blue-400">"title"</span>: <span className="text-emerald-400">"Implement billing webhook"</span>,
-                        <br/>
-                        &nbsp;&nbsp;<span className="text-blue-400">&quot;priority&quot;</span>: <span className="text-emerald-400">&quot;High&quot;</span>
-                        <br/>
-                        <span className="text-distill-violet font-bold">{"}"}</span>
+                      <div className="mt-auto flex-1 w-full bg-white/60 rounded-xl border-2 border-black/5 p-6 font-mono text-sm text-black font-bold overflow-hidden relative flex flex-col gap-4">
+                        <div className="leading-relaxed">
+                          <span className="text-distill-violet">{"{"}</span>
+                          <br/>
+                          &nbsp;&nbsp;<span className="text-black">"type"</span>: <span className="text-black/60">"Feature"</span>,
+                          <br/>
+                          &nbsp;&nbsp;<span className="text-black">"title"</span>: <span className="text-black/60">"Implement billing webhook"</span>,
+                          <br/>
+                          <span className="text-distill-violet">{"}"}</span>
+                        </div>
                       </div>
                     </div>
                   </BlurReveal>
 
                   {/* Box C: Accuracy Stat */}
                   <BlurReveal duration={1} delay={0.2} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-gradient-to-br from-[#FF3366] to-[#FF9933] p-8 flex flex-col justify-center items-center text-center gap-2 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(255,51,102,0.4)] hover:-translate-y-1 relative overflow-hidden border border-white/20">
-                       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
-                       <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                       <span className="text-6xl lg:text-7xl font-bold text-white tracking-tighter z-10 drop-shadow-md">99<span className="text-4xl">.7%</span></span>
-                       <span className="text-white/90 text-xs font-bold tracking-[0.2em] uppercase mt-2 z-10 drop-shadow-sm">JSON Accuracy</span>
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col justify-center items-center text-center gap-3 group transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 relative overflow-hidden">
+                       <span className="text-6xl lg:text-7xl font-black tracking-tighter z-10 text-black">99<span className="text-4xl text-distill-violet">.7%</span></span>
+                       <div className="px-4 py-1.5 bg-black text-white border-2 border-black flex items-center justify-center -rotate-2 group-hover:rotate-0 transition-transform">
+                          <span className="text-white text-[10px] font-black tracking-[0.2em] uppercase z-10">Accuracy</span>
+                       </div>
                     </div>
                   </BlurReveal>
 
                   {/* Box B: BYOK Architecture */}
                   <BlurReveal duration={1} delay={0.3} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-white/70 backdrop-blur-2xl border border-white p-8 flex flex-col gap-4 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 relative overflow-hidden">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00D084] to-[#00965E] flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-lg shadow-emerald-500/30">
-                        <Mic className="w-7 h-7 text-white" />
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col gap-4 group transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 relative overflow-hidden">
+                      <div className="w-14 h-14 bg-black border-2 border-black flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                        <Mic className="w-6 h-6 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-black font-sans tracking-tight mt-2">BYOK Privacy</h3>
-                      <p className="text-black/60 text-sm font-medium leading-relaxed">
-                        We don&apos;t store your files. Stream audio securely using your own API keys.
+                      <h3 className="text-xl font-black text-black font-sans tracking-tight mt-2 uppercase">BYOK Privacy</h3>
+                      <p className="text-black/70 font-semibold text-sm leading-relaxed border-l-4 border-black/20 pl-3">
+                        We don&apos;t store your files. Stream audio securely using your own keys.
                       </p>
                     </div>
                   </BlurReveal>
 
                   {/* Box E: Instant Routing */}
                   <BlurReveal duration={1} delay={0.4} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-white/70 backdrop-blur-2xl border border-white p-8 flex flex-col gap-4 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 relative overflow-hidden">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0052CC] to-[#003B99] flex items-center justify-center group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 shadow-lg shadow-blue-500/30">
-                        <Rocket className="w-7 h-7 text-white" />
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col gap-4 group transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 relative overflow-hidden">
+                      <div className="w-14 h-14 bg-black border-2 border-black flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
+                        <Rocket className="w-6 h-6 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-black font-sans tracking-tight mt-2">Instant Routing</h3>
-                      <p className="text-black/60 text-sm font-medium leading-relaxed">
+                      <h3 className="text-xl font-black text-black font-sans tracking-tight mt-2 uppercase">Routing</h3>
+                      <p className="text-black/70 font-semibold text-sm leading-relaxed border-l-4 border-black/20 pl-3">
                         Structured tickets are auto-created in Jira, Linear, or GitHub instantly.
                       </p>
                     </div>
@@ -610,25 +614,24 @@ export default function Home() {
 
                   {/* Box G: Processed Stat */}
                   <BlurReveal duration={1} delay={0.5} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-gradient-to-br from-[#00C6FF] to-[#0072FF] text-white p-8 flex flex-col justify-center items-center text-center gap-2 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,198,255,0.4)] hover:-translate-y-1 relative overflow-hidden border border-white/20">
-                       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
-                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                       <span className="text-5xl lg:text-6xl font-bold text-white tracking-tighter z-10 drop-shadow-md">50k+</span>
-                       <span className="text-white/90 text-xs font-bold tracking-[0.2em] uppercase mt-2 text-center z-10 drop-shadow-sm">Standups<br/>Processed</span>
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col justify-center items-center text-center gap-3 group transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 relative overflow-hidden">
+                       <span className="text-5xl lg:text-6xl font-black text-black tracking-tighter z-10 drop-shadow-[2px_2px_0px_rgba(255,255,255,1)]">50k+</span>
+                       <div className="px-4 py-1.5 bg-[#FFD700] border-2 border-black flex items-center justify-center rotate-2 group-hover:rotate-0 transition-transform">
+                          <span className="text-black text-[10px] font-black tracking-[0.2em] uppercase z-10">Standups</span>
+                       </div>
                     </div>
                   </BlurReveal>
 
                   {/* Box H: Marquee / Engineered With (Span All) */}
                   <BlurReveal duration={1} delay={0.6} className="md:col-span-3 lg:col-span-4 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-[#0A0A0A]/95 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-center items-center gap-6 overflow-hidden relative group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
-                      <div className="absolute inset-0 bg-gradient-to-r from-distill-violet/0 via-distill-violet/10 to-distill-violet/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                      <span className="text-white/50 text-xs uppercase tracking-[0.2em] font-mono font-bold z-10">Engineered With</span>
-                      <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-80 group-hover:opacity-100 transition-opacity duration-500 z-10">
-                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-orange-400 hover:to-red-500 transition-all cursor-default">Groq LPU™</span>
-                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-indigo-500 transition-all cursor-default">Llama 3.3</span>
-                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-green-400 hover:to-emerald-500 transition-all cursor-default">Whisper v3</span>
-                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-zinc-300 hover:to-white transition-all cursor-default">Next.js</span>
-                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-400 hover:to-teal-500 transition-all cursor-default">Supabase</span>
+                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col justify-center items-center gap-6 overflow-hidden relative group transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1">
+                      <span className="text-black/50 text-[10px] uppercase tracking-[0.3em] font-black z-10">Engineered With</span>
+                      <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 transition-opacity duration-300 z-10">
+                        <span className="text-xl font-black font-sans text-black tracking-tight hover:scale-110 transition-transform cursor-default uppercase">Groq LPU™</span>
+                        <span className="text-xl font-black font-sans text-black tracking-tight hover:scale-110 transition-transform cursor-default uppercase">Llama 3.3</span>
+                        <span className="text-xl font-black font-sans text-black tracking-tight hover:scale-110 transition-transform cursor-default uppercase">Whisper v3</span>
+                        <span className="text-xl font-black font-sans text-black tracking-tight hover:scale-110 transition-transform cursor-default uppercase">Next.js</span>
+                        <span className="text-xl font-black font-sans text-black tracking-tight hover:scale-110 transition-transform cursor-default uppercase">Supabase</span>
                       </div>
                     </div>
                   </BlurReveal>
@@ -639,9 +642,13 @@ export default function Home() {
 
           {/* WORLD CLASS TESTIMONIALS MARQUEE */}
           <section className="relative w-full py-24 bg-transparent overflow-hidden border-t border-black/5">
+            {/* Abstract colorful blobs for Neubrutalist Glass to overlay */}
+            <div className="absolute top-10 left-1/4 w-[30rem] h-[30rem] bg-emerald-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+            <div className="absolute bottom-10 right-1/4 w-[30rem] h-[30rem] bg-amber-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+
             {/* Gradient Masks for fade effect */}
-            <div className="absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-distill-core to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-32 md:w-64 bg-gradient-to-l from-distill-core to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-[#E5F0FF] to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-y-0 right-0 w-32 md:w-64 bg-gradient-to-l from-[#E5F0FF] to-transparent z-10 pointer-events-none" />
             
             <BlurReveal duration={1}>
               <div className="flex flex-col items-center text-center gap-4 mb-16 px-4">
@@ -666,7 +673,7 @@ export default function Home() {
                   { text: "The accuracy is insane. It catches technical debt items we casually mention and creates perfect tickets.", name: "David L.", title: "Senior Engineer", initial: "DL" },
                   { text: "Our daily standups actually feel useful now because we know the busywork is being handled automatically.", name: "Priya S.", title: "Product Manager", initial: "PS" }
                 ].map((t, i) => (
-                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-3xl bg-white/40 backdrop-blur-md border border-white/60 p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex-shrink-0 cursor-default">
+                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 flex-shrink-0 cursor-default">
                     <div className="flex text-yellow-500 gap-1 mb-2">
                       {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
@@ -697,7 +704,7 @@ export default function Home() {
                   { text: "I love that I can bring my own Groq key. The inference is blazing fast and completely private.", name: "Chris B.", title: "Backend Engineer", initial: "CB" },
                   { text: "It's like having a dedicated project manager in every call, but without the overhead.", name: "Anna K.", title: "Fullstack Dev", initial: "AK" }
                 ].map((t, i) => (
-                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-3xl bg-white/40 backdrop-blur-md border border-white/60 p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 hover:shadow-[0_10px_30px_rgba(0,0,0,0.05)] flex-shrink-0 cursor-default">
+                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 flex-shrink-0 cursor-default">
                     <div className="flex text-yellow-500 gap-1 mb-2">
                       {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
