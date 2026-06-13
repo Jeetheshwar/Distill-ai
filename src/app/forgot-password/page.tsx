@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-white font-bold text-lg">Check your email</h3>
-                  <p className="text-distill-muted text-sm">We've sent a password reset link to <span className="text-white">{email}</span></p>
+                  <p className="text-distill-muted text-sm">We&apos;ve sent a password reset link to <span className="text-white">{email}</span></p>
                 </div>
                 <Link href="/login" className="w-full mt-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white font-bold tracking-wide hover:bg-white/10 transition-colors flex items-center justify-center text-sm">
                   Back to Login

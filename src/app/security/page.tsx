@@ -1,6 +1,5 @@
 import { Aura } from "@/components/ui/aura";
-import { ShieldCheck, Server, Lock, Database } from "lucide-react";
-import Link from "next/link";
+import { ShieldCheck, Lock, Database } from "lucide-react";
 
 export default function SecurityPage() {
   return (
@@ -45,7 +44,7 @@ export default function SecurityPage() {
       ▼
 <span className="text-distill-violet">Distill Next.js Proxy Route</span> (Stateless)
       │
-      ├─► Uses user's Groq API Key
+      ├─► Uses user&apos;s Groq API Key
       │
       ▼
 <span className="text-distill-core">Groq Inference API</span> (Whisper-v3 & Llama-3.3)
@@ -63,7 +62,7 @@ export default function SecurityPage() {
           <div className="flex flex-col gap-2">
             <h3 className="text-xl font-bold text-white">Open source. Audit the code yourself.</h3>
             <p className="text-white/50 text-sm max-w-md mx-auto">
-              Don't trust us? Don't have to. You can review the entire codebase, the proxy logic, and the exact LLM prompts used for schema extraction.
+              Don&apos;t trust us? Don&apos;t have to. You can review the entire codebase, the proxy logic, and the exact LLM prompts used for schema extraction.
             </p>
           </div>
           <a href="https://github.com/Jeetheshwar/Distill-ai" target="_blank" rel="noopener noreferrer" className="px-6 py-3 rounded-xl bg-white/10 text-white font-medium hover:bg-white/20 transition-colors">

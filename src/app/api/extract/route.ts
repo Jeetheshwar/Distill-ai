@@ -32,9 +32,9 @@ export async function POST(request: NextRequest) {
         .eq("user_id", user.id)
         .gte("created_at", startOfMonth.toISOString());
 
-      if (count !== null && count >= 10) {
+      if (apiKey === "sk_mock_pro_key_9281" && count !== null && count >= 10) {
         return NextResponse.json(
-          { error: "Free tier limit reached. You have used 10/10 extractions this month." },
+          { error: "Free tier limit reached. You have used 10/10 extractions this month. Please provide your own Groq API key to continue." },
           { status: 403 }
         );
       }
@@ -74,8 +74,10 @@ export async function POST(request: NextRequest) {
     const durationSeconds = 45;
     let extractedEntities: StandupEntities | RetroEntities | { error: string };
 
-    if (apiKey !== "sk_mock_pro_key_9281") {
-      const groq = new Groq({ apiKey: apiKey });
+    const activeGroqKey = apiKey === "sk_mock_pro_key_9281" ? process.env.GROQ_API_KEY : apiKey;
+
+    if (activeGroqKey) {
+      const groq = new Groq({ apiKey: activeGroqKey });
       
       if (!providedTranscript && file) {
         const transcription = await groq.audio.transcriptions.create({
@@ -228,7 +230,7 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error("Extraction Pipeline Error: Top level failure.");
     
-    const err = error as any;
+    const err = error as { error?: { error?: { message?: string } }; message?: string };
     const errorMessage = err?.error?.error?.message || err?.message || "Internal Server Error during extraction sequence.";
     
     return NextResponse.json(

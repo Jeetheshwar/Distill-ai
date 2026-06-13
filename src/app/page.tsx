@@ -3,9 +3,9 @@
 import { Aura } from "@/components/ui/aura";
 import { BlurReveal } from "@/components/ui/blur-reveal";
 import { 
-  Server, Lock, ShieldCheck, Cpu, Clock, FileJson, Webhook, CheckCircle2, 
+  FileJson, Webhook, CheckCircle2, 
   ArrowRight, Code2, Terminal, Mic, Sparkles, Rocket, 
-  Upload, Play, Square, Loader2, ArrowUpRight, MessageSquare
+  Upload, Play, Square, Loader2, ArrowUpRight, MessageSquare, Zap
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -13,10 +13,39 @@ import { cn } from "@/lib/utils";
 import { WaitlistModal } from "@/components/waitlist-modal";
 
 import { createClient } from "@/utils/supabase/client";
+import { loadStripe } from "@stripe/stripe-js";
+
+// Make sure to use process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY in a real setup
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder");
 
 export default function Home() {
   const [user, setUser] = useState<any>(null);
   const supabase = createClient();
+  const [isAnnual, setIsAnnual] = useState(true);
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+
+  const handleSubscribe = async (tierId: string, priceId: string) => {
+    setLoadingTier(tierId);
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId }),
+      });
+      const data = await response.json();
+      
+      if (data.sessionId) {
+        const stripe = await stripePromise;
+        await (stripe as any)?.redirectToCheckout({ sessionId: data.sessionId });
+      } else {
+        alert("Stripe is running in stub mode (Missing API Keys). In production, this redirects to checkout.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to initialize checkout.");
+    }
+    setLoadingTier(null);
+  };
 
   useEffect(() => {
     const checkUser = async () => {
@@ -37,6 +66,16 @@ export default function Home() {
   const [processingText, setProcessingText] = useState("Transcribing with Groq Whisper...");
   const [showJiraModal, setShowJiraModal] = useState(false);
   const [streamedJson, setStreamedJson] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [demoResult, setDemoResult] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+      setDemoStep(2);
+    }
+  };
   
   // Waitlist State
   const [waitlistOpen, setWaitlistOpen] = useState(false);
@@ -67,63 +106,56 @@ export default function Home() {
   }, []);
 
   const handleSampleAudio = () => {
+    setSelectedFile(null);
     setDemoStep(2);
   };
 
-  const handleProcess = () => {
+  const handleProcess = async () => {
     setDemoStep(3);
-    setTimeout(() => setProcessingText("Extracting tasks & blockers..."), 1500);
-    setTimeout(() => setProcessingText("Structuring Jira-ready JSON..."), 3000);
-    setTimeout(() => {
-      setDemoStep(4);
-      setProcessingText("Transcribing with Groq Whisper...");
-    }, 4500);
-  };
+    setProcessingText("Initializing pipeline...");
 
-  const sampleJson = {
-    sprint_id: "Sprint 42",
-    date: new Date().toISOString(),
-    participants: ["Alex"],
-    updates: [
-      {
-        speaker: "Alex",
-        yesterday: "Finished the billing integration",
-        today: "Working on the Jira webhook setup",
-        blockers: ["Waiting on design for the modal"],
-        confidence_score: 0.98
+    try {
+      const formData = new FormData();
+      if (selectedFile) {
+        formData.append("file", selectedFile);
+      } else {
+        formData.append("transcript", "Mocked local transcription: The team discussed migrating the main database to PostgreSQL 16. Sarah will lead the migration effort because of her prior experience with PgBouncer. It is a high priority task.");
       }
-    ],
-    extracted_tickets: [
-      {
-        title: "Implement Jira webhook setup",
-        description: "Set up webhook integration to auto-sync tasks to Jira.",
-        type: "Task",
-        priority: "High",
-        assignee: "Alex",
-        timestamp_start: 12000,
-        timestamp_end: 25000,
-        labels: ["standup", "auto-generated"]
-      },
-      {
-        title: "Design review for modal",
-        description: "Need design approval for the new modal before continuing.",
-        type: "Blocker",
-        priority: "Medium",
-        assignee: "Alex",
-        timestamp_start: 26000,
-        timestamp_end: 35000,
-        labels: ["standup", "auto-generated"]
+      formData.append("schema", schemaMode);
+
+      setProcessingText("Transcribing & extracting via API...");
+      
+      const response = await fetch("/api/extract", {
+        method: "POST",
+        headers: {
+          "authorization": `Bearer ${apiKey || "sk_mock_pro_key_9281"}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText);
       }
-    ]
+
+      const data = await response.json();
+      setDemoResult(data.entities);
+      setStreamedJson("");
+      setDemoStep(4);
+      setProcessingText("Transcribing with Groq Whisper..."); // Reset text
+    } catch (err: any) {
+      console.error(err);
+      alert(`Extraction failed: ${err.message || "Check API key or file."}`);
+      setDemoStep(1);
+    }
   };
 
   useEffect(() => {
-    if (demoStep === 4) {
-      setStreamedJson("");
+    if (demoStep === 4 && demoResult) {
       let currentIndex = 0;
-      const fullString = JSON.stringify(sampleJson, null, 2);
+      const fullString = JSON.stringify(demoResult, null, 2);
       const interval = setInterval(() => {
-        currentIndex += 8;
+        currentIndex += Math.max(8, Math.floor(fullString.length / 50));
         if (currentIndex <= fullString.length) {
           setStreamedJson(fullString.slice(0, currentIndex));
         } else {
@@ -133,7 +165,7 @@ export default function Home() {
       }, 15);
       return () => clearInterval(interval);
     }
-  }, [demoStep]);
+  }, [demoStep, demoResult]);
 
   const faqs = [
     {
@@ -193,7 +225,7 @@ export default function Home() {
 
 
 
-        <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto gap-5 pt-32 md:pt-24">
+        <div className="relative z-10 flex flex-col items-center text-center max-w-5xl mx-auto gap-5 pt-16 md:pt-12">
           
           <BlurReveal duration={1.2}>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-xl shadow-[0_0_30px_rgba(72,38,185,0.3)] translate-y-[5px]">
@@ -204,7 +236,7 @@ export default function Home() {
 
           <div className="flex flex-col gap-2">
             <BlurReveal duration={1.2} delay={0.1}>
-              <h1 className="font-sergena text-[32px] sm:text-[40px] md:text-[64px] lg:text-[74px] tracking-tighter leading-[1.1]">
+              <h1 className="font-sergena text-[36px] sm:text-[48px] md:text-[72px] lg:text-[84px] tracking-tighter leading-[1.1]">
                 <span className="block text-foreground">Turn Standup Recordings</span>
                 <span className="block text-distill-muted mt-2">
                   into <span className="bg-gradient-to-br from-[#0052CC] to-distill-violet bg-clip-text text-transparent drop-shadow-lg">Jira Tickets</span> in <span className="bg-gradient-to-br from-distill-core to-white bg-clip-text text-transparent drop-shadow-lg">30 Seconds</span>
@@ -454,7 +486,7 @@ export default function Home() {
 {streamedJson.split('\n').map((line, i) => (
   <span key={i} className="block hover:bg-white/5 px-2 -mx-2 rounded h-4">{line}</span>
 ))}
-{streamedJson.length < JSON.stringify(sampleJson, null, 2).length && (
+{streamedJson.length < JSON.stringify(demoResult || {}, null, 2).length && (
   <span className="inline-block w-2 h-3 bg-white/80 animate-pulse ml-1 align-middle mt-1" />
 )}
                             </pre>
@@ -516,24 +548,24 @@ export default function Home() {
                   
                   {/* Box A: AI Extraction (Span 2x2) */}
                   <BlurReveal duration={1} delay={0.1} className="md:col-span-2 lg:col-span-2 md:row-span-2">
-                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col gap-6 overflow-hidden group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1 relative">
-                      <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 group-hover:scale-110 transition-all duration-700 pointer-events-none">
+                    <div className="h-full w-full rounded-[2rem] bg-[#0A0A0B] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(72,38,185,0.3),rgba(255,255,255,0))] border border-white/10 p-8 flex flex-col gap-6 overflow-hidden group hover:border-white/20 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(72,38,185,0.2)] hover:-translate-y-1 relative">
+                      <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 group-hover:scale-110 group-hover:rotate-12 transition-all duration-700 pointer-events-none">
                         <Sparkles className="w-32 h-32 text-distill-violet" />
                       </div>
-                      <h3 className="text-3xl md:text-4xl font-bold text-black font-sans tracking-tight z-10">AI Extraction Engine</h3>
-                      <p className="text-black/60 font-medium max-w-sm text-lg z-10 leading-relaxed">
+                      <h3 className="text-3xl md:text-4xl font-bold text-white font-sans tracking-tight z-10">AI Extraction Engine</h3>
+                      <p className="text-white/60 font-medium max-w-sm text-lg z-10 leading-relaxed">
                         Our specialized Llama 3.3 pipeline analyzes transcripts to extract actionable tasks, track bugs, remove blockers, and assign priority securely.
                       </p>
                       
-                      <div className="mt-auto pt-6 flex-1 w-full bg-black/5 rounded-xl border border-white/40 p-5 font-mono text-sm text-black/70 overflow-hidden relative group-hover:border-white/80 transition-colors shadow-inner">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/40 z-10 pointer-events-none" />
+                      <div className="mt-auto pt-6 flex-1 w-full bg-white/[0.03] rounded-xl border border-white/10 p-5 font-mono text-sm text-white/80 overflow-hidden relative group-hover:bg-white/[0.05] transition-colors shadow-inner backdrop-blur-md">
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 z-10 pointer-events-none" />
                         <span className="text-distill-violet font-bold">{"{"}</span>
                         <br/>
-                        &nbsp;&nbsp;<span className="text-[#0052CC]">"type"</span>: "Feature",
+                        &nbsp;&nbsp;<span className="text-blue-400">"type"</span>: <span className="text-emerald-400">"Feature"</span>,
                         <br/>
-                        &nbsp;&nbsp;<span className="text-[#0052CC]">"title"</span>: "Implement billing webhook",
+                        &nbsp;&nbsp;<span className="text-blue-400">"title"</span>: <span className="text-emerald-400">"Implement billing webhook"</span>,
                         <br/>
-                        &nbsp;&nbsp;<span className="text-[#0052CC]">"priority"</span>: "High"
+                        &nbsp;&nbsp;<span className="text-blue-400">&quot;priority&quot;</span>: <span className="text-emerald-400">&quot;High&quot;</span>
                         <br/>
                         <span className="text-distill-violet font-bold">{"}"}</span>
                       </div>
@@ -542,31 +574,32 @@ export default function Home() {
 
                   {/* Box C: Accuracy Stat */}
                   <BlurReveal duration={1} delay={0.2} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col justify-center items-center text-center gap-2 group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1 relative overflow-hidden">
-                       <div className="absolute inset-0 bg-gradient-to-br from-distill-violet/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                       <span className="text-6xl lg:text-7xl font-bold text-distill-violet tracking-tighter z-10">99<span className="text-4xl">.7%</span></span>
-                       <span className="text-black/50 text-xs font-bold tracking-[0.2em] uppercase mt-2 z-10">JSON Accuracy</span>
+                    <div className="h-full w-full rounded-[2rem] bg-gradient-to-br from-[#FF3366] to-[#FF9933] p-8 flex flex-col justify-center items-center text-center gap-2 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(255,51,102,0.4)] hover:-translate-y-1 relative overflow-hidden border border-white/20">
+                       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
+                       <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                       <span className="text-6xl lg:text-7xl font-bold text-white tracking-tighter z-10 drop-shadow-md">99<span className="text-4xl">.7%</span></span>
+                       <span className="text-white/90 text-xs font-bold tracking-[0.2em] uppercase mt-2 z-10 drop-shadow-sm">JSON Accuracy</span>
                     </div>
                   </BlurReveal>
 
                   {/* Box B: BYOK Architecture */}
                   <BlurReveal duration={1} delay={0.3} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col gap-4 group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1 relative overflow-hidden">
-                      <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 group-hover:bg-distill-violet/10">
-                        <Mic className="w-6 h-6 text-black group-hover:text-distill-violet transition-colors" />
+                    <div className="h-full w-full rounded-[2rem] bg-white/70 backdrop-blur-2xl border border-white p-8 flex flex-col gap-4 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 relative overflow-hidden">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00D084] to-[#00965E] flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-lg shadow-emerald-500/30">
+                        <Mic className="w-7 h-7 text-white" />
                       </div>
                       <h3 className="text-xl font-bold text-black font-sans tracking-tight mt-2">BYOK Privacy</h3>
                       <p className="text-black/60 text-sm font-medium leading-relaxed">
-                        We don't store your files. Stream audio securely using your own API keys.
+                        We don&apos;t store your files. Stream audio securely using your own API keys.
                       </p>
                     </div>
                   </BlurReveal>
 
                   {/* Box E: Instant Routing */}
                   <BlurReveal duration={1} delay={0.4} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border border-white/60 p-8 flex flex-col gap-4 group hover:bg-white/50 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] hover:-translate-y-1">
-                      <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 group-hover:bg-distill-core/20">
-                        <Rocket className="w-6 h-6 text-black group-hover:text-distill-violet transition-colors" />
+                    <div className="h-full w-full rounded-[2rem] bg-white/70 backdrop-blur-2xl border border-white p-8 flex flex-col gap-4 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 relative overflow-hidden">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0052CC] to-[#003B99] flex items-center justify-center group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 shadow-lg shadow-blue-500/30">
+                        <Rocket className="w-7 h-7 text-white" />
                       </div>
                       <h3 className="text-xl font-bold text-black font-sans tracking-tight mt-2">Instant Routing</h3>
                       <p className="text-black/60 text-sm font-medium leading-relaxed">
@@ -577,23 +610,25 @@ export default function Home() {
 
                   {/* Box G: Processed Stat */}
                   <BlurReveal duration={1} delay={0.5} className="md:col-span-1 lg:col-span-1 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-black text-white p-8 flex flex-col justify-center items-center text-center gap-2 group hover:bg-black/90 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-1 relative overflow-hidden">
-                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                       <span className="text-5xl lg:text-6xl font-bold tracking-tighter z-10">50k+</span>
-                       <span className="text-white/50 text-xs font-bold tracking-[0.2em] uppercase mt-2 text-center z-10">Standups<br/>Processed</span>
+                    <div className="h-full w-full rounded-[2rem] bg-gradient-to-br from-[#00C6FF] to-[#0072FF] text-white p-8 flex flex-col justify-center items-center text-center gap-2 group transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,198,255,0.4)] hover:-translate-y-1 relative overflow-hidden border border-white/20">
+                       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay pointer-events-none"></div>
+                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                       <span className="text-5xl lg:text-6xl font-bold text-white tracking-tighter z-10 drop-shadow-md">50k+</span>
+                       <span className="text-white/90 text-xs font-bold tracking-[0.2em] uppercase mt-2 text-center z-10 drop-shadow-sm">Standups<br/>Processed</span>
                     </div>
                   </BlurReveal>
 
                   {/* Box H: Marquee / Engineered With (Span All) */}
                   <BlurReveal duration={1} delay={0.6} className="md:col-span-3 lg:col-span-4 md:row-span-1">
-                    <div className="h-full w-full rounded-[2rem] bg-white/30 backdrop-blur-md border border-white/40 p-8 flex flex-col justify-center items-center gap-6 overflow-hidden relative group hover:bg-white/40 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)]">
-                      <span className="text-black/40 text-xs uppercase tracking-[0.2em] font-mono font-bold">Engineered With</span>
-                      <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
-                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Groq LPU™</span>
-                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Llama 3.3</span>
-                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Whisper v3</span>
-                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Next.js</span>
-                        <span className="text-xl font-bold font-sans text-black tracking-tight hover:text-distill-violet transition-colors">Supabase</span>
+                    <div className="h-full w-full rounded-[2rem] bg-[#0A0A0A]/95 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-center items-center gap-6 overflow-hidden relative group transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
+                      <div className="absolute inset-0 bg-gradient-to-r from-distill-violet/0 via-distill-violet/10 to-distill-violet/0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                      <span className="text-white/50 text-xs uppercase tracking-[0.2em] font-mono font-bold z-10">Engineered With</span>
+                      <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-80 group-hover:opacity-100 transition-opacity duration-500 z-10">
+                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-orange-400 hover:to-red-500 transition-all cursor-default">Groq LPU™</span>
+                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-blue-400 hover:to-indigo-500 transition-all cursor-default">Llama 3.3</span>
+                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-green-400 hover:to-emerald-500 transition-all cursor-default">Whisper v3</span>
+                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-zinc-300 hover:to-white transition-all cursor-default">Next.js</span>
+                        <span className="text-xl font-bold font-sans text-white tracking-tight hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-emerald-400 hover:to-teal-500 transition-all cursor-default">Supabase</span>
                       </div>
                     </div>
                   </BlurReveal>
@@ -635,7 +670,7 @@ export default function Home() {
                     <div className="flex text-yellow-500 gap-1 mb-2">
                       {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
-                    <p className="text-black/80 font-serif text-[1.1rem] leading-snug italic line-clamp-3 mb-4">"{t.text}"</p>
+                    <p className="text-black/80 font-serif text-[1.1rem] leading-snug italic line-clamp-3 mb-4">&quot;{t.text}&quot;</p>
                     <div className="mt-auto flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-distill-violet/10 text-distill-violet flex items-center justify-center font-bold text-sm border border-distill-violet/20">{t.initial}</div>
                       <div className="flex flex-col">
@@ -666,7 +701,7 @@ export default function Home() {
                     <div className="flex text-yellow-500 gap-1 mb-2">
                       {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
-                    <p className="text-black/80 font-serif text-[1.1rem] leading-snug italic line-clamp-3 mb-4">"{t.text}"</p>
+                    <p className="text-black/80 font-serif text-[1.1rem] leading-snug italic line-clamp-3 mb-4">&quot;{t.text}&quot;</p>
                     <div className="mt-auto flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-black/10 text-black flex items-center justify-center font-bold text-sm border border-black/10">{t.initial}</div>
                       <div className="flex flex-col">
@@ -692,143 +727,140 @@ export default function Home() {
       <section id="pricing" className="relative w-full py-32 px-8 flex flex-col items-center justify-center bg-background border-t border-white/5 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(72,38,185,0.1),transparent_50%)] pointer-events-none" />
         <div className="relative z-10 max-w-6xl mx-auto flex flex-col gap-16 w-full items-center">
-          <BlurReveal duration={1} delay={0.1}>
-            <div className="flex flex-col items-center text-center gap-4">
-              <h2 className="font-sergena text-4xl md:text-5xl tracking-tighter text-foreground">Simple Pricing for Developers.</h2>
-              <p className="text-distill-muted max-w-2xl text-lg font-sans">
-                Start for free, scale when you need.
+          <BlurReveal duration={0.8}>
+            <div className="flex flex-col items-center gap-6 max-w-3xl mx-auto text-center relative z-10 mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-distill-violet/10 border border-distill-violet/20">
+                <Zap className="w-4 h-4 text-distill-core" />
+                <span className="text-xs font-mono font-bold text-distill-core uppercase tracking-widest">Pricing</span>
+              </div>
+              <h2 className="text-5xl md:text-7xl font-sans font-bold text-foreground tracking-tighter">
+                Zero-friction pricing.
+              </h2>
+              <p className="text-xl text-zinc-400 font-sans max-w-2xl">
+                Choose the plan that fits your engineering team. Start for free with BYOK, or upgrade for hosted proxy power.
               </p>
+
+              <div className="flex items-center gap-3 mt-8 bg-black/40 border border-white/10 p-1.5 rounded-full">
+                <button 
+                  onClick={() => setIsAnnual(false)} 
+                  className={cn("px-6 py-2 rounded-full text-sm font-bold transition-all", !isAnnual ? "bg-white text-black shadow-lg" : "text-zinc-400 hover:text-white")}
+                >
+                  Monthly
+                </button>
+                <button 
+                  onClick={() => setIsAnnual(true)} 
+                  className={cn("px-6 py-2 rounded-full text-sm font-bold transition-all flex items-center gap-2", isAnnual ? "bg-white text-black shadow-lg" : "text-zinc-400 hover:text-white")}
+                >
+                  Annually <span className={cn("px-2 py-0.5 rounded-full text-[10px] uppercase font-black tracking-widest", isAnnual ? "bg-distill-violet text-white" : "bg-white/10 text-white")}>Save 20%</span>
+                </button>
+              </div>
             </div>
           </BlurReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-            {/* Free Tier */}
-            <BlurReveal duration={1} delay={0.2} className="h-full">
-              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 h-full hover:border-white/20 transition-colors">
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-2xl font-bold text-foreground font-sans">Free Forever</h3>
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-4xl lg:text-5xl font-black text-white font-sans">$0</span>
-                    <span className="text-distill-muted font-sans font-medium">/ month</span>
-                  </div>
-                  <span className="text-xs text-distill-muted mt-1">Everything you need. No credit card required.</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full relative z-10">
+            {/* HOBBY TIER */}
+            <BlurReveal duration={1} delay={0.2}>
+              <div className="flex flex-col p-8 rounded-3xl bg-[#0a0710] border border-white/5 h-full relative group hover:border-white/10 transition-colors">
+                <div className="flex flex-col gap-2 mb-8">
+                  <h3 className="text-xl font-bold text-white">Hobby</h3>
+                  <p className="text-sm text-zinc-400">Bring Your Own Key (BYOK)</p>
                 </div>
-                <div className="flex-1 flex flex-col gap-4">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">10 audio uploads/month</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Standup & Retro schemas</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">1 webhook endpoint (Jira or Linear)</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Community support</span>
-                  </div>
-                  <div className="flex items-start gap-3 mt-4 pt-4 border-t border-white/5">
-                    <Lock className="w-4 h-4 text-distill-violet mt-0.5" />
-                    <span className="text-white/70 font-sans text-xs">BYOK required</span>
-                  </div>
+                <div className="flex items-end gap-2 mb-8">
+                  <span className="text-5xl font-black text-white">$0</span>
+                  <span className="text-zinc-500 mb-2">/ forever</span>
                 </div>
-                <Link href="/login?signup=true" className="w-full py-3 rounded-xl bg-distill-violet text-white font-bold tracking-wide font-sans relative z-10 hover:bg-distill-violet/80 transition-colors flex justify-center items-center shadow-[0_0_20px_rgba(72,38,185,0.4)] mt-auto">
-                  Start Automating Free
+                <Link href={user ? "/dashboard/pipelines" : "/login?signup=true"} className="w-full py-4 rounded-xl border border-white/20 text-white font-bold text-center hover:bg-white/5 transition-colors mb-8">
+                  Get Started
                 </Link>
+                <div className="flex flex-col gap-4">
+                  <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Included Features</p>
+                  <ul className="flex flex-col gap-3">
+                    {["Local processing (Browser API)", "Webhooks & Zapier output", "Community Discord Support", "Client-side storage only"].map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-300">
+                        <CheckCircle2 className="w-5 h-5 text-zinc-600 shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </BlurReveal>
 
-            {/* Pro Tier */}
-            <BlurReveal duration={1} delay={0.3} className="h-full transform md:-translate-y-4">
-              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 border-dashed h-full relative overflow-hidden">
-                <div className="absolute top-0 right-0 px-4 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-bold rounded-bl-xl z-20 uppercase tracking-wider border-b border-l border-yellow-500/20">Coming Soon</div>
-                <div className="flex flex-col gap-2 relative z-10">
-                  <h3 className="text-2xl font-bold text-foreground font-sans">Pro</h3>
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-4xl lg:text-5xl font-black text-white/40 font-sans">$12</span>
-                    <span className="text-white/40 font-sans font-medium">/ month</span>
+            {/* PRO TIER */}
+            <BlurReveal duration={1} delay={0.3}>
+              <div className="flex flex-col p-8 rounded-3xl bg-black border border-distill-core/40 shadow-[0_0_80px_rgba(228,221,244,0.1)] h-full relative overflow-hidden transform md:-translate-y-4">
+                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-distill-violet via-distill-core to-distill-violet" />
+                <div className="flex flex-col gap-2 mb-8">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-bold text-white">Pro</h3>
+                    <span className="px-3 py-1 rounded-full bg-distill-violet/20 text-distill-core text-xs font-bold font-mono tracking-wide">POPULAR</span>
                   </div>
-                  <span className="text-xs text-distill-muted mt-1">Launching Q3 2026. Join the waitlist.</span>
+                  <p className="text-sm text-zinc-400">Hosted AI processing</p>
                 </div>
-                <div className="flex-1 flex flex-col gap-4 relative z-10 opacity-70">
-                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Unlimited audio uploads</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Unlimited webhooks</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Custom JSON schemas</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Priority support</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-core mt-0.5" />
-                    <span className="text-distill-core font-sans text-sm">Advanced analytics</span>
-                  </div>
+                <div className="flex items-end gap-2 mb-8">
+                  <span className="text-5xl font-black text-white">{isAnnual ? "$29" : "$39"}</span>
+                  <span className="text-zinc-500 mb-2">/ month</span>
                 </div>
-                <button suppressHydrationWarning onClick={() => openWaitlist("pro")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
-                  Notify Me &rarr;
+                <button 
+                  onClick={() => handleSubscribe("pro", isAnnual ? "price_pro_annual" : "price_pro_monthly")}
+                  disabled={loadingTier === "pro"}
+                  className="w-full py-4 rounded-xl bg-white text-black font-bold flex justify-center items-center gap-2 hover:bg-zinc-200 transition-colors mb-8 disabled:opacity-50"
+                >
+                  {loadingTier === "pro" ? <span className="animate-pulse">Loading...</span> : <>Subscribe to Pro <ArrowRight className="w-4 h-4" /></>}
                 </button>
+                <div className="flex flex-col gap-4">
+                  <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Everything in Hobby, including:</p>
+                  <ul className="flex flex-col gap-3">
+                    {["Cloud-hosted Groq Proxy", "Native Jira Integration", "1,000 extractions / mo", "Custom Schema Generation", "Priority email support"].map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-white">
+                        <CheckCircle2 className="w-5 h-5 text-distill-core shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </BlurReveal>
 
-            {/* Team Tier */}
-            <BlurReveal duration={1} delay={0.4} className="h-full">
-              <div className="flex flex-col gap-8 p-10 rounded-3xl bg-black border border-white/10 border-dashed h-full relative overflow-hidden">
-                <div className="absolute top-0 right-0 px-4 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-bold rounded-bl-xl z-20 uppercase tracking-wider border-b border-l border-yellow-500/20">Coming Soon</div>
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-2xl font-bold text-foreground font-sans">Team</h3>
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-4xl lg:text-5xl font-black text-white/40 font-sans">$49</span>
-                    <span className="text-white/40 font-sans font-medium">/ month</span>
-                  </div>
-                  <span className="text-xs text-distill-muted mt-1">for up to 10 seats &bull; Launching Q3 2026</span>
+            {/* TEAM TIER */}
+            <BlurReveal duration={1} delay={0.4}>
+              <div className="flex flex-col p-8 rounded-3xl bg-[#0a0710] border border-white/5 h-full relative group hover:border-white/10 transition-colors">
+                <div className="flex flex-col gap-2 mb-8">
+                  <h3 className="text-xl font-bold text-white">Team</h3>
+                  <p className="text-sm text-zinc-400">For engineering squads</p>
                 </div>
-                <div className="flex-1 flex flex-col gap-4 opacity-70">
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Everything in Pro</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Shared workspace</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Team analytics dashboard</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-distill-muted mt-0.5" />
-                    <span className="text-distill-muted font-sans text-sm">Admin controls & user management</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-white/30 mt-0.5" />
-                    <span className="text-white/30 font-sans text-sm">SAML SSO (future)</span>
-                  </div>
+                <div className="flex items-end gap-2 mb-8">
+                  <span className="text-5xl font-black text-white">{isAnnual ? "$99" : "$129"}</span>
+                  <span className="text-zinc-500 mb-2">/ month</span>
                 </div>
-                <button suppressHydrationWarning onClick={() => openWaitlist("team")} className="w-full py-3 rounded-xl border border-white/20 text-foreground font-medium font-sans hover:border-distill-violet hover:bg-white/5 transition-colors flex justify-center items-center mt-auto">
-                  Join Waitlist &rarr;
+                <button 
+                  onClick={() => handleSubscribe("team", isAnnual ? "price_team_annual" : "price_team_monthly")}
+                  disabled={loadingTier === "team"}
+                  className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-white font-bold text-center hover:bg-white/10 transition-colors mb-8 disabled:opacity-50"
+                >
+                  {loadingTier === "team" ? <span className="animate-pulse">Loading...</span> : "Start 14-day Free Trial"}
                 </button>
+                <div className="flex flex-col gap-4">
+                  <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Everything in Pro, including:</p>
+                  <ul className="flex flex-col gap-3">
+                    {["Shared Team Workspaces", "Linear & Asana Integrations", "Unlimited extractions", "SSO / SAML login", "Dedicated success manager"].map((feature, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-zinc-300">
+                        <CheckCircle2 className="w-5 h-5 text-white shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </BlurReveal>
-
           </div>
 
           {/* Why Free Section */}
           <BlurReveal duration={1} delay={0.5}>
-            <div className="max-w-2xl mx-auto flex flex-col items-center text-center gap-6 mt-8">
+            <div className="max-w-2xl mx-auto flex flex-col items-center text-center gap-6 mt-24">
               <h3 className="font-sergena text-2xl text-foreground">Why is Distill free?</h3>
               <p className="text-distill-muted font-sans leading-relaxed">
-                I'm a solo developer building in public. Right now, every user helps me learn what actually matters. When Pro launches, early waitlist members get 50% off for life.
+                I&apos;m a solo developer building in public. Right now, every user helps me learn what actually matters. When Pro launches, early waitlist members get 50% off for life.
               </p>
               <div className="flex items-center gap-4 mt-2">
                 <Link href="/roadmap" className="px-6 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-colors border border-white/10">
@@ -928,7 +960,7 @@ export default function Home() {
             </div>
             
             <div className="p-6 overflow-y-auto max-h-[60vh] flex flex-col gap-4">
-              {sampleJson.extracted_tickets.map((ticket, i) => (
+              {(demoResult?.extracted_tickets || []).map((ticket: any, i: number) => (
                 <div key={i} className="bg-[#22272B] p-4 rounded-lg border border-white/5">
                   <div className="flex justify-between mb-2">
                     <input suppressHydrationWarning type="text" defaultValue={ticket.title} className="bg-transparent border-none text-white font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 rounded px-1 w-full" />

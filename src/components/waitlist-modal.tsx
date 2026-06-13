@@ -43,8 +43,9 @@ export function WaitlistModal({ isOpen, onClose, planType }: WaitlistModalProps)
         setMessage({ text: data.message, type: "success" });
         setEmail("");
       }
-    } catch (err: any) {
-      setMessage({ text: err.message, type: "error" });
+    } catch (err: unknown) {
+      const errorMsg = err instanceof Error ? err.message : "Something went wrong";
+      setMessage({ text: errorMsg, type: "error" });
     } finally {
       setLoading(false);
     }
@@ -75,7 +76,7 @@ export function WaitlistModal({ isOpen, onClose, planType }: WaitlistModalProps)
               Get Notified When {displayPlanName} Launches
             </h2>
             <p className="text-sm text-distill-muted font-sans mt-2">
-              We're building {displayPlanName} features based on user feedback. Be the first to know when it's ready.
+              We&apos;re building {displayPlanName} features based on user feedback. Be the first to know when it&apos;s ready.
             </p>
           </div>
 

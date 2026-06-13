@@ -19,9 +19,14 @@ export function validateAudioFile(file: File | null): string | null {
   if (!file) return null;
   if (file.size > 100 * 1024 * 1024) return "File size exceeds 100MB limit.";
   
-  const isAudio = file.type.startsWith("audio/");
-  if (!isAudio) {
-    return "Invalid file type. Only audio files are supported.";
+  const validExtensions = ['.mp3', '.mp4', '.mpeg', '.mpga', '.m4a', '.wav', '.webm'];
+  const fileName = file.name.toLowerCase();
+  const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+  
+  const isAudioMime = file.type.startsWith("audio/") || file.type.startsWith("video/") || file.type === "application/mp4";
+
+  if (!isAudioMime && !hasValidExtension) {
+    return `Invalid file type. Whisper only supports: ${validExtensions.join(', ')}`;
   }
   return null;
 }

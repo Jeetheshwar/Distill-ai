@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 
 type AuraVariant = "hero" | "docs" | "overview" | "webhooks" | "security" | "footer" | "aurora" | "conic" | "tactical-noise";
 

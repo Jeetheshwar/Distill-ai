@@ -1,20 +1,35 @@
 "use client";
 
 import { BlurReveal } from "@/components/ui/blur-reveal";
-import { Settings, Users, CreditCard, Activity, Key } from "lucide-react";
+import { Settings, Users, CreditCard, Activity, Key, ArrowRight } from "lucide-react";
 import { Aura } from "@/components/ui/aura";
 import { useState, useEffect } from "react";
+import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 export default function SettingsPage() {
   const [apiKey, setApiKey] = useState("");
   const [provider, setProvider] = useState("hosted");
   const [saved, setSaved] = useState(false);
+  const [planType, setPlanType] = useState("hobby");
+  const supabase = createClient();
 
   useEffect(() => {
     const key = localStorage.getItem("groq_api_key");
     if (key) setApiKey(key);
     const prov = localStorage.getItem("extraction_provider");
     if (prov) setProvider(prov);
+
+    async function loadPlan() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase.from('user_settings').select('plan_type').eq('user_id', user.id).single();
+        if (data?.plan_type) {
+          setPlanType(data.plan_type);
+        }
+      }
+    }
+    loadPlan();
   }, []);
 
   const handleSave = async () => {
@@ -86,15 +101,17 @@ export default function SettingsPage() {
         </BlurReveal>
 
         <BlurReveal duration={1} delay={0.2}>
-          <div className="flex flex-col gap-6 p-8 rounded-2xl bg-[#05040a] border border-white/5 shadow-2xl h-full">
+          <Link href="/dashboard/settings/team" className="flex flex-col gap-6 p-8 rounded-2xl bg-[#05040a] border border-white/5 shadow-2xl h-full hover:border-white/20 transition-colors group">
             <div className="flex items-center gap-3">
-               <Users className="w-6 h-6 text-zinc-500" />
-               <h2 className="text-lg font-bold text-foreground font-sans">Team Management</h2>
+               <Users className="w-6 h-6 text-white" />
+               <h2 className="text-lg font-bold text-foreground font-sans group-hover:text-distill-core transition-colors flex items-center gap-2">
+                 Team Workspace <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity translate-x-[-10px] group-hover:translate-x-0" />
+               </h2>
             </div>
-            <p className="text-sm text-zinc-500 font-sans">
-              Team features are on the roadmap. Currently single-user only.
+            <p className="text-sm text-zinc-400 font-sans mt-auto">
+              Create a team to share pipelines, API keys, and extractions with your squad.
             </p>
-          </div>
+          </Link>
         </BlurReveal>
 
         <BlurReveal duration={1} delay={0.3}>
@@ -103,9 +120,22 @@ export default function SettingsPage() {
                <CreditCard className="w-6 h-6 text-white" />
                <h2 className="text-lg font-bold text-foreground font-sans">Billing & Invoices</h2>
             </div>
-            <p className="text-sm text-zinc-500 font-sans">
-              Manage your payment methods and download past invoices. You are currently on the Free Developer Sandbox.
+            
+            <div className="flex flex-col gap-2">
+              <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Current Plan</span>
+              <div className="flex items-center justify-between p-4 rounded-xl bg-black border border-white/10">
+                <span className="text-lg font-bold text-white capitalize">{planType === 'hobby' ? 'Hobby (BYOK)' : planType}</span>
+                <span className="px-3 py-1 rounded-full bg-distill-violet/20 text-distill-core text-xs font-bold font-mono tracking-wide">ACTIVE</span>
+              </div>
+            </div>
+
+            <p className="text-sm text-zinc-500 font-sans mt-2">
+              Manage your payment methods and download past invoices.
             </p>
+
+            <Link href="/pricing" className="mt-auto px-4 py-3 bg-white text-black font-bold rounded-lg text-center text-sm hover:bg-zinc-200 transition-colors flex justify-center items-center gap-2">
+              Manage Subscription <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </BlurReveal>
 

@@ -32,9 +32,14 @@ export default function TermsPage() {
               You agree not to reverse engineer, decompile, or attempt to extract the processing logic embedded within the application.
             </p>
             
+            <p>
+              3. &quot;Lifetime Deal&quot; implies access for the active lifetime of the product.
+              4. Refunds are evaluated on a case-by-case basis but generally we stick to &quot;No Refunds&quot;.
+            </p>
+
             <h2>4. Limitation of Liability</h2>
             <p>
-              Distill is provided "as is". Because you control the execution environment and the data inputs, we are not liable for any data loss, extraction hallucinations, or infrastructure downtime you experience.
+              Distill is provided &quot;as is&quot;. Because you control the execution environment and the data inputs, we are not liable for any data loss, extraction hallucinations, or infrastructure downtime you experience.
             </p>
           </div>
         </BlurReveal>

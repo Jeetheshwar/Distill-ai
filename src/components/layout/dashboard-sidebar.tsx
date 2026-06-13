@@ -21,9 +21,12 @@ export function DashboardSidebar({ userEmail }: { userEmail: string | undefined 
 
   return (
     <aside className="w-64 border-r border-white/5 bg-black/20 backdrop-blur-md hidden md:flex flex-col relative z-20">
-      <div className="h-20 flex items-center px-6 border-b border-white/5">
-        <Link href="/" className="font-anta text-xl tracking-widest text-foreground hover:text-white transition-colors">
-          DISTILL.<span className="text-white/50">AI</span>
+      <div className="flex items-center pt-2 px-2 pb-6">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-full bg-distill-core flex items-center justify-center transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+          </div>
+          <span className="font-anta text-xl tracking-widest text-foreground mt-1">DISTILL.<span className="text-distill-core">AI</span></span>
         </Link>
       </div>
       

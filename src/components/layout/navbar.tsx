@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+
 import { createClient } from "@/utils/supabase/server";
 import PillNav from "../ui/PillNav";
 
@@ -9,9 +9,9 @@ export async function Navbar() {
 
   const navItems = [
     { label: 'Home', href: '/' },
-    { label: 'Features', href: '/#features' },
+    { label: 'Documentation', href: '/docs' },
     { label: 'Pricing', href: '/#pricing' },
-    { label: 'Docs', href: '/docs' },
+    { label: 'Changelog', href: '/changelog' },
   ];
 
   return (
@@ -25,10 +25,10 @@ export async function Navbar() {
         {/* Left side: Logo */}
         <div className="flex-1 hidden md:flex items-center pt-1">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-full bg-[#CBB1EC] flex items-center justify-center transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16131D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <div className="w-10 h-10 rounded-full bg-distill-core flex items-center justify-center transition-transform duration-300 group-hover:rotate-12 group-hover:scale-105">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0D14" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
             </div>
-            <span className="font-anta text-xl tracking-widest text-foreground mt-1">DISTILL.<span className="text-[#CBB1EC]">AI</span></span>
+            <span className="font-anta text-xl tracking-widest text-foreground mt-1">DISTILL.<span className="text-distill-core">AI</span></span>
           </Link>
         </div>
 
@@ -38,9 +38,9 @@ export async function Navbar() {
             items={navItems}
             activeHref="/"
             className=""
-            baseColor="#CBB1EC"
-            pillColor="#16131D"
-            hoveredPillTextColor="#ffffff"
+            baseColor="#E6F0FA"
+            pillColor="#0A0D14"
+            hoveredPillTextColor="#0A0D14"
             pillTextColor="#ffffff"
             initialLoadAnimation
           />
@@ -56,7 +56,7 @@ export async function Navbar() {
             )}
             <Link 
               href={user ? "/dashboard" : "/login?signup=true"} 
-              className="px-6 py-[10px] rounded-[9999px] bg-[#CBB1EC] text-[#16131D] font-bold tracking-wide hover:scale-105 transition-transform text-sm shadow-[0_0_15px_rgba(203,177,236,0.2)] whitespace-nowrap"
+              className="px-6 py-[10px] rounded-[9999px] bg-distill-core text-[#0A0D14] font-bold tracking-wide hover:scale-105 transition-transform text-sm shadow-[0_0_15px_rgba(230,240,250,0.2)] whitespace-nowrap"
             >
               {user ? "Dashboard" : "Get Started"}
             </Link>

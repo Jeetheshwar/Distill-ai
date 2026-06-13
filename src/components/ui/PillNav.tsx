@@ -12,8 +12,7 @@ export interface PillNavItem {
 }
 
 export interface PillNavProps {
-  logo?: string;
-  logoAlt?: string;
+
   items: PillNavItem[];
   activeHref?: string;
   className?: string;
@@ -27,8 +26,7 @@ export interface PillNavProps {
 }
 
 const PillNav = ({
-  logo,
-  logoAlt = 'Logo',
+
   items,
   activeHref,
   className = '',
@@ -45,8 +43,7 @@ const PillNav = ({
   const circleRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const tlRefs = useRef<(gsap.core.Timeline | null)[]>([]);
   const activeTweenRefs = useRef<(gsap.core.Tween | null)[]>([]);
-  const logoImgRef = useRef<HTMLImageElement | null>(null);
-  const logoTweenRef = useRef<gsap.core.Tween | null>(null);
+
   const hamburgerRef = useRef<HTMLButtonElement | null>(null);
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const navItemsRef = useRef<HTMLDivElement | null>(null);
@@ -163,18 +160,7 @@ const PillNav = ({
     });
   };
 
-  const handleLogoEnter = () => {
-    const img = logoImgRef.current;
-    if (!img) return;
-    logoTweenRef.current?.kill();
-    gsap.set(img, { rotate: 0 });
-    logoTweenRef.current = gsap.to(img, {
-      rotate: 360,
-      duration: 0.2,
-      ease,
-      overwrite: 'auto'
-    });
-  };
+
 
   const toggleMobileMenu = () => {
     const newState = !isMobileMenuOpen;

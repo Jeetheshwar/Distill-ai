@@ -1,4 +1,3 @@
-import { Aura } from "@/components/ui/aura";
 import { CheckCircle2, Circle, Clock } from "lucide-react";
 
 export default function RoadmapPage() {
@@ -64,7 +63,7 @@ export default function RoadmapPage() {
         <div className="flex flex-col gap-4">
           <h1 className="font-sergena text-4xl md:text-6xl tracking-tighter text-foreground">Roadmap.</h1>
           <p className="text-xl text-distill-muted leading-relaxed">
-            What we're building next. Distill is built in public—features are prioritized based on waitlist and community feedback.
+            What we&apos;re building next. Distill is built in public—features are prioritized based on waitlist and community feedback.
           </p>
         </div>
 

@@ -17,14 +17,8 @@ function LoginContent() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(searchParams.get("signup") === "true");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (searchParams.get("signup") === "true") {
-      setIsSignUp(true);
-    }
-  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

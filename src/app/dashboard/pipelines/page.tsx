@@ -12,7 +12,7 @@ export default function TranscribePipelinePage() {
   const [activeTab, setActiveTab] = useState<"new" | "history" | "schema">("new");
   const [stage, setStage] = useState<"idle" | "processing" | "clarifying" | "finished">("idle");
   const [logs, setLogs] = useState<string[]>([]);
-  const [resultPayload, setResultPayload] = useState<any>(null);
+  const [resultPayload, setResultPayload] = useState<Record<string, unknown> | null>(null);
   const [hasKey, setHasKey] = useState(true);
   const [schemaMode, setSchemaMode] = useState<"standup" | "retro">("standup");
   const [showJiraModal, setShowJiraModal] = useState(false);
@@ -22,7 +22,7 @@ export default function TranscribePipelinePage() {
   const [currentTranscript, setCurrentTranscript] = useState<string>("");
   const [userSettings, setUserSettings] = useState<{ groq_api_key?: string, webhook_url?: string, custom_standup_schema?: string, custom_retro_schema?: string } | null>(null);
   const [provider, setProvider] = useState<string>("hosted");
-  const [historyData, setHistoryData] = useState<any[]>([]);
+  const [historyData, setHistoryData] = useState<Record<string, unknown>[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -30,7 +30,7 @@ export default function TranscribePipelinePage() {
   const [schemaEditorMode, setSchemaEditorMode] = useState<"standup" | "retro">("standup");
   const [schemaEditorContent, setSchemaEditorContent] = useState("");
   const [isSavingSchema, setIsSavingSchema] = useState(false);
-  const [editableTickets, setEditableTickets] = useState<any[]>([]);
+  const [editableTickets, setEditableTickets] = useState<Record<string, unknown>[]>([]);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -114,7 +114,7 @@ export default function TranscribePipelinePage() {
             .select("*")
             .eq("user_id", user.id)
             .order("created_at", { ascending: false });
-          if (data) setHistoryData(data);
+          if (data) setHistoryData(data as Record<string, unknown>[]);
         }
         setLoadingHistory(false);
       };
@@ -263,36 +263,36 @@ export default function TranscribePipelinePage() {
 
   const openJiraModal = () => {
     if (resultPayload) {
-      let ticketsToEdit: any[] = [];
-      if (Array.isArray(resultPayload.entities)) {
-         ticketsToEdit = resultPayload.entities;
-      } else if (resultPayload.entities?.extracted_tickets) {
-         ticketsToEdit = resultPayload.entities.extracted_tickets;
-      } else if (resultPayload.entities?.retro_categories?.action_items) {
-         ticketsToEdit = resultPayload.entities.retro_categories.action_items;
+      let ticketsToEdit: Record<string, unknown>[] = [];
+      const entities = resultPayload.entities as Record<string, unknown> | undefined;
+
+      if (Array.isArray(entities)) {
+         ticketsToEdit = entities;
+      } else if (typeof entities === 'object' && entities !== null && 'extracted_tickets' in entities) {
+         ticketsToEdit = entities.extracted_tickets as Record<string, unknown>[];
+      } else if (typeof entities === 'object' && entities !== null && 'retro_categories' in entities) {
+         ticketsToEdit = (entities.retro_categories as Record<string, unknown>).action_items as Record<string, unknown>[];
       } else {
-         const findArray = (obj: any): any[] | null => {
-           for (const key in obj) {
-             if (Array.isArray(obj[key]) && obj[key].length > 0 && typeof obj[key][0] === "object") {
-               return obj[key];
-             } else if (typeof obj[key] === "object" && obj[key] !== null) {
-               const res = findArray(obj[key]);
-               if (res) return res;
-             }
+         const findArray = (obj: unknown): Record<string, unknown>[] | null => {
+           if (typeof obj !== 'object' || obj === null) return null;
+           if (Array.isArray(obj)) return obj as Record<string, unknown>[];
+           for (const val of Object.values(obj)) {
+             const found = findArray(val);
+             if (found) return found;
            }
            return null;
          };
          ticketsToEdit = findArray(resultPayload.entities) || [];
       }
 
-      setEditableTickets(ticketsToEdit.map((t: any, i: number) => ({
+      setEditableTickets(ticketsToEdit.map((t: Record<string, unknown>, i: number) => ({
         _id: i.toString(),
         selected: true,
-        title: t.title || t.summary || "Untitled Issue",
-        description: t.description || "",
-        type: t.type || t.ticket_type || "Task",
-        priority: t.priority || "Medium",
-        assignee: t.assignee || t.assignee_context || t.owner || "Unassigned"
+        title: (t.title || t.summary || "Untitled Issue") as string,
+        description: (t.description || "") as string,
+        type: (t.type || t.ticket_type || "Task") as string,
+        priority: (t.priority || "Medium") as string,
+        assignee: (t.assignee || t.assignee_context || t.owner || "Unassigned") as string
       })));
       setShowJiraModal(true);
     }
@@ -311,10 +311,10 @@ export default function TranscribePipelinePage() {
     const finalPayload = {
       ...resultPayload,
       entities: {
-        ...resultPayload.entities,
+        ...(resultPayload?.entities as Record<string, unknown>),
         extracted_tickets: schemaMode === "standup" ? finalTickets : undefined,
         retro_categories: schemaMode === "retro" ? {
-          ...(resultPayload.entities.retro_categories || {}),
+          ...((resultPayload?.entities as Record<string, unknown>)?.retro_categories as Record<string, unknown> || {}),
           action_items: finalTickets
         } : undefined
       }
@@ -403,7 +403,7 @@ export default function TranscribePipelinePage() {
                 <div className="relative">
                   <select 
                     value={schemaMode}
-                    onChange={(e) => setSchemaMode(e.target.value as any)}
+                    onChange={(e) => setSchemaMode(e.target.value as "standup" | "retro")}
                     className="w-full bg-[#05040a] border border-white/10 rounded-md p-2 pr-8 text-sm text-foreground font-mono focus:outline-none focus:border-white/30 appearance-none cursor-pointer"
                   >
                     <option value="standup" className="bg-[#111] text-white py-2">Standup Mode</option>
@@ -602,11 +602,11 @@ export default function TranscribePipelinePage() {
                 </h3>
                 <div className="w-full bg-[#05040a] border border-white/10 rounded-xl p-6 h-[50vh] overflow-y-auto">
                   <pre className="font-mono text-sm leading-loose whitespace-pre-wrap text-zinc-500">
-                    {resultPayload?.transcript?.split('\n').map((line: string, i: number) => (
+                    {resultPayload?.transcript ? (resultPayload.transcript as string).split('\n').map((line: string, i: number) => (
                       <span key={i} className={cn("block", line.includes("Auth State") && "bg-white/10 text-white rounded px-1")}>
                         {line}
                       </span>
-                    ))}
+                    )) : null}
                   </pre>
                 </div>
               </div>
@@ -620,7 +620,7 @@ export default function TranscribePipelinePage() {
                 <div className="w-full bg-[#05040a] border border-distill-violet/30 rounded-xl overflow-hidden relative h-[50vh] flex flex-col shadow-[0_0_40px_rgba(72,38,185,0.1)]">
                   <div className="w-full bg-distill-violet/10 border-b border-distill-violet/20 px-4 py-2 flex justify-between items-center text-xs font-mono">
                     <span className="text-distill-core font-bold">payload.json</span>
-                    <span className="text-distill-muted">{resultPayload?.metadata?.schema_applied || "standup"}</span>
+                    <span className="text-distill-muted">{((resultPayload?.metadata as Record<string, unknown>)?.schema_applied as string) || "standup"}</span>
                   </div>
                   <div className="p-6 overflow-y-auto flex-1">
                     <pre className="text-sm font-mono text-[#4ec9b0] leading-relaxed">
@@ -666,26 +666,26 @@ export default function TranscribePipelinePage() {
                       </tr>
                     ) : (
                       historyData.map((item, i) => (
-                        <tr key={item.id} className="border-b border-white/5 hover:bg-white/[0.01] transition-colors">
+                        <tr key={item.id as string} className="border-b border-white/5 hover:bg-white/[0.01] transition-colors">
                           <td className="px-6 py-4 font-medium text-foreground">
-                            {item.source_name || "Unknown"}
+                            {item.source_name as string || "Unknown"}
                           </td>
                           <td className="px-6 py-4 text-zinc-500">
-                            <span className="bg-white/5 px-2 py-1 rounded-md font-mono text-xs uppercase">{item.schema_applied || "standup"}</span>
+                            <span className="bg-white/5 px-2 py-1 rounded-md font-mono text-xs uppercase">{item.schema_applied as string || "standup"}</span>
                           </td>
                           <td className="px-6 py-4 text-zinc-500">
-                            {item.duration_seconds ? `${Math.round(item.duration_seconds)}s` : "N/A"}
+                            {item.duration_seconds ? `${Math.round(item.duration_seconds as number)}s` : "N/A"}
                           </td>
                           <td className="px-6 py-4">
                             <span className={cn("px-2 py-1 rounded-full text-xs font-bold uppercase", item.status === "completed" ? "bg-green-500/10 text-green-500" : "bg-zinc-500/10 text-zinc-500")}>
-                              {item.status || "Completed"}
+                              {(item.status as string) || "Completed"}
                             </span>
                           </td>
                           <td className="px-6 py-4 text-zinc-500 text-xs">
-                            {new Date(item.created_at).toLocaleString()}
+                            {new Date(item.created_at as string).toLocaleString()}
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <button onClick={() => deleteExtraction(item.id)} className="text-zinc-600 hover:text-red-500 transition-colors p-1" title="Delete record">
+                            <button onClick={() => deleteExtraction(item.id as string)} className="text-zinc-600 hover:text-red-500 transition-colors p-1" title="Delete record">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </td>
@@ -795,15 +795,15 @@ export default function TranscribePipelinePage() {
                 <div className="flex flex-col items-center justify-center py-10 text-zinc-500 font-sans">
                   <span className="text-4xl mb-4">👻</span>
                   <p className="text-lg font-bold text-white mb-1">No Actionable Items Found</p>
-                  <p className="text-sm text-center max-w-sm">The AI couldn't find any explicit tasks, bugs, or action items in this transcript to convert into tickets.</p>
+                  <p className="text-sm text-center max-w-sm">The AI couldn&apos;t find any explicit tasks, bugs, or action items in this transcript to convert into tickets.</p>
                 </div>
               ) : (
                 editableTickets.map((ticket, i) => (
-                  <div key={ticket._id} className="bg-white/[0.02] p-5 rounded-xl border border-white/5 flex gap-4 hover:border-white/10 transition-colors shadow-sm">
+                  <div key={ticket._id as string} className="bg-white/[0.02] p-5 rounded-xl border border-white/5 flex gap-4 hover:border-white/10 transition-colors shadow-sm">
                     <div className="pt-1">
                       <input 
                         type="checkbox" 
-                        checked={ticket.selected} 
+                        checked={ticket.selected as boolean} 
                         onChange={(e) => {
                           const newTickets = [...editableTickets];
                           newTickets[i].selected = e.target.checked;
@@ -816,7 +816,7 @@ export default function TranscribePipelinePage() {
                       <div className="flex justify-between mb-3">
                         <input 
                           type="text" 
-                          value={ticket.title} 
+                          value={ticket.title as string} 
                           onChange={(e) => {
                             const newTickets = [...editableTickets];
                             newTickets[i].title = e.target.value;
@@ -827,7 +827,7 @@ export default function TranscribePipelinePage() {
                       </div>
                       {schemaMode === "standup" && (
                         <textarea 
-                          value={ticket.description} 
+                          value={ticket.description as string} 
                           onChange={(e) => {
                             const newTickets = [...editableTickets];
                             newTickets[i].description = e.target.value;
@@ -838,13 +838,13 @@ export default function TranscribePipelinePage() {
                       )}
                       <div className="flex gap-3 mt-1">
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-black/50 border border-white/5 rounded-md text-xs font-mono text-zinc-400">
-                          <span className="w-2 h-2 rounded-full bg-distill-core"></span> {ticket.type}
+                          <span className="w-2 h-2 rounded-full bg-distill-core"></span> {ticket.type as string}
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-black/50 border border-white/5 rounded-md text-xs font-mono text-zinc-400">
-                          <span className={cn("w-2 h-2 rounded-full", ticket.priority?.toLowerCase() === 'high' ? 'bg-orange-500' : 'bg-yellow-500')}></span> {ticket.priority}
+                          <span className={cn("w-2 h-2 rounded-full", (ticket.priority as string)?.toLowerCase() === 'high' ? 'bg-orange-500' : 'bg-yellow-500')}></span> {ticket.priority as string}
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-black/50 border border-white/5 rounded-md text-xs font-mono text-zinc-400">
-                          Assignee: <span className="text-white font-sans font-bold">{ticket.assignee}</span>
+                          Assignee: <span className="text-white font-sans font-bold">{ticket.assignee as string}</span>
                         </div>
                       </div>
                     </div>
