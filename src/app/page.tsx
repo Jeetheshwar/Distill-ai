@@ -146,7 +146,8 @@ export default function Home() {
       setProcessingText("Transcribing with Groq Whisper..."); // Reset text
     } catch (err: unknown) {
       console.error(err);
-      alert(`Extraction failed: ${err.message || "Check API key or file."}`);
+      const errorMessage = err instanceof Error ? err.message : "Check API key or file.";
+      alert(`Extraction failed: ${errorMessage}`);
       setDemoStep(1);
     }
   };
