@@ -219,7 +219,7 @@ export default function Home() {
         HERO SECTION (1.1)
         ---------------------------------------------
       */}
-      <section className="relative min-h-[75vh] w-full flex flex-col items-center justify-center pt-16 md:pt-20 pb-12 px-8 z-10">
+      <section className="relative min-h-[75vh] w-full flex flex-col items-center justify-center pt-16 md:pt-20 pb-12 px-4 md:px-8 z-10">
         
         {/* Triple-Node Massive Vibrant U-Shape Glow managed by Component */}
         <Aura variant="hero" />
@@ -327,7 +327,7 @@ export default function Home() {
           LIVE DEMO SECTION (1.2)
           ---------------------------------------------
         */}
-        <section id="demo" className="relative w-full py-32 px-4 md:px-8 bg-transparent z-10">
+        <section id="demo" className="relative w-full py-20 md:py-32 px-4 md:px-8 bg-transparent z-10">
           <div className="max-w-5xl mx-auto flex flex-col gap-12">
             <div className="flex flex-col items-center text-center gap-4">
               <BlurReveal duration={1}>
@@ -531,14 +531,14 @@ export default function Home() {
           ARCHITECTURE & SOCIAL PROOF WRAPPER (Lavender White)
           ---------------------------------------------
         */}
-        <div id="features" className="w-full bg-[#E5F0FF] rounded-[3rem] overflow-hidden my-24 border-4 border-black/5 shadow-[12px_12px_0px_rgba(0,0,0,0.05)] relative">
+        <div id="features" className="w-full bg-[#E5F0FF] rounded-3xl md:rounded-[3rem] overflow-hidden my-16 md:my-24 border-4 border-black/5 shadow-[12px_12px_0px_rgba(0,0,0,0.05)] relative">
           {/* Abstract colorful blobs for Neubrutalist Glass to overlay */}
-          <div className="absolute top-10 -left-20 w-[40rem] h-[40rem] bg-pink-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
-          <div className="absolute bottom-10 -right-20 w-[40rem] h-[40rem] bg-indigo-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
-          <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[30rem] h-[30rem] bg-emerald-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
-          <div className="absolute bottom-1/4 left-2/3 w-[35rem] h-[35rem] bg-amber-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+          <div className="absolute top-10 -left-20 w-[20rem] h-[20rem] md:w-[40rem] md:h-[40rem] bg-pink-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+          <div className="absolute bottom-10 -right-20 w-[20rem] h-[20rem] md:w-[40rem] md:h-[40rem] bg-indigo-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+          <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[15rem] h-[15rem] md:w-[30rem] md:h-[30rem] bg-emerald-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+          <div className="absolute bottom-1/4 left-2/3 w-[15rem] h-[15rem] md:w-[35rem] md:h-[35rem] bg-amber-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
           
-          <section className="relative w-full py-24 px-4 md:px-8 bg-transparent text-black">
+          <section className="relative w-full py-16 md:py-24 px-4 md:px-8 bg-transparent text-black">
             <div className="max-w-7xl mx-auto flex flex-col gap-16">
                <BlurReveal duration={1}>
                   <div className="flex flex-col items-center text-center gap-4">
@@ -642,10 +642,10 @@ export default function Home() {
           </section>
 
           {/* WORLD CLASS TESTIMONIALS MARQUEE */}
-          <section className="relative w-full py-24 bg-transparent overflow-hidden border-t border-black/5">
+          <section className="relative w-full py-16 md:py-24 bg-transparent overflow-hidden border-t border-black/5">
             {/* Abstract colorful blobs for Neubrutalist Glass to overlay */}
-            <div className="absolute top-10 left-1/4 w-[30rem] h-[30rem] bg-emerald-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
-            <div className="absolute bottom-10 right-1/4 w-[30rem] h-[30rem] bg-amber-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+            <div className="absolute top-10 left-1/4 w-[15rem] h-[15rem] md:w-[30rem] md:h-[30rem] bg-emerald-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
+            <div className="absolute bottom-10 right-1/4 w-[15rem] h-[15rem] md:w-[30rem] md:h-[30rem] bg-amber-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply" />
 
             {/* Gradient Masks for fade effect */}
             <div className="absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-[#E5F0FF] to-transparent z-10 pointer-events-none" />
@@ -674,7 +674,7 @@ export default function Home() {
                   { text: "The accuracy is insane. It catches technical debt items we casually mention and creates perfect tickets.", name: "David L.", title: "Senior Engineer", initial: "DL" },
                   { text: "Our daily standups actually feel useful now because we know the busywork is being handled automatically.", name: "Priya S.", title: "Product Manager", initial: "PS" }
                 ].map((t, i) => (
-                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 flex-shrink-0 cursor-default">
+                  <div key={i} className="w-[300px] sm:w-[400px] h-auto min-h-[220px] mx-3 rounded-3xl md:rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-6 sm:p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 flex-shrink-0 cursor-default">
                     <div className="flex text-yellow-500 gap-1 mb-2">
                       {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
@@ -705,7 +705,7 @@ export default function Home() {
                   { text: "I love that I can bring my own Groq key. The inference is blazing fast and completely private.", name: "Chris B.", title: "Backend Engineer", initial: "CB" },
                   { text: "It's like having a dedicated project manager in every call, but without the overhead.", name: "Anna K.", title: "Fullstack Dev", initial: "AK" }
                 ].map((t, i) => (
-                  <div key={i} className="w-[400px] h-[220px] mx-3 rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 flex-shrink-0 cursor-default">
+                  <div key={i} className="w-[300px] sm:w-[400px] h-auto min-h-[220px] mx-3 rounded-3xl md:rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-6 sm:p-8 flex flex-col justify-between hover:bg-white/60 transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 flex-shrink-0 cursor-default">
                     <div className="flex text-yellow-500 gap-1 mb-2">
                       {[1,2,3,4,5].map(star => <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
                     </div>
@@ -732,7 +732,7 @@ export default function Home() {
         PRICING SECTION (1.5)
         ---------------------------------------------
       */}
-      <section id="pricing" className="relative w-full py-32 px-8 flex flex-col items-center justify-center bg-background border-t border-white/5 overflow-hidden">
+      <section id="pricing" className="relative w-full py-20 md:py-32 px-4 md:px-8 flex flex-col items-center justify-center bg-background border-t border-white/5 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(72,38,185,0.1),transparent_50%)] pointer-events-none" />
         <div className="relative z-10 max-w-6xl mx-auto flex flex-col gap-16 w-full items-center">
           <BlurReveal duration={0.8}>
@@ -896,7 +896,7 @@ export default function Home() {
         FOOTER (1.6)
         ---------------------------------------------
       */}
-      <footer className="w-full bg-[#030108] border-t border-white/10 pt-24 pb-12 px-8">
+      <footer className="w-full bg-[#030108] border-t border-white/10 pt-16 md:pt-24 pb-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto flex flex-col gap-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
             <div className="flex flex-col gap-6 md:col-span-1">
