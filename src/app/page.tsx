@@ -554,7 +554,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-[280px]">
                   
                   {/* Box A: AI Extraction (Span 2x2) */}
-                  <BlurReveal duration={1} delay={0.1} className="md:col-span-2 lg:col-span-2 md:row-span-2">
+                  <BlurReveal duration={1} delay={0.1} className="row-span-2 md:col-span-2 lg:col-span-2">
                     <div className="h-full w-full rounded-[2rem] bg-white/40 backdrop-blur-xl border-2 border-white p-8 md:p-10 flex flex-col gap-6 overflow-hidden group transition-all duration-300 shadow-[8px_8px_0px_rgba(0,0,0,0.05)] hover:shadow-[2px_2px_0px_rgba(0,0,0,0.05)] hover:translate-y-1 hover:translate-x-1 relative">
                       <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 pointer-events-none">
                         <Sparkles className="w-32 h-32 text-distill-violet" />
